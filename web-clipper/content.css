@@ -1,0 +1,104 @@
+/* NoteSync Web Clipper - Content Styles */
+
+/* Clip indicator notification */
+#notesync-clip-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  background: #2dbe60;
+  color: white;
+  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999999;
+  animation: notesync-slide-in 0.3s ease-out;
+}
+
+@keyframes notesync-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Selection highlight */
+.notesync-highlight {
+  background: rgba(45, 190, 96, 0.3) !important;
+  border-radius: 2px;
+}
+
+/* Clip overlay for full page capture */
+#notesync-clip-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: notesync-fade-in 0.2s ease-out;
+}
+
+@keyframes notesync-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#notesync-clip-overlay .clip-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #2dbe60;
+  border-radius: 50%;
+  animation: notesync-spin 1s linear infinite;
+}
+
+@keyframes notesync-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Tooltip for clip action */
+.notesync-tooltip {
+  position: absolute;
+  padding: 6px 10px;
+  background: #1a1a1a;
+  color: white;
+  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 999999;
+  pointer-events: none;
+  animation: notesync-tooltip-in 0.15s ease-out;
+}
+
+.notesync-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #1a1a1a;
+}
+
+@keyframes notesync-tooltip-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

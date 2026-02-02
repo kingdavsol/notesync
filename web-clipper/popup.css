@@ -1,0 +1,322 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: #fff;
+  width: 320px;
+  min-height: 200px;
+}
+
+#app {
+  padding: 16px;
+}
+
+.view {
+  display: block;
+}
+
+.view.hidden {
+  display: none;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2dbe60;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+/* Header Row */
+.header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.logo-small {
+  width: 24px;
+  height: 24px;
+}
+
+.user-email {
+  flex: 1;
+  font-size: 13px;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-icon:hover {
+  background: #f5f5f5;
+  color: #666;
+}
+
+/* Forms */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"],
+select {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus,
+select:focus {
+  border-color: #2dbe60;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+/* Buttons */
+.btn-primary {
+  padding: 10px 16px;
+  background: #2dbe60;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-primary:hover {
+  background: #26a854;
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  padding: 10px 16px;
+  background: #f5f5f5;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-secondary:hover {
+  background: #eee;
+}
+
+.btn-text {
+  padding: 8px;
+  background: none;
+  border: none;
+  color: #2dbe60;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-text:hover {
+  text-decoration: underline;
+}
+
+.btn-clip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* Clip Options */
+.clip-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.clip-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px;
+  background: #f8f9fa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.clip-option:hover {
+  border-color: #ddd;
+}
+
+.clip-option input {
+  display: none;
+}
+
+.clip-option input:checked + .option-icon {
+  color: #2dbe60;
+}
+
+.clip-option input:checked ~ .option-text strong {
+  color: #2dbe60;
+}
+
+.clip-option:has(input:checked) {
+  border-color: #2dbe60;
+  background: rgba(45, 190, 96, 0.05);
+}
+
+.option-icon {
+  color: #999;
+  flex-shrink: 0;
+}
+
+.option-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.option-text strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.option-text small {
+  font-size: 10px;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status Messages */
+.error {
+  color: #dc3545;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.status {
+  text-align: center;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.status.loading {
+  color: #666;
+}
+
+.status.success {
+  color: #2dbe60;
+}
+
+.status.error {
+  color: #dc3545;
+}
+
+/* Success View */
+#success-view {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.success-icon {
+  margin-bottom: 16px;
+}
+
+#success-view h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+#success-view p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+#success-view .btn-secondary {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* Footer Link */
+.footer-link {
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  margin-top: 16px;
+}
+
+.footer-link a {
+  color: #2dbe60;
+  text-decoration: none;
+}
+
+.footer-link a:hover {
+  text-decoration: underline;
+}

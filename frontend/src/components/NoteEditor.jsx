@@ -2,13 +2,17 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Trash2, CloudOff, Cloud, Tag, Folder, MoreVertical,
   CheckSquare, Link2, Pencil, ExternalLink, List,
-  Share2, Bell, History, Pin, PinOff, Copy
+  Share2, Bell, History, Pin, PinOff, Copy,
+  Table, Code, Quote, Heading1, Heading2, Minus, Mic
 } from 'lucide-react';
 import DrawingCanvas from './DrawingCanvas';
 import NoteLinkPicker from './NoteLinkPicker';
 import ShareModal from './ShareModal';
 import ReminderModal from './ReminderModal';
 import VersionHistory from './VersionHistory';
+import TableEditor from './TableEditor';
+import CodeBlockEditor from './CodeBlockEditor';
+import VoiceRecorder from './VoiceRecorder';
 import api from '../services/api';
 
 export default function NoteEditor({ 
@@ -32,6 +36,9 @@ export default function NoteEditor({
   const [showShareModal, setShowShareModal] = useState(false);
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showTableEditor, setShowTableEditor] = useState(false);
+  const [showCodeEditor, setShowCodeEditor] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [drawings, setDrawings] = useState([]);
   const [backlinks, setBacklinks] = useState([]);
   const saveTimeoutRef = useRef(null);
@@ -254,13 +261,64 @@ export default function NoteEditor({
           >
             <ExternalLink size={16} />
           </button>
-          <button 
-            className="btn btn-ghost btn-icon" 
+          <button
+            className="btn btn-ghost btn-icon"
             onClick={() => setShowDrawing(true)}
             title="Add drawing"
             disabled={!note?.id || !isOnline}
           >
             <Pencil size={16} />
+          </button>
+          <span style={styles.divider} />
+          <button
+            className="btn btn-ghost btn-icon"
+            onClick={() => execCommand('formatBlock', 'h1')}
+            title="Heading 1"
+          >
+            <Heading1 size={16} />
+          </button>
+          <button
+            className="btn btn-ghost btn-icon"
+            onClick={() => execCommand('formatBlock', 'h2')}
+            title="Heading 2"
+          >
+            <Heading2 size={16} />
+          </button>
+          <button
+            className="btn btn-ghost btn-icon"
+            onClick={() => execCommand('formatBlock', 'blockquote')}
+            title="Quote"
+          >
+            <Quote size={16} />
+          </button>
+          <button
+            className="btn btn-ghost btn-icon"
+            onClick={() => setShowTableEditor(true)}
+            title="Insert table"
+          >
+            <Table size={16} />
+          </button>
+          <button
+            className="btn btn-ghost btn-icon"
+            onClick={() => setShowCodeEditor(true)}
+            title="Insert code block"
+          >
+            <Code size={16} />
+          </button>
+          <button
+            className="btn btn-ghost btn-icon"
+            onClick={() => document.execCommand('insertHorizontalRule')}
+            title="Horizontal line"
+          >
+            <Minus size={16} />
+          </button>
+          <span style={styles.divider} />
+          <button
+            className="btn btn-ghost btn-icon"
+            onClick={() => setShowVoiceRecorder(true)}
+            title="Voice note"
+          >
+            <Mic size={16} />
           </button>
         </div>
 
@@ -507,6 +565,42 @@ export default function NoteEditor({
             setContent(restoredNote.content);
           }}
           onClose={() => setShowHistory(false)}
+        />
+      )}
+
+      {/* Table editor modal */}
+      {showTableEditor && (
+        <TableEditor
+          onInsert={(html) => {
+            document.execCommand('insertHTML', false, html);
+            contentRef.current?.focus();
+          }}
+          onClose={() => setShowTableEditor(false)}
+        />
+      )}
+
+      {/* Code block editor modal */}
+      {showCodeEditor && (
+        <CodeBlockEditor
+          onInsert={(html) => {
+            document.execCommand('insertHTML', false, html);
+            contentRef.current?.focus();
+          }}
+          onClose={() => setShowCodeEditor(false)}
+        />
+      )}
+
+      {/* Voice recorder modal */}
+      {showVoiceRecorder && (
+        <VoiceRecorder
+          onTranscription={(text) => {
+            // Insert transcribed text at cursor position
+            const formattedText = text.replace(/\n/g, '<br>');
+            document.execCommand('insertHTML', false, `<p>${formattedText}</p>`);
+            contentRef.current?.focus();
+            setShowVoiceRecorder(false);
+          }}
+          onClose={() => setShowVoiceRecorder(false)}
         />
       )}
     </div>

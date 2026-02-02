@@ -18,6 +18,7 @@ const shareRoutes = require('./routes/share');
 const remindersRoutes = require('./routes/reminders');
 const templatesRoutes = require('./routes/templates');
 const versionsRoutes = require('./routes/versions');
+const transcribeRoutes = require('./routes/transcribe');
 
 const { sanitizeMiddleware, securityHeaders } = require('./middleware/security');
 
@@ -135,6 +136,7 @@ app.use('/api/share', shareRoutes);
 app.use('/api/reminders', remindersRoutes);
 app.use('/api/templates', templatesRoutes);
 app.use('/api/versions', versionsRoutes);
+app.use('/api/transcribe', transcribeRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
