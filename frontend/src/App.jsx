@@ -122,7 +122,7 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token: api.getToken(), login, register, logout }}>
       <SyncContext.Provider value={{ ...syncStatus, sync: () => syncService.sync() }}>
         <Routes>
           <Route

@@ -4,7 +4,7 @@ import api from '../services/api';
 import db from '../services/db';
 import Sidebar from '../components/Sidebar';
 import NoteList from '../components/NoteList';
-import NoteEditor from '../components/NoteEditor';
+import CollaborativeEditor from '../components/CollaborativeEditor';
 import ImportModal from '../components/ImportModal';
 import AdvancedSearch from '../components/AdvancedSearch';
 import { Menu, Plus, RefreshCw, Wifi, WifiOff, Search } from 'lucide-react';
@@ -345,9 +345,9 @@ export default function Dashboard() {
             onToggleOffline={toggleOffline}
           />
 
-          {/* Editor */}
+          {/* Editor with real-time collaboration */}
           {selectedNote ? (
-            <NoteEditor
+            <CollaborativeEditor
               note={selectedNote}
               folders={folders}
               tags={tags}

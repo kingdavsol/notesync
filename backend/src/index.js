@@ -1,9 +1,11 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const { initializeWebSocket } = require('./websocket');
 
 const authRoutes = require('./routes/auth');
 const notesRoutes = require('./routes/notes');
@@ -23,7 +25,11 @@ const transcribeRoutes = require('./routes/transcribe');
 const { sanitizeMiddleware, securityHeaders } = require('./middleware/security');
 
 const app = express();
+const server = http.createServer(app);
 const PORT = process.env.PORT || 3001;
+
+// Initialize WebSocket for real-time collaboration
+const io = initializeWebSocket(server);
 
 // Trust proxy for rate limiting behind reverse proxy
 app.set('trust proxy', 1);
@@ -149,8 +155,9 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Something went wrong!' });
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`NoteSync API running on port ${PORT}`);
+    console.log(`WebSocket server ready for real-time collaboration`);
 });
 
-module.exports = app;
+module.exports = { app, server, io };
