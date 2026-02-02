@@ -151,11 +151,11 @@ router.post('/', async (req, res) => {
 // Update note
 router.put('/:id', async (req, res) => {
     try {
-        const { title, content, folder_id, offline_enabled, is_pinned, tags } = req.body;
+        const { title, content, folder_id, offline_enabled, is_pinned, tags, save_version } = req.body;
 
-        // Verify ownership
+        // Verify ownership and get current state
         const check = await db.query(
-            'SELECT id FROM notes WHERE id = $1 AND user_id = $2',
+            'SELECT * FROM notes WHERE id = $1 AND user_id = $2',
             [req.params.id, req.user.id]
         );
 
@@ -163,10 +163,37 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({ error: 'Note not found' });
         }
 
+        const currentNote = check.rows[0];
         const contentPlain = content ? content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : '';
 
+        // Save version if content changed significantly (or explicitly requested)
+        const contentChanged = content && content !== currentNote.content;
+        const titleChanged = title && title !== currentNote.title;
+
+        if (save_version || (contentChanged && currentNote.content)) {
+            // Get next version number
+            const versionNum = await db.query(
+                'SELECT COALESCE(MAX(version_number), 0) + 1 as next_version FROM note_versions WHERE note_id = $1',
+                [req.params.id]
+            );
+
+            await db.query(
+                `INSERT INTO note_versions (note_id, version_number, title, content, content_plain, created_by, change_summary)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                [
+                    req.params.id,
+                    versionNum.rows[0].next_version,
+                    currentNote.title,
+                    currentNote.content,
+                    currentNote.content_plain,
+                    req.user.id,
+                    titleChanged ? 'Title and content updated' : 'Content updated'
+                ]
+            );
+        }
+
         const result = await db.query(
-            `UPDATE notes SET 
+            `UPDATE notes SET
                 title = COALESCE($1, title),
                 content = COALESCE($2, content),
                 content_plain = COALESCE($3, content_plain),
@@ -183,7 +210,7 @@ router.put('/:id', async (req, res) => {
         if (tags !== undefined) {
             // Remove existing tags
             await db.query('DELETE FROM note_tags WHERE note_id = $1', [req.params.id]);
-            
+
             // Add new tags
             for (const tagName of tags) {
                 const tagResult = await db.query(
@@ -192,7 +219,7 @@ router.put('/:id', async (req, res) => {
                      RETURNING id`,
                     [req.user.id, tagName]
                 );
-                
+
                 await db.query(
                     'INSERT INTO note_tags (note_id, tag_id) VALUES ($1, $2)',
                     [req.params.id, tagResult.rows[0].id]

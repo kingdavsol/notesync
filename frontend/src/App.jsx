@@ -8,6 +8,7 @@ import { clearAllData } from './services/db';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import SharedNote from './pages/SharedNote';
 
 // Auth Context
 const AuthContext = createContext(null);
@@ -124,17 +125,21 @@ function App() {
     <AuthContext.Provider value={{ user, login, register, logout }}>
       <SyncContext.Provider value={{ ...syncStatus, sync: () => syncService.sync() }}>
         <Routes>
-          <Route 
-            path="/login" 
-            element={user ? <Navigate to="/" /> : <Login />} 
+          <Route
+            path="/login"
+            element={user ? <Navigate to="/" /> : <Login />}
           />
-          <Route 
-            path="/register" 
-            element={user ? <Navigate to="/" /> : <Register />} 
+          <Route
+            path="/register"
+            element={user ? <Navigate to="/" /> : <Register />}
           />
-          <Route 
-            path="/*" 
-            element={user ? <Dashboard /> : <Navigate to="/login" />} 
+          <Route
+            path="/shared/:token"
+            element={<SharedNote />}
+          />
+          <Route
+            path="/*"
+            element={user ? <Dashboard /> : <Navigate to="/login" />}
           />
         </Routes>
       </SyncContext.Provider>

@@ -14,6 +14,10 @@ const importRoutes = require('./routes/import');
 const drawingsRoutes = require('./routes/drawings');
 const linksRoutes = require('./routes/links');
 const searchRoutes = require('./routes/search');
+const shareRoutes = require('./routes/share');
+const remindersRoutes = require('./routes/reminders');
+const templatesRoutes = require('./routes/templates');
+const versionsRoutes = require('./routes/versions');
 
 const { sanitizeMiddleware, securityHeaders } = require('./middleware/security');
 
@@ -127,6 +131,10 @@ app.use('/api/import', importRoutes);
 app.use('/api/drawings', drawingsRoutes);
 app.use('/api/links', linksRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/share', shareRoutes);
+app.use('/api/reminders', remindersRoutes);
+app.use('/api/templates', templatesRoutes);
+app.use('/api/versions', versionsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

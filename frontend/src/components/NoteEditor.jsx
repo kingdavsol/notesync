@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { 
+import {
   Trash2, CloudOff, Cloud, Tag, Folder, MoreVertical,
-  CheckSquare, Link2, Pencil, ExternalLink, List
+  CheckSquare, Link2, Pencil, ExternalLink, List,
+  Share2, Bell, History, Pin, PinOff, Copy
 } from 'lucide-react';
 import DrawingCanvas from './DrawingCanvas';
 import NoteLinkPicker from './NoteLinkPicker';
+import ShareModal from './ShareModal';
+import ReminderModal from './ReminderModal';
+import VersionHistory from './VersionHistory';
 import api from '../services/api';
 
 export default function NoteEditor({ 
@@ -25,6 +29,9 @@ export default function NoteEditor({
   const [newTag, setNewTag] = useState('');
   const [showDrawing, setShowDrawing] = useState(false);
   const [showLinkPicker, setShowLinkPicker] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [drawings, setDrawings] = useState([]);
   const [backlinks, setBacklinks] = useState([]);
   const saveTimeoutRef = useRef(null);
@@ -292,13 +299,48 @@ export default function NoteEditor({
 
             {showMenu && (
               <>
-                <div 
+                <div
                   style={styles.menuOverlay}
-                  onClick={() => setShowMenu(false)} 
+                  onClick={() => setShowMenu(false)}
                 />
                 <div style={styles.menu}>
                   <button
                     style={styles.menuItem}
+                    onClick={() => { setShowShareModal(true); setShowMenu(false); }}
+                    disabled={!note?.id || !isOnline}
+                  >
+                    <Share2 size={16} />
+                    Share note
+                  </button>
+                  <button
+                    style={styles.menuItem}
+                    onClick={() => { setShowReminderModal(true); setShowMenu(false); }}
+                    disabled={!note?.id || !isOnline}
+                  >
+                    <Bell size={16} />
+                    Set reminder
+                  </button>
+                  <button
+                    style={styles.menuItem}
+                    onClick={() => { setShowHistory(true); setShowMenu(false); }}
+                    disabled={!note?.id || !isOnline}
+                  >
+                    <History size={16} />
+                    Version history
+                  </button>
+                  <button
+                    style={styles.menuItem}
+                    onClick={() => {
+                      onUpdate({ ...note, is_pinned: !note?.is_pinned });
+                      setShowMenu(false);
+                    }}
+                  >
+                    {note?.is_pinned ? <PinOff size={16} /> : <Pin size={16} />}
+                    {note?.is_pinned ? 'Unpin note' : 'Pin note'}
+                  </button>
+                  <div style={styles.menuDivider} />
+                  <button
+                    style={{ ...styles.menuItem, color: 'var(--error)' }}
                     onClick={() => { onDelete(note); setShowMenu(false); }}
                   >
                     <Trash2 size={16} />
@@ -438,6 +480,35 @@ export default function NoteEditor({
           onClose={() => setShowLinkPicker(false)}
         />
       )}
+
+      {/* Share modal */}
+      {showShareModal && note?.id && (
+        <ShareModal
+          note={note}
+          onClose={() => setShowShareModal(false)}
+        />
+      )}
+
+      {/* Reminder modal */}
+      {showReminderModal && note?.id && (
+        <ReminderModal
+          note={note}
+          onClose={() => setShowReminderModal(false)}
+        />
+      )}
+
+      {/* Version history modal */}
+      {showHistory && note?.id && (
+        <VersionHistory
+          note={note}
+          onRestore={(restoredNote) => {
+            onUpdate(restoredNote);
+            setTitle(restoredNote.title);
+            setContent(restoredNote.content);
+          }}
+          onClose={() => setShowHistory(false)}
+        />
+      )}
     </div>
   );
 }
@@ -534,7 +605,13 @@ const styles = {
     color: 'var(--text-primary)',
     cursor: 'pointer',
     borderRadius: 'var(--radius-sm)',
-    fontSize: '14px'
+    fontSize: '14px',
+    textAlign: 'left'
+  },
+  menuDivider: {
+    height: '1px',
+    background: 'var(--border)',
+    margin: '4px 0'
   },
   statusBar: {
     padding: '8px 16px',
