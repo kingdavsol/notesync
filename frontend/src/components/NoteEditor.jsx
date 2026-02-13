@@ -47,10 +47,16 @@ export default function NoteEditor({
   // Reset when note changes
   useEffect(() => {
     setTitle(note?.title || '');
-    setContent(note?.content || '');
+    const newContent = note?.content || '';
+    setContent(newContent);
     setNoteTags(note?.tags?.map(t => typeof t === 'string' ? t : t.name) || []);
     setFolderId(note?.folder_id);
-    
+
+    // Update contentEditable div directly to prevent cursor issues
+    if (contentRef.current && contentRef.current.innerHTML !== newContent) {
+      contentRef.current.innerHTML = newContent;
+    }
+
     // Load drawings and backlinks
     if (note?.id && isOnline) {
       loadDrawings();
@@ -465,11 +471,12 @@ export default function NoteEditor({
         <div
           ref={contentRef}
           contentEditable
-          dangerouslySetInnerHTML={{ __html: content }}
+          suppressContentEditableWarning
           onInput={handleContentChange}
+          onBlur={(e) => setContent(e.target.innerHTML)}
           style={styles.contentEditable}
-          placeholder="Start writing..."
-        />
+          data-placeholder="Start writing..."
+        ></div>
       </div>
 
       {/* Status bar */}
@@ -669,7 +676,9 @@ const styles = {
     minHeight: '400px',
     outline: 'none',
     lineHeight: '1.7',
-    fontSize: '15px'
+    fontSize: '15px',
+    direction: 'ltr',
+    textAlign: 'left'
   },
   menuOverlay: {
     position: 'fixed',

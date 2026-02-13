@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import { FileText, Eye, EyeOff } from 'lucide-react';
 
@@ -9,16 +9,23 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
+    setNeedsVerification(false);
     setLoading(true);
 
     try {
       await login(email, password);
     } catch (err) {
+      // Check if the error response indicates unverified email
+      if (err.message?.includes('verify your email')) {
+        setNeedsVerification(true);
+      }
       setError(err.message);
     } finally {
       setLoading(false);
@@ -39,7 +46,18 @@ export default function Login() {
         <p style={styles.subtitle}>Remember everything important.</p>
 
         <form onSubmit={handleSubmit} style={styles.form}>
-          {error && <div style={styles.error}>{error}</div>}
+          {error && (
+            <div style={styles.error}>
+              {error}
+              {needsVerification && (
+                <div style={{ marginTop: '8px' }}>
+                  <Link to="/verify" style={{ color: '#2dbe60', fontWeight: '600', fontSize: '13px' }}>
+                    Resend verification email
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
           
           <div style={styles.field}>
             <label style={styles.label}>Email</label>

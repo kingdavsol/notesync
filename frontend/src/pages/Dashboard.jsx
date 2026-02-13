@@ -142,6 +142,10 @@ export default function Dashboard() {
         });
         setNotes(prev => prev.map(n => n.id === updated.id ? updated : n));
         setSelectedNote(updated);
+
+        // Reload tags to show newly created tags
+        const tagsRes = await api.getTags();
+        setTags(tagsRes.tags);
       } else {
         // Update locally
         const localId = note.localId || (await db.notes.where('id').equals(note.id).first())?.localId;

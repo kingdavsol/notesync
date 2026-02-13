@@ -228,6 +228,13 @@ class ApiService {
         return this.request('/auth/me');
     }
 
+    async resendVerification(email) {
+        return this.request('/auth/resend-verification', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+        });
+    }
+
     logout() {
         // Call logout endpoint to invalidate server-side
         this.request('/auth/logout', { method: 'POST' }).catch(() => {});

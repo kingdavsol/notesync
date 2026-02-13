@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import SharedNote from './pages/SharedNote';
+import VerifyEmail from './pages/VerifyEmail';
 
 // Auth Context
 const AuthContext = createContext(null);
@@ -132,6 +133,10 @@ function App() {
           <Route
             path="/register"
             element={user ? <Navigate to="/" /> : <Register />}
+          />
+          <Route
+            path="/verify"
+            element={<VerifyEmail />}
           />
           <Route
             path="/shared/:token"

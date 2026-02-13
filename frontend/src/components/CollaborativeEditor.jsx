@@ -182,12 +182,16 @@ export default function CollaborativeEditor({
         )}
       </div>
 
-      {/* Connection status indicator */}
-      {showCollaboration && !connected && (
-        <div style={styles.connectionWarning}>
-          Reconnecting to collaboration server...
-        </div>
-      )}
+      {/* Sync status indicator */}
+      <div style={styles.syncStatus}>
+        {!isOnline ? (
+          <span style={styles.statusOffline}>● Offline</span>
+        ) : !connected ? (
+          <span style={styles.statusSyncing}>● Synchronizing...</span>
+        ) : (
+          <span style={styles.statusSynced}>● Synchronized</span>
+        )}
+      </div>
     </div>
   );
 }
@@ -232,16 +236,35 @@ const styles = {
     position: 'relative',
     overflow: 'hidden'
   },
-  connectionWarning: {
+  syncStatus: {
     position: 'fixed',
     bottom: '20px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    background: 'var(--warning)',
-    color: '#fff',
-    padding: '8px 16px',
-    borderRadius: 'var(--radius-md)',
-    fontSize: '13px',
+    right: '20px',
+    padding: '8px 12px',
+    borderRadius: '8px',
+    fontSize: '12px',
+    fontWeight: '500',
+    background: 'rgba(255, 255, 255, 0.95)',
+    border: '1px solid var(--border)',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
     zIndex: 1000
+  },
+  statusOffline: {
+    color: '#e53e3e',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px'
+  },
+  statusSyncing: {
+    color: '#f59e0b',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px'
+  },
+  statusSynced: {
+    color: '#10b981',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px'
   }
 };

@@ -69,9 +69,9 @@ router.get('/', async (req, res) => {
         }
 
         // Folder filter
-        if (folder_id) {
+        if (folder_id && folder_id !== 'null' && folder_id !== 'undefined') {
             query += ` AND n.folder_id = $${paramIndex}`;
-            params.push(folder_id);
+            params.push(parseInt(folder_id));
             paramIndex++;
         }
 

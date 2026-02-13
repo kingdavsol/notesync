@@ -1,4 +1,4 @@
-const API_URL = 'https://notesync.example.com/api'; // Update with your API URL
+const API_URL = 'https://notesync.9gg.app/api';
 
 class ApiService {
   private token: string | null = null;
@@ -104,10 +104,10 @@ class ApiService {
   }
 
   // Sync
-  async syncPull(since?: string) {
+  async syncPull(lastSyncAt?: string, deviceId?: string) {
     return this.request('/sync/pull', {
       method: 'POST',
-      body: JSON.stringify({ since }),
+      body: JSON.stringify({ last_sync_at: lastSyncAt, device_id: deviceId }),
     });
   }
 

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
-import { FileText, Eye, EyeOff, Check, X } from 'lucide-react';
+import api from '../services/api';
+import { FileText, Eye, EyeOff, Check, X, Mail } from 'lucide-react';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -10,7 +11,9 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
   const { register } = useAuth();
+  const navigate = useNavigate();
 
   // Password requirements
   const hasMinLength = password.length >= 8;
@@ -35,7 +38,12 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await register(email, password);
+      const data = await api.register(email, password);
+      if (data.requiresVerification) {
+        setRegistered(true);
+      } else {
+        await register(email, password);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -53,6 +61,55 @@ export default function Register() {
     </div>
   );
 
+  // Show "check your email" after successful registration
+  if (registered) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <div style={styles.logo}>
+            <div style={styles.logoIcon}>
+              <FileText size={28} color="#2dbe60" />
+            </div>
+            <h1 style={styles.logoText}>NoteSync</h1>
+          </div>
+
+          <div style={{ textAlign: 'center', padding: '16px 0' }}>
+            <Mail size={48} color="#2dbe60" style={{ marginBottom: '16px' }} />
+            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1a1a1a', margin: '0 0 12px' }}>
+              Check your email
+            </h2>
+            <p style={{ fontSize: '15px', color: '#525e63', lineHeight: 1.6, margin: '0 0 8px' }}>
+              We sent a verification link to:
+            </p>
+            <p style={{ fontSize: '15px', fontWeight: '600', color: '#1a1a1a', margin: '0 0 20px' }}>
+              {email}
+            </p>
+            <p style={{ fontSize: '14px', color: '#7b868a', lineHeight: 1.5, margin: '0 0 24px' }}>
+              Click the link in the email to activate your account. The link expires in 24 hours.
+            </p>
+            <Link to="/verify" style={{
+              display: 'inline-block',
+              padding: '12px 28px',
+              fontSize: '14px',
+              color: '#2dbe60',
+              border: '1px solid #2dbe60',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              fontWeight: '600'
+            }}>
+              Didn't receive it? Resend
+            </Link>
+          </div>
+
+          <div style={styles.divider}><span>or</span></div>
+          <p style={styles.footer}>
+            <Link to="/login" style={styles.link}>Back to Sign In</Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.container}>
       <div style={styles.card}>
@@ -63,7 +120,7 @@ export default function Register() {
           </div>
           <h1 style={styles.logoText}>NoteSync</h1>
         </div>
-        
+
         <p style={styles.subtitle}>Create your free account</p>
 
         <form onSubmit={handleSubmit} style={styles.form}>

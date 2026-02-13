@@ -24,7 +24,7 @@ class CollaborationService {
 
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        socket.userId = decoded.userId;
+        socket.userId = decoded.id || decoded.userId; // Support both 'id' (from auth) and 'userId'
         socket.userEmail = decoded.email;
         next();
       } catch (err) {
