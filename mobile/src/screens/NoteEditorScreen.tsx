@@ -13,50 +13,43 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
+import { Q } from '@nozbe/watermelondb';
 
-import { api } from '../services/api';
+import { database, Note } from '../models';
+import { useSync } from '../hooks/useSync';
 import { MainStackParamList } from '../navigation/MainNavigator';
 import VoiceRecorder from '../components/VoiceRecorder';
 
 type RouteProps = RouteProp<MainStackParamList, 'NoteEditor'>;
 
-interface Note {
-  id?: number;
-  title: string;
-  content: string;
-  folder_id?: number;
-  is_pinned: boolean;
-  tags: { id: number; name: string }[];
-}
-
 export default function NoteEditorScreen() {
-  const [note, setNote] = useState<Note>({
-    title: '',
-    content: '',
-    is_pinned: false,
-    tags: [],
-  });
+  const [note, setNote] = useState<Note | null>(null);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [isPinned, setIsPinned] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const navigation = useNavigation();
   const route = useRoute<RouteProps>();
   const { noteId, folderId } = route.params || {};
   const contentRef = useRef<TextInput>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { markNoteForSync } = useSync();
 
   useEffect(() => {
     if (noteId) {
       loadNote();
-    } else if (folderId) {
-      setNote(prev => ({ ...prev, folder_id: folderId }));
     }
-  }, [noteId, folderId]);
+  }, [noteId]);
 
   async function loadNote() {
     setLoading(true);
     try {
-      const data = await api.getNote(noteId!);
-      setNote(data);
+      const noteRecord = await database.collections.get<Note>('notes').find(noteId!);
+      setNote(noteRecord);
+      setTitle(noteRecord.title);
+      setContent(noteRecord.content);
+      setIsPinned(noteRecord.isPinned);
     } catch (err) {
       console.error('Failed to load note:', err);
       Alert.alert('Error', 'Failed to load note');
@@ -66,37 +59,72 @@ export default function NoteEditorScreen() {
     }
   }
 
+  // Auto-save with debounce
+  useEffect(() => {
+    if (!note && !title && !content) return;
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      saveNote();
+    }, 1000);
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [title, content, isPinned]);
+
   async function saveNote() {
-    if (!note.title.trim() && !note.content.trim()) {
-      navigation.goBack();
+    if (!title.trim() && !content.trim()) {
       return;
     }
 
-    setSaving(true);
     try {
-      const noteData = {
-        title: note.title || 'Untitled',
-        content: note.content,
-        folder_id: note.folder_id,
-        is_pinned: note.is_pinned,
-      };
+      await database.write(async () => {
+        if (note) {
+          // Update existing note
+          await note.update(n => {
+            n.title = title || 'Untitled';
+            n.content = content;
+            n.contentPlain = stripHtml(content);
+            n.isPinned = isPinned;
+            n.syncStatus = 'pending';
+            n.updatedAt = new Date();
+          });
 
-      if (note.id) {
-        await api.updateNote(note.id, noteData);
-      } else {
-        await api.createNote(noteData);
-      }
-      navigation.goBack();
+          // Mark for sync
+          await markNoteForSync(note.id);
+        } else {
+          // Create new note
+          const newNote = await database.collections.get<Note>('notes').create(n => {
+            n.title = title || 'Untitled';
+            n.content = content;
+            n.contentPlain = stripHtml(content);
+            n.folderId = folderId || null;
+            n.isPinned = isPinned;
+            n.offlineEnabled = false;
+            n.syncStatus = 'pending';
+            n.createdAt = new Date();
+            n.updatedAt = new Date();
+          });
+
+          setNote(newNote);
+
+          // Mark for sync
+          await markNoteForSync(newNote.id);
+        }
+      });
     } catch (err) {
       console.error('Failed to save note:', err);
-      Alert.alert('Error', 'Failed to save note');
-    } finally {
-      setSaving(false);
     }
   }
 
   async function deleteNote() {
-    if (!note.id) return;
+    if (!note) return;
 
     Alert.alert(
       'Delete Note',
@@ -108,7 +136,14 @@ export default function NoteEditorScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await api.deleteNote(note.id!);
+              await database.write(async () => {
+                await note.update(n => {
+                  n.deletedAt = new Date();
+                  n.syncStatus = 'pending';
+                });
+
+                await markNoteForSync(note.id);
+              });
               navigation.goBack();
             } catch (err) {
               console.error('Failed to delete note:', err);
@@ -121,16 +156,33 @@ export default function NoteEditorScreen() {
   }
 
   function togglePin() {
-    setNote(prev => ({ ...prev, is_pinned: !prev.is_pinned }));
+    setIsPinned(prev => !prev);
+  }
+
+  function stripHtml(html: string): string {
+    return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
   function handleTranscription(text: string) {
     // Append transcribed text to content
-    setNote(prev => ({
-      ...prev,
-      content: prev.content ? `${prev.content}\n\n${text}` : text,
-    }));
+    setContent(prev => (prev ? `${prev}\n\n${text}` : text));
     setShowVoiceRecorder(false);
+  }
+
+  function getSyncStatusText(): string {
+    if (!note) return '';
+    if (note.syncStatus === 'synced') return 'Synced';
+    if (note.syncStatus === 'pending') return 'Syncing...';
+    if (note.syncStatus === 'conflict') return 'Conflict';
+    return '';
+  }
+
+  function getSyncStatusColor(): string {
+    if (!note) return '#999';
+    if (note.syncStatus === 'synced') return '#2dbe60';
+    if (note.syncStatus === 'pending') return '#ff9800';
+    if (note.syncStatus === 'conflict') return '#f44336';
+    return '#999';
   }
 
   // Set up header buttons
@@ -138,34 +190,28 @@ export default function NoteEditorScreen() {
     navigation.setOptions({
       headerRight: () => (
         <View style={styles.headerButtons}>
+          {note && (
+            <Text style={[styles.syncStatus, { color: getSyncStatusColor() }]}>
+              {getSyncStatusText()}
+            </Text>
+          )}
           <TouchableOpacity onPress={togglePin} style={styles.headerButton}>
             <Icon
-              name={note.is_pinned ? 'bookmark' : 'bookmark'}
+              name={isPinned ? 'bookmark' : 'bookmark'}
               size={20}
-              color={note.is_pinned ? '#fff' : 'rgba(255,255,255,0.7)'}
+              color={isPinned ? '#fff' : 'rgba(255,255,255,0.7)'}
             />
           </TouchableOpacity>
-          {note.id && (
+          {note && (
             <TouchableOpacity onPress={deleteNote} style={styles.headerButton}>
               <Icon name="trash-2" size={20} color="rgba(255,255,255,0.7)" />
             </TouchableOpacity>
           )}
-          <TouchableOpacity
-            onPress={saveNote}
-            style={styles.headerButton}
-            disabled={saving}
-          >
-            {saving ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Icon name="check" size={20} color="#fff" />
-            )}
-          </TouchableOpacity>
         </View>
       ),
-      title: note.id ? 'Edit Note' : 'New Note',
+      title: note ? 'Edit Note' : 'New Note',
     });
-  }, [note.is_pinned, note.id, saving]);
+  }, [isPinned, note, note?.syncStatus]);
 
   if (loading) {
     return (
@@ -186,8 +232,8 @@ export default function NoteEditorScreen() {
           style={styles.titleInput}
           placeholder="Title"
           placeholderTextColor="#999"
-          value={note.title}
-          onChangeText={title => setNote(prev => ({ ...prev, title }))}
+          value={title}
+          onChangeText={setTitle}
           returnKeyType="next"
           onSubmitEditing={() => contentRef.current?.focus()}
         />
@@ -197,8 +243,8 @@ export default function NoteEditorScreen() {
           style={styles.contentInput}
           placeholder="Start writing..."
           placeholderTextColor="#999"
-          value={note.content}
-          onChangeText={content => setNote(prev => ({ ...prev, content }))}
+          value={content}
+          onChangeText={setContent}
           multiline
           textAlignVertical="top"
         />
@@ -274,6 +320,11 @@ const styles = StyleSheet.create({
   headerButton: {
     padding: 8,
     marginLeft: 8,
+  },
+  syncStatus: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginRight: 8,
   },
   toolbar: {
     flexDirection: 'row',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,50 +10,28 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Q } from '@nozbe/watermelondb';
+import { withObservables } from '@nozbe/with-observables';
 import Icon from 'react-native-vector-icons/Feather';
 
-import { api } from '../services/api';
+import { database } from '../models';
+import { Note } from '../models';
 import { useSync } from '../hooks/useSync';
 import { MainStackParamList } from '../navigation/MainNavigator';
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
-interface Note {
-  id: number;
-  title: string;
-  content: string;
-  folder_name?: string;
-  is_pinned: boolean;
-  offline_enabled: boolean;
-  updated_at: string;
-  tags: { id: number; name: string }[];
+interface NotesScreenInnerProps {
+  notes: Note[];
 }
 
-export default function NotesScreen() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
+function NotesScreenInner({ notes }: NotesScreenInnerProps) {
   const [search, setSearch] = useState('');
   const { isOnline, isSyncing, sync } = useSync();
   const navigation = useNavigation<NavigationProp>();
 
-  useEffect(() => {
-    loadNotes();
-  }, []);
-
-  async function loadNotes() {
-    try {
-      const data = await api.getNotes(search ? { search } : undefined);
-      setNotes(data.notes);
-    } catch (err) {
-      console.error('Failed to load notes:', err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   const handleRefresh = useCallback(async () => {
     await sync();
-    await loadNotes();
   }, [sync]);
 
   function stripHtml(html: string): string {
@@ -73,8 +51,21 @@ export default function NotesScreen() {
     return date.toLocaleDateString();
   }
 
+  function getSyncStatusIcon(syncStatus: string) {
+    if (syncStatus === 'synced') {
+      return <View style={[styles.syncIndicator, styles.syncedIndicator]} />;
+    }
+    if (syncStatus === 'pending') {
+      return <View style={[styles.syncIndicator, styles.pendingIndicator]} />;
+    }
+    if (syncStatus === 'conflict') {
+      return <Icon name="alert-triangle" size={14} color="#ff9800" />;
+    }
+    return null;
+  }
+
   function renderNote({ item }: { item: Note }) {
-    const preview = stripHtml(item.content).substring(0, 100);
+    const preview = stripHtml(item.contentPlain || item.content).substring(0, 100);
 
     return (
       <TouchableOpacity
@@ -83,12 +74,16 @@ export default function NotesScreen() {
       >
         <View style={styles.noteHeader}>
           <Text style={styles.noteTitle} numberOfLines={1}>
-            {item.is_pinned && <Icon name="pin" size={14} color="#2dbe60" />}
+            {item.isPinned && <Icon name="pin" size={14} color="#2dbe60" />}
+            {' '}
             {item.title}
           </Text>
-          {item.offline_enabled && (
-            <Icon name="cloud-off" size={14} color="#666" />
-          )}
+          <View style={styles.noteHeaderRight}>
+            {getSyncStatusIcon(item.syncStatus)}
+            {item.offlineEnabled && (
+              <Icon name="cloud-off" size={14} color="#666" style={{ marginLeft: 8 }} />
+            )}
+          </View>
         </View>
 
         <Text style={styles.notePreview} numberOfLines={2}>
@@ -96,22 +91,7 @@ export default function NotesScreen() {
         </Text>
 
         <View style={styles.noteMeta}>
-          <Text style={styles.noteDate}>{formatDate(item.updated_at)}</Text>
-          {item.folder_name && (
-            <View style={styles.noteFolder}>
-              <Icon name="folder" size={12} color="#666" />
-              <Text style={styles.noteFolderText}>{item.folder_name}</Text>
-            </View>
-          )}
-          {item.tags.length > 0 && (
-            <View style={styles.noteTags}>
-              {item.tags.slice(0, 2).map(tag => (
-                <View key={tag.id} style={styles.tag}>
-                  <Text style={styles.tagText}>{tag.name}</Text>
-                </View>
-              ))}
-            </View>
-          )}
+          <Text style={styles.noteDate}>{formatDate(item.updatedAt.toISOString())}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -184,6 +164,20 @@ export default function NotesScreen() {
   );
 }
 
+// Observable wrapper to subscribe to database changes
+const enhance = withObservables([], () => ({
+  notes: database.collections
+    .get<Note>('notes')
+    .query(
+      Q.where('deleted_at', null),
+      Q.sortBy('is_pinned', Q.desc),
+      Q.sortBy('updated_at', Q.desc)
+    )
+    .observe(),
+}));
+
+export default enhance(NotesScreenInner);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -240,11 +234,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
   },
+  noteHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   noteTitle: {
     flex: 1,
     fontSize: 16,
     fontWeight: '600',
     color: '#1a1a1a',
+  },
+  syncIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  syncedIndicator: {
+    backgroundColor: '#2dbe60',
+  },
+  pendingIndicator: {
+    backgroundColor: '#ff9800',
   },
   notePreview: {
     fontSize: 14,

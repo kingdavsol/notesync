@@ -50,6 +50,20 @@ class ApiService {
     return this.request('/auth/me');
   }
 
+  async verifyEmail(token: string) {
+    return this.request('/auth/verify', {
+      method: 'POST',
+      body: JSON.stringify({ token }),
+    });
+  }
+
+  async resendVerification(email: string) {
+    return this.request('/auth/resend-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
   // Notes
   async getNotes(params?: { folder_id?: string; tag?: string; search?: string }) {
     const query = params ? '?' + new URLSearchParams(params as any).toString() : '';

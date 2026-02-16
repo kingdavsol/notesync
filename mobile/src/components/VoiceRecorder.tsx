@@ -11,22 +11,28 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AudioRecorderPlayer, {
+  AVEncoderAudioQualityIOSType,
+  AVEncodingOption,
+  AudioEncoderAndroidType,
+  AudioSourceAndroidType,
+} from 'react-native-audio-recorder-player';
+import { api } from '../services/api';
+import RNFS from 'react-native-fs';
 
 interface VoiceRecorderProps {
   onTranscription: (text: string) => void;
   onClose: () => void;
 }
 
-// Note: In production, you would use:
-// - react-native-audio-recorder-player for recording
-// - @react-native-voice/voice for speech-to-text
-// - Or a cloud API like Google Speech-to-Text, Whisper API
+const audioRecorderPlayer = new AudioRecorderPlayer();
 
 export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
+  const [audioPath, setAudioPath] = useState<string | null>(null);
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -36,6 +42,7 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
+      cleanup();
     };
   }, []);
 
@@ -74,6 +81,17 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
       }
     };
   }, [isRecording]);
+
+  async function cleanup() {
+    try {
+      await audioRecorderPlayer.stopRecorder();
+      if (audioPath && await RNFS.exists(audioPath)) {
+        await RNFS.unlink(audioPath);
+      }
+    } catch (err) {
+      console.error('Cleanup error:', err);
+    }
+  }
 
   async function checkPermission() {
     if (Platform.OS === 'android') {
@@ -115,38 +133,103 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
       return;
     }
 
-    setIsRecording(true);
-    setRecordingTime(0);
+    try {
+      setIsRecording(true);
+      setRecordingTime(0);
 
-    // In production, start actual recording here:
-    // await audioRecorderPlayer.startRecorder();
-    // or
-    // Voice.start('en-US');
+      const path = Platform.select({
+        ios: `${RNFS.DocumentDirectoryPath}/voice_note_${Date.now()}.m4a`,
+        android: `${RNFS.CachesDirectoryPath}/voice_note_${Date.now()}.m4a`,
+      });
+
+      const audioSet = {
+        AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+        AudioSourceAndroid: AudioSourceAndroidType.MIC,
+        AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+        AVNumberOfChannelsKeyIOS: 1,
+        AVFormatIDKeyIOS: AVEncodingOption.aac,
+      };
+
+      const uri = await audioRecorderPlayer.startRecorder(path, audioSet);
+      setAudioPath(uri);
+    } catch (err) {
+      console.error('Recording error:', err);
+      Alert.alert('Error', 'Failed to start recording. Please try again.');
+      setIsRecording(false);
+    }
   }
 
   async function stopRecording() {
     setIsRecording(false);
     setIsProcessing(true);
 
-    // In production:
-    // 1. Stop recording: await audioRecorderPlayer.stopRecorder();
-    // 2. Get the audio file path
-    // 3. Send to transcription API
-    // 4. Get transcription result
+    try {
+      const result = await audioRecorderPlayer.stopRecorder();
+      audioRecorderPlayer.removeRecordBackListener();
 
-    // Simulating transcription process
-    setTimeout(() => {
-      // This would be replaced with actual transcription result
-      const mockTranscription = `Voice note recorded at ${new Date().toLocaleTimeString()}. Duration: ${formatTime(recordingTime)}.`;
+      if (!result || !audioPath) {
+        throw new Error('No recording found');
+      }
 
+      // Read audio file as base64
+      const audioData = await RNFS.readFile(audioPath, 'base64');
+
+      // Create FormData for multipart upload
+      const formData = new FormData();
+      formData.append('audio', {
+        uri: Platform.OS === 'android' ? `file://${audioPath}` : audioPath,
+        type: 'audio/m4a',
+        name: 'voice_note.m4a',
+      } as any);
+      formData.append('duration', recordingTime.toString());
+
+      // Send to backend for transcription
+      const response = await api.transcribeAudio(formData as any, recordingTime);
+
+      if (response.text) {
+        setIsProcessing(false);
+        onTranscription(response.text);
+
+        // Clean up audio file
+        if (await RNFS.exists(audioPath)) {
+          await RNFS.unlink(audioPath);
+        }
+      } else {
+        throw new Error('No transcription received');
+      }
+    } catch (err: any) {
+      console.error('Transcription error:', err);
       setIsProcessing(false);
-      onTranscription(mockTranscription);
-    }, 1500);
+      Alert.alert(
+        'Transcription Failed',
+        err.message || 'Could not transcribe the audio. Please try again or type your note.',
+        [
+          {
+            text: 'Retry',
+            onPress: () => {
+              setRecordingTime(0);
+              setIsProcessing(false);
+            },
+          },
+          { text: 'Cancel', onPress: onClose, style: 'cancel' },
+        ]
+      );
+    }
   }
 
-  function cancelRecording() {
+  async function cancelRecording() {
+    if (isRecording) {
+      await audioRecorderPlayer.stopRecorder();
+      audioRecorderPlayer.removeRecordBackListener();
+    }
+
     setIsRecording(false);
     setRecordingTime(0);
+
+    if (audioPath && await RNFS.exists(audioPath)) {
+      await RNFS.unlink(audioPath);
+    }
+
     onClose();
   }
 

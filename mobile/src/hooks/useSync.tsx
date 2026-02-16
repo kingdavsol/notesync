@@ -1,31 +1,50 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import NetInfo from '@react-native-community/netinfo';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { api } from '../services/api';
+import { database } from '../models';
+import SyncService from '../services/sync';
+import { AppState } from '../models';
 
 interface SyncContextType {
   isOnline: boolean;
   isSyncing: boolean;
   lastSync: string | null;
+  conflicts: string[];
   sync: () => Promise<void>;
+  markNoteForSync: (noteId: string) => Promise<void>;
+  resolveConflictWithServer: (noteId: string) => Promise<void>;
+  resolveConflictWithLocal: (noteId: string) => Promise<void>;
 }
 
 const SyncContext = createContext<SyncContextType | null>(null);
+
+// Create singleton sync service instance
+const syncService = new SyncService(database);
 
 export function SyncProvider({ children }: { children: ReactNode }) {
   const [isOnline, setIsOnline] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSync, setLastSync] = useState<string | null>(null);
+  const [conflicts, setConflicts] = useState<string[]>([]);
 
   useEffect(() => {
     // Monitor network status
     const unsubscribe = NetInfo.addEventListener(state => {
       const online = state.isConnected ?? false;
       setIsOnline(online);
+    });
 
-      // Sync when coming back online
-      if (online && !isOnline) {
-        sync();
+    // Listen to sync events
+    const removeSyncListener = syncService.addListener(event => {
+      if (event.type === 'sync_start') {
+        setIsSyncing(true);
+      } else if (event.type === 'sync_complete') {
+        setIsSyncing(false);
+        loadLastSync();
+      } else if (event.type === 'sync_error') {
+        setIsSyncing(false);
+        console.error('Sync error:', event.data);
+      } else if (event.type === 'conflict') {
+        setConflicts(prev => [...prev, event.data.noteId]);
       }
     });
 
@@ -35,57 +54,52 @@ export function SyncProvider({ children }: { children: ReactNode }) {
     // Initial sync
     sync();
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      removeSyncListener();
+    };
   }, []);
 
   async function loadLastSync() {
-    const time = await AsyncStorage.getItem('lastSyncTime');
+    const time = await AppState.getValue(database, 'last_sync_at');
     setLastSync(time);
   }
 
   const sync = useCallback(async () => {
-    if (isSyncing || !isOnline) return;
-
-    setIsSyncing(true);
-
     try {
-      // Pull changes
-      const pullResult = await api.syncPull(lastSync || undefined);
-
-      // Save pulled data locally
-      if (pullResult.notes) {
-        await AsyncStorage.setItem('notes', JSON.stringify(pullResult.notes));
-      }
-      if (pullResult.folders) {
-        await AsyncStorage.setItem('folders', JSON.stringify(pullResult.folders));
-      }
-      if (pullResult.tags) {
-        await AsyncStorage.setItem('tags', JSON.stringify(pullResult.tags));
-      }
-
-      // Update last sync time
-      const newSyncTime = new Date().toISOString();
-      await AsyncStorage.setItem('lastSyncTime', newSyncTime);
-      setLastSync(newSyncTime);
-
-      // Push any pending changes
-      const pendingChanges = await AsyncStorage.getItem('pendingChanges');
-      if (pendingChanges) {
-        const changes = JSON.parse(pendingChanges);
-        if (changes.length > 0) {
-          await api.syncPush({ notes: changes });
-          await AsyncStorage.removeItem('pendingChanges');
-        }
-      }
+      await syncService.sync();
     } catch (err) {
       console.error('Sync failed:', err);
-    } finally {
-      setIsSyncing(false);
     }
-  }, [isSyncing, isOnline, lastSync]);
+  }, []);
+
+  const markNoteForSync = useCallback(async (noteId: string) => {
+    await syncService.markNoteForSync(noteId);
+  }, []);
+
+  const resolveConflictWithServer = useCallback(async (noteId: string) => {
+    await syncService.resolveConflictWithServer(noteId);
+    setConflicts(prev => prev.filter(id => id !== noteId));
+  }, []);
+
+  const resolveConflictWithLocal = useCallback(async (noteId: string) => {
+    await syncService.resolveConflictWithLocal(noteId);
+    setConflicts(prev => prev.filter(id => id !== noteId));
+  }, []);
 
   return (
-    <SyncContext.Provider value={{ isOnline, isSyncing, lastSync, sync }}>
+    <SyncContext.Provider
+      value={{
+        isOnline,
+        isSyncing,
+        lastSync,
+        conflicts,
+        sync,
+        markNoteForSync,
+        resolveConflictWithServer,
+        resolveConflictWithLocal
+      }}
+    >
       {children}
     </SyncContext.Provider>
   );
