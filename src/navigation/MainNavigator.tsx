@@ -11,7 +11,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 
 export type MainStackParamList = {
   MainTabs: undefined;
-  NoteEditor: { noteId?: number; folderId?: number };
+  NoteEditor: { noteId?: string; folderId?: string };
   Search: undefined;
 };
 

@@ -116,11 +116,10 @@ function NotesScreenInner({ notes }: NotesScreenInnerProps) {
           placeholderTextColor="#999"
           value={search}
           onChangeText={setSearch}
-          onSubmitEditing={loadNotes}
           returnKeyType="search"
         />
         {search ? (
-          <TouchableOpacity onPress={() => { setSearch(''); loadNotes(); }}>
+          <TouchableOpacity onPress={() => setSearch('')}>
             <Icon name="x" size={18} color="#999" />
           </TouchableOpacity>
         ) : null}

@@ -1,4 +1,4 @@
-import { Model } from '@nozbe/watermelondb';
+import { Model, Q } from '@nozbe/watermelondb';
 import { field } from '@nozbe/watermelondb/decorators';
 
 export default class AppState extends Model {
