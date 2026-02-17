@@ -38,3 +38,9 @@ coverage/
 # Temp files
 *.tmp
 *.temp
+
+# Old mobile subdirectory project configs (project is now at repo root)
+mobile/app.json
+mobile/package.json
+mobile/package-lock.json
+mobile/eas.json
