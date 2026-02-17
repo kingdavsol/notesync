@@ -63,7 +63,7 @@ export default function NotebooksScreen() {
     }
 
     try {
-      await api.createFolder({ name: newFolderName.trim() });
+      await api.createFolder(newFolderName.trim());
       setNewFolderName('');
       setShowCreateModal(false);
       loadFolders();
@@ -122,7 +122,7 @@ export default function NotebooksScreen() {
     return (
       <TouchableOpacity
         style={styles.folderCard}
-        onPress={() => navigation.navigate('NoteEditor', { folderId: item.id })}
+        onPress={() => navigation.navigate('NoteEditor', { folderId: item.id.toString() })}
         onLongPress={() => openEditModal(item)}
       >
         <View style={styles.folderIcon}>

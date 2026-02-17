@@ -12,8 +12,10 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Feather';
 import { debounce } from 'lodash';
+import { Q } from '@nozbe/watermelondb';
 
 import { api } from '../services/api';
+import { database, Note } from '../models';
 import { MainStackParamList } from '../navigation/MainNavigator';
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
@@ -85,13 +87,28 @@ export default function SearchScreen() {
     );
   }
 
+  async function openNote(serverId: number) {
+    // Look up local WatermelonDB record by server_id
+    const matches = await database.collections
+      .get<Note>('notes')
+      .query(Q.where('server_id', serverId))
+      .fetch();
+
+    if (matches.length > 0) {
+      navigation.navigate('NoteEditor', { noteId: matches[0].id });
+    } else {
+      // Note not yet synced locally — navigate anyway, NoteEditor handles miss gracefully
+      navigation.navigate('NoteEditor', { noteId: serverId.toString() });
+    }
+  }
+
   function renderResult({ item }: { item: SearchResult }) {
     const preview = stripHtml(item.content).substring(0, 120);
 
     return (
       <TouchableOpacity
         style={styles.resultCard}
-        onPress={() => navigation.navigate('NoteEditor', { noteId: item.id })}
+        onPress={() => openNote(item.id)}
       >
         <Text style={styles.resultTitle} numberOfLines={1}>
           {highlightMatch(item.title || 'Untitled', query)}

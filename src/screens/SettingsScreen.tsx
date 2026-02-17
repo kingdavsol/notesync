@@ -17,7 +17,7 @@ import { useSync } from '../hooks/useSync';
 export default function SettingsScreen() {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
-  const { isOnline, lastSyncTime, sync, isSyncing } = useSync();
+  const { isOnline, lastSync, sync, isSyncing } = useSync();
   const [offlineMode, setOfflineMode] = useState(false);
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
@@ -37,8 +37,10 @@ export default function SettingsScreen() {
     );
   }
 
-  function formatSyncTime(date: Date | null): string {
-    if (!date) return 'Never';
+  function formatSyncTime(timestamp: string | null): string {
+    if (!timestamp) return 'Never';
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) return 'Never';
     const now = new Date();
     const diff = now.getTime() - date.getTime();
 
@@ -92,7 +94,7 @@ export default function SettingsScreen() {
             <View style={styles.rowContent}>
               <Text style={styles.rowTitle}>Sync Now</Text>
               <Text style={styles.rowSubtitle}>
-                Last synced: {formatSyncTime(lastSyncTime)}
+                Last synced: {formatSyncTime(lastSync)}
               </Text>
             </View>
             {isSyncing && <Text style={styles.syncingText}>Syncing...</Text>}

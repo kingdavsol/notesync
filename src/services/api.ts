@@ -152,12 +152,34 @@ class ApiService {
     });
   }
 
-  // Transcription
+  // Transcription (web - accepts Blob)
   async transcribeAudio(audioBlob: Blob, duration: number) {
     const formData = new FormData();
     formData.append('audio', audioBlob, 'recording.webm');
     formData.append('duration', duration.toString());
 
+    const headers: HeadersInit = {};
+    if (this.token) {
+      headers['Authorization'] = `Bearer ${this.token}`;
+    }
+
+    const response = await fetch(`${API_URL}/transcribe`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Transcription failed');
+    }
+
+    return data;
+  }
+
+  // Transcription (React Native - accepts pre-built FormData with file URI)
+  async transcribeAudioNative(formData: FormData): Promise<{ text: string }> {
     const headers: HeadersInit = {};
     if (this.token) {
       headers['Authorization'] = `Bearer ${this.token}`;

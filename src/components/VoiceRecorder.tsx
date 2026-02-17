@@ -171,9 +171,6 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
         throw new Error('No recording found');
       }
 
-      // Read audio file as base64
-      const audioData = await RNFS.readFile(audioPath, 'base64');
-
       // Create FormData for multipart upload
       const formData = new FormData();
       formData.append('audio', {
@@ -184,7 +181,7 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
       formData.append('duration', recordingTime.toString());
 
       // Send to backend for transcription
-      const response = await api.transcribeAudio(formData as any, recordingTime);
+      const response = await api.transcribeAudioNative(formData);
 
       if (response.text) {
         setIsProcessing(false);
