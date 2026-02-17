@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { AuthProvider, useAuth } from './src/hooks/useAuth';
 import { SyncProvider } from './src/hooks/useSync';
 import AuthNavigator from './src/navigation/AuthNavigator';
@@ -29,8 +30,9 @@ function AppContent() {
       />
       <NavigationContainer
         theme={{
-          dark: isDark,
+          ...(isDark ? DarkTheme : DefaultTheme),
           colors: {
+            ...(isDark ? DarkTheme : DefaultTheme).colors,
             primary: '#2dbe60',
             background: isDark ? '#1a1a1a' : '#ffffff',
             card: isDark ? '#2d2d2d' : '#ffffff',

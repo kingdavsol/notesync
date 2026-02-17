@@ -27,7 +27,8 @@
       ]
     },
     "plugins": [
-      "expo-dev-client"
+      "expo-dev-client",
+      "expo-updates"
     ]
   }
 }

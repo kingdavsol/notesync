@@ -1,5 +1,5 @@
 import { Model } from '@nozbe/watermelondb';
-import { field, date, readonly, children } from '@nozbe/watermelondb/decorators';
+import { field, date, children } from '@nozbe/watermelondb/decorators';
 
 export default class Tag extends Model {
   static table = 'tags';
@@ -9,7 +9,7 @@ export default class Tag extends Model {
 
   @field('server_id') serverId;
   @field('name') name;
-  @readonly @date('created_at') createdAt;
+  @date('created_at') createdAt;
 
   @children('note_tags') noteTags;
 

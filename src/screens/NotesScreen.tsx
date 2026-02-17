@@ -11,7 +11,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Q } from '@nozbe/watermelondb';
-import { withObservables } from '@nozbe/with-observables';
+import withObservables from '@nozbe/with-observables';
 import Icon from 'react-native-vector-icons/Feather';
 
 import { database } from '../models';
@@ -168,7 +168,7 @@ const enhance = withObservables([], () => ({
   notes: database.collections
     .get<Note>('notes')
     .query(
-      Q.where('deleted_at', null),
+      Q.where('deleted_at', Q.eq(null)),
       Q.sortBy('is_pinned', Q.desc),
       Q.sortBy('updated_at', Q.desc)
     )

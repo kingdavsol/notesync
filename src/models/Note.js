@@ -1,5 +1,5 @@
 import { Model } from '@nozbe/watermelondb';
-import { field, date, readonly, children, relation } from '@nozbe/watermelondb/decorators';
+import { field, date, children, relation } from '@nozbe/watermelondb/decorators';
 
 export default class Note extends Model {
   static table = 'notes';
@@ -16,7 +16,7 @@ export default class Note extends Model {
   @field('offline_enabled') offlineEnabled;
   @field('is_pinned') isPinned;
   @field('sync_status') syncStatus; // 'synced' | 'pending' | 'conflict'
-  @readonly @date('created_at') createdAt;
+  @date('created_at') createdAt;
   @date('updated_at') updatedAt;
   @date('deleted_at') deletedAt;
   @date('base_updated_at') baseUpdatedAt;

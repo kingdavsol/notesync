@@ -13,8 +13,6 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
-import { Q } from '@nozbe/watermelondb';
-
 import { database, Note } from '../models';
 import { useSync } from '../hooks/useSync';
 import { MainStackParamList } from '../navigation/MainNavigator';
@@ -84,6 +82,8 @@ export default function NoteEditorScreen() {
     }
 
     try {
+      let savedNoteId: string;
+
       await database.write(async () => {
         if (note) {
           // Update existing note
@@ -95,9 +95,7 @@ export default function NoteEditorScreen() {
             n.syncStatus = 'pending';
             n.updatedAt = new Date();
           });
-
-          // Mark for sync
-          await markNoteForSync(note.id);
+          savedNoteId = note.id;
         } else {
           // Create new note
           const newNote = await database.collections.get<Note>('notes').create(n => {
@@ -108,16 +106,15 @@ export default function NoteEditorScreen() {
             n.isPinned = isPinned;
             n.offlineEnabled = false;
             n.syncStatus = 'pending';
-            n.createdAt = new Date();
             n.updatedAt = new Date();
           });
-
           setNote(newNote);
-
-          // Mark for sync
-          await markNoteForSync(newNote.id);
+          savedNoteId = newNote.id;
         }
       });
+
+      // markNoteForSync calls database.write() internally — must be OUTSIDE write block
+      await markNoteForSync(savedNoteId!);
     } catch (err) {
       console.error('Failed to save note:', err);
     }
@@ -136,14 +133,15 @@ export default function NoteEditorScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
+              const noteId = note.id;
               await database.write(async () => {
                 await note.update(n => {
                   n.deletedAt = new Date();
                   n.syncStatus = 'pending';
                 });
-
-                await markNoteForSync(note.id);
               });
+              // markNoteForSync calls database.write() — must be OUTSIDE write block
+              await markNoteForSync(noteId);
               navigation.goBack();
             } catch (err) {
               console.error('Failed to delete note:', err);
