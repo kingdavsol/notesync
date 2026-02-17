@@ -5,10 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "owner": "kingsol",
+    "owner": "markd98",
     "extra": {
       "eas": {
-        "projectId": "0c716fbd-948a-4011-af7f-2c08fcfe1c99"
+        "projectId": "b30e6bd3-4217-4a85-b13f-628721a8462b"
       }
     },
     "assetBundlePatterns": [
