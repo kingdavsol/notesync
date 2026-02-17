@@ -694,12 +694,69 @@ const API_URL = 'https://notesync.9gg.app/api';
 
 ---
 
+## Session 2 Updates (Feb 16, 2026 - Continued)
+
+### Additional Fixes Applied (Commit 9c91947)
+
+After a complete re-read of every file across all 27 source files, 7 more issues were found and fixed:
+
+#### SettingsScreen.tsx ✅ FIXED
+- **Bug**: Used `lastSyncTime` (non-existent property) instead of `lastSync` from context
+- **Impact**: Would crash when Settings screen opened (reading undefined property)
+- **Fix**: Changed to `lastSync`, updated `formatSyncTime` to accept `string | null`
+
+#### NotebooksScreen.tsx ✅ FIXED (2 bugs)
+1. **Bug**: `api.createFolder({ name: ... })` — passed object, API expects string
+   - **Impact**: Folder creation silently broken (wrong JSON sent to server)
+   - **Fix**: Changed to `api.createFolder(newFolderName.trim())`
+2. **Bug**: `folderId: item.id` passed number where string expected
+   - **Fix**: Changed to `item.id.toString()`
+
+#### SearchScreen.tsx ✅ FIXED
+- **Bug**: Navigated with server `id` (number) as `noteId`, but NoteEditor uses WatermelonDB local ID (string)
+- **Impact**: Tapping search results would always show "Failed to load note"
+- **Fix**: Added `openNote()` function that first looks up the local WatermelonDB record by `server_id`, then navigates with the correct local ID
+
+#### VoiceRecorder.tsx ✅ FIXED (3 bugs)
+1. **Bug**: `react-native-audio-recorder-player` not in package.json — **build-breaking**
+   - **Fix**: Added `"react-native-audio-recorder-player": "^3.6.10"` to package.json
+2. **Bug**: `react-native-fs` not in package.json — **build-breaking**
+   - **Fix**: Added `"react-native-fs": "^2.20.0"` to package.json
+3. **Bug**: Called `api.transcribeAudio(formData)` which double-wraps FormData in another FormData
+   - **Impact**: Audio transcription would send malformed request to server
+   - **Fix**: Added `api.transcribeAudioNative(formData)` method that sends FormData directly
+
+---
+
+## Final Code Status (After Both Fix Rounds)
+
+### Total Bugs Found and Fixed Across All Sessions: 11
+
+| # | File | Bug | Severity | Fixed |
+|---|------|-----|----------|-------|
+| 1 | AppState.js | Missing Q import | Critical | ✅ |
+| 2 | NotesScreen.tsx | Undefined loadNotes() calls | Critical | ✅ |
+| 3 | MainNavigator.tsx | noteId typed as number | High | ✅ |
+| 4 | MainNavigator.tsx | folderId typed as number | High | ✅ |
+| 5 | SettingsScreen.tsx | lastSyncTime doesn't exist in context | Critical | ✅ |
+| 6 | NotebooksScreen.tsx | createFolder() wrong argument type | High | ✅ |
+| 7 | NotebooksScreen.tsx | folderId passed as number | High | ✅ |
+| 8 | SearchScreen.tsx | Server ID passed as local WatermelonDB ID | Critical | ✅ |
+| 9 | VoiceRecorder.tsx | react-native-audio-recorder-player missing | Build-breaking | ✅ |
+| 10 | VoiceRecorder.tsx | react-native-fs missing | Build-breaking | ✅ |
+| 11 | VoiceRecorder.tsx | Double-wrapped FormData in transcription | High | ✅ |
+
+### All 27 Source Files Verified ✅
+
+---
+
 ## Document History
 
 - **2026-02-02 12:00**: Initial handover created
 - **2026-02-12 19:01**: Updated with production deployment details
 - **2026-02-12 19:23**: Added cross-platform development plan
-- **2026-02-16 17:31**: **Expo migration complete, mobile app ready for build**
+- **2026-02-16 17:31**: Expo migration complete, first round of fixes
+- **2026-02-16 18:00**: **All 27 files reviewed, all 11 bugs fixed — ready for build**
 
 ---
 
