@@ -39,6 +39,9 @@ coverage/
 *.tmp
 *.temp
 
+# Use yarn only - ignore npm lock file
+package-lock.json
+
 # Old mobile subdirectory project configs (project is now at repo root)
 mobile/app.json
 mobile/package.json

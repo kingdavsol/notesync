@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Feather';
+import { Feather as Icon } from '@expo/vector-icons';
 import { database, Note } from '../models';
 import { useSync } from '../hooks/useSync';
 import { MainStackParamList } from '../navigation/MainNavigator';

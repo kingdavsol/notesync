@@ -7,32 +7,25 @@ import {
   Modal,
   Animated,
   Platform,
-  PermissionsAndroid,
   Alert,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
-import AudioRecorderPlayer, {
-  AVEncoderAudioQualityIOSType,
-  AVEncodingOption,
-  AudioEncoderAndroidType,
-  AudioSourceAndroidType,
-} from 'react-native-audio-recorder-player';
+import { Feather as Icon } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
 import { api } from '../services/api';
-import RNFS from 'react-native-fs';
 
 interface VoiceRecorderProps {
   onTranscription: (text: string) => void;
   onClose: () => void;
 }
 
-const audioRecorderPlayer = new AudioRecorderPlayer();
-
 export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
-  const [audioPath, setAudioPath] = useState<string | null>(null);
+  const recordingRef = useRef<Audio.Recording | null>(null);
+  const audioPathRef = useRef<string | null>(null);
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -48,7 +41,6 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
 
   useEffect(() => {
     if (isRecording) {
-      // Start pulse animation
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
@@ -64,7 +56,6 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
         ])
       ).start();
 
-      // Start timer
       timerRef.current = setInterval(() => {
         setRecordingTime(prev => prev + 1);
       }, 1000);
@@ -84,9 +75,16 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
 
   async function cleanup() {
     try {
-      await audioRecorderPlayer.stopRecorder();
-      if (audioPath && await RNFS.exists(audioPath)) {
-        await RNFS.unlink(audioPath);
+      if (recordingRef.current) {
+        await recordingRef.current.stopAndUnloadAsync();
+        recordingRef.current = null;
+      }
+      if (audioPathRef.current) {
+        const info = await FileSystem.getInfoAsync(audioPathRef.current);
+        if (info.exists) {
+          await FileSystem.deleteAsync(audioPathRef.current, { idempotent: true });
+        }
+        audioPathRef.current = null;
       }
     } catch (err) {
       console.error('Cleanup error:', err);
@@ -94,27 +92,8 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
   }
 
   async function checkPermission() {
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-          {
-            title: 'Microphone Permission',
-            message: 'NoteSync needs access to your microphone to record voice notes.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        );
-        setHasPermission(granted === PermissionsAndroid.RESULTS.GRANTED);
-      } catch (err) {
-        console.warn(err);
-        setHasPermission(false);
-      }
-    } else {
-      // iOS permissions are handled by the native module
-      setHasPermission(true);
-    }
+    const { status } = await Audio.requestPermissionsAsync();
+    setHasPermission(status === 'granted');
   }
 
   function formatTime(seconds: number): string {
@@ -134,24 +113,17 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
     }
 
     try {
-      setIsRecording(true);
-      setRecordingTime(0);
-
-      const path = Platform.select({
-        ios: `${RNFS.DocumentDirectoryPath}/voice_note_${Date.now()}.m4a`,
-        android: `${RNFS.CachesDirectoryPath}/voice_note_${Date.now()}.m4a`,
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
       });
 
-      const audioSet = {
-        AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-        AudioSourceAndroid: AudioSourceAndroidType.MIC,
-        AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
-        AVNumberOfChannelsKeyIOS: 1,
-        AVFormatIDKeyIOS: AVEncodingOption.aac,
-      };
-
-      const uri = await audioRecorderPlayer.startRecorder(path, audioSet);
-      setAudioPath(uri);
+      const { recording } = await Audio.Recording.createAsync(
+        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      recordingRef.current = recording;
+      setIsRecording(true);
+      setRecordingTime(0);
     } catch (err) {
       console.error('Recording error:', err);
       Alert.alert('Error', 'Failed to start recording. Please try again.');
@@ -164,33 +136,40 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
     setIsProcessing(true);
 
     try {
-      const result = await audioRecorderPlayer.stopRecorder();
-      audioRecorderPlayer.removeRecordBackListener();
-
-      if (!result || !audioPath) {
+      if (!recordingRef.current) {
         throw new Error('No recording found');
       }
 
-      // Create FormData for multipart upload
+      await recordingRef.current.stopAndUnloadAsync();
+      const uri = recordingRef.current.getURI();
+      recordingRef.current = null;
+      audioPathRef.current = uri ?? null;
+
+      if (!uri) {
+        throw new Error('No audio file created');
+      }
+
+      await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
+
       const formData = new FormData();
       formData.append('audio', {
-        uri: Platform.OS === 'android' ? `file://${audioPath}` : audioPath,
+        uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
         type: 'audio/m4a',
         name: 'voice_note.m4a',
       } as any);
       formData.append('duration', recordingTime.toString());
 
-      // Send to backend for transcription
       const response = await api.transcribeAudioNative(formData);
 
       if (response.text) {
         setIsProcessing(false);
         onTranscription(response.text);
 
-        // Clean up audio file
-        if (await RNFS.exists(audioPath)) {
-          await RNFS.unlink(audioPath);
+        const info = await FileSystem.getInfoAsync(uri);
+        if (info.exists) {
+          await FileSystem.deleteAsync(uri, { idempotent: true });
         }
+        audioPathRef.current = null;
       } else {
         throw new Error('No transcription received');
       }
@@ -216,17 +195,10 @@ export default function VoiceRecorder({ onTranscription, onClose }: VoiceRecorde
 
   async function cancelRecording() {
     if (isRecording) {
-      await audioRecorderPlayer.stopRecorder();
-      audioRecorderPlayer.removeRecordBackListener();
+      setIsRecording(false);
     }
-
-    setIsRecording(false);
+    await cleanup();
     setRecordingTime(0);
-
-    if (audioPath && await RNFS.exists(audioPath)) {
-      await RNFS.unlink(audioPath);
-    }
-
     onClose();
   }
 
