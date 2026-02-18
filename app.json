@@ -32,7 +32,14 @@
     },
     "plugins": [
       "expo-dev-client",
-      "expo-updates"
+      "expo-updates",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "NoteSync needs access to your photos to attach images to notes.",
+          "cameraPermission": "NoteSync needs access to your camera to take photos for notes."
+        }
+      ]
     ]
   }
 }

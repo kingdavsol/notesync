@@ -78,6 +78,7 @@ router.post('/', authenticateToken, upload.single('audio'), async (req, res) => 
 
     res.json({
       success: true,
+      text: mockTranscription.text,
       transcription: mockTranscription.text,
       metadata: {
         confidence: mockTranscription.confidence,
