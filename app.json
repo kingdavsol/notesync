@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
     "owner": "markd98",
     "extra": {
       "eas": {
@@ -12,7 +13,8 @@
       }
     },
     "splash": {
-      "backgroundColor": "#ffffff",
+      "image": "./assets/splash.png",
+      "backgroundColor": "#2dbe60",
       "resizeMode": "contain"
     },
     "assetBundlePatterns": [
@@ -24,6 +26,10 @@
     },
     "android": {
       "package": "app.gg9.notesync",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#2dbe60"
+      },
       "permissions": [
         "RECORD_AUDIO",
         "WRITE_EXTERNAL_STORAGE",
