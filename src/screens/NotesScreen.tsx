@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   StyleSheet,
   RefreshControl,
   TextInput,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -21,13 +22,21 @@ import { MainStackParamList } from '../navigation/MainNavigator';
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
+interface SectionHeader {
+  id: string;
+  isHeader: true;
+  label: string;
+}
+
+type ListItem = Note | SectionHeader;
+
 interface NotesScreenInnerProps {
   notes: Note[];
 }
 
 function NotesScreenInner({ notes }: NotesScreenInnerProps) {
   const [search, setSearch] = useState('');
-  const { isOnline, isSyncing, sync } = useSync();
+  const { isOnline, isSyncing, sync, markNoteForSync } = useSync();
   const navigation = useNavigation<NavigationProp>();
 
   const handleRefresh = useCallback(async () => {
@@ -64,23 +73,120 @@ function NotesScreenInner({ notes }: NotesScreenInnerProps) {
     return null;
   }
 
-  function renderNote({ item }: { item: Note }) {
-    const preview = stripHtml(item.contentPlain || item.content).substring(0, 100);
+  async function togglePinNote(note: Note) {
+    try {
+      const newPinned = !note.isPinned;
+      await database.write(async () => {
+        await note.update(n => {
+          n.isPinned = newPinned;
+          n.syncStatus = 'pending';
+          n.updatedAt = new Date();
+        });
+      });
+      await markNoteForSync(note.id);
+    } catch (err) {
+      console.error('Failed to toggle pin:', err);
+    }
+  }
+
+  async function deleteNoteFromList(note: Note) {
+    try {
+      await database.write(async () => {
+        await note.update(n => {
+          n.deletedAt = new Date();
+          n.syncStatus = 'pending';
+        });
+      });
+      await markNoteForSync(note.id);
+    } catch (err) {
+      console.error('Failed to delete note:', err);
+      Alert.alert('Error', 'Failed to delete note');
+    }
+  }
+
+  function handleLongPress(item: Note) {
+    Alert.alert(
+      item.title || 'Untitled',
+      'Choose an action',
+      [
+        {
+          text: item.isPinned ? 'Unpin' : 'Pin to top',
+          onPress: () => togglePinNote(item),
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            Alert.alert('Delete Note', 'Are you sure?', [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Delete', style: 'destructive', onPress: () => deleteNoteFromList(item) },
+            ]);
+          },
+        },
+        { text: 'Cancel', style: 'cancel' },
+      ]
+    );
+  }
+
+  // Filter notes by search query, then split into pinned/unpinned sections
+  const listData = useMemo<ListItem[]>(() => {
+    const q = search.trim().toLowerCase();
+    const filtered = q
+      ? notes.filter(n =>
+          n.title.toLowerCase().includes(q) ||
+          stripHtml(n.contentPlain || n.content).toLowerCase().includes(q)
+        )
+      : notes;
+
+    const pinned = filtered.filter(n => n.isPinned);
+    const unpinned = filtered.filter(n => !n.isPinned);
+
+    const result: ListItem[] = [];
+
+    if (pinned.length > 0) {
+      result.push({ id: '__header_pinned', isHeader: true, label: 'PINNED' });
+      result.push(...pinned);
+    }
+
+    if (unpinned.length > 0) {
+      if (pinned.length > 0) {
+        result.push({ id: '__header_notes', isHeader: true, label: 'NOTES' });
+      }
+      result.push(...unpinned);
+    }
+
+    return result;
+  }, [notes, search]);
+
+  function renderItem({ item }: { item: ListItem }) {
+    if ((item as SectionHeader).isHeader) {
+      return (
+        <Text style={styles.sectionHeader}>{(item as SectionHeader).label}</Text>
+      );
+    }
+
+    const note = item as Note;
+    const preview = stripHtml(note.contentPlain || note.content).substring(0, 100);
 
     return (
       <TouchableOpacity
-        style={styles.noteCard}
-        onPress={() => navigation.navigate('NoteEditor', { noteId: item.id })}
+        style={[styles.noteCard, note.isPinned && styles.noteCardPinned]}
+        onPress={() => navigation.navigate('NoteEditor', { noteId: note.id })}
+        onLongPress={() => handleLongPress(note)}
+        delayLongPress={400}
       >
         <View style={styles.noteHeader}>
-          <Text style={styles.noteTitle} numberOfLines={1}>
-            {item.isPinned && <Icon name="pin" size={14} color="#2dbe60" />}
-            {' '}
-            {item.title}
-          </Text>
+          <View style={styles.noteTitleRow}>
+            {note.isPinned && (
+              <Icon name="bookmark" size={13} color="#2dbe60" style={styles.pinIcon} />
+            )}
+            <Text style={styles.noteTitle} numberOfLines={1}>
+              {note.title || 'Untitled'}
+            </Text>
+          </View>
           <View style={styles.noteHeaderRight}>
-            {getSyncStatusIcon(item.syncStatus)}
-            {item.offlineEnabled && (
+            {getSyncStatusIcon(note.syncStatus)}
+            {note.offlineEnabled && (
               <Icon name="cloud-off" size={14} color="#666" style={{ marginLeft: 8 }} />
             )}
           </View>
@@ -91,7 +197,7 @@ function NotesScreenInner({ notes }: NotesScreenInnerProps) {
         </Text>
 
         <View style={styles.noteMeta}>
-          <Text style={styles.noteDate}>{formatDate(item.updatedAt.toISOString())}</Text>
+          <Text style={styles.noteDate}>{formatDate(note.updatedAt.toISOString())}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -127,9 +233,9 @@ function NotesScreenInner({ notes }: NotesScreenInnerProps) {
 
       {/* Notes List */}
       <FlatList
-        data={notes}
-        renderItem={renderNote}
-        keyExtractor={item => item.id.toString()}
+        data={listData}
+        renderItem={renderItem}
+        keyExtractor={item => (item as SectionHeader).isHeader ? (item as SectionHeader).id : (item as Note).id.toString()}
         contentContainerStyle={styles.list}
         refreshControl={
           <RefreshControl
@@ -212,6 +318,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1a1a1a',
   },
+  sectionHeader: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#999',
+    letterSpacing: 1,
+    marginBottom: 8,
+    marginTop: 4,
+  },
   list: {
     padding: 16,
     paddingTop: 0,
@@ -227,11 +341,24 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  noteCardPinned: {
+    borderLeftWidth: 3,
+    borderLeftColor: '#2dbe60',
+  },
   noteHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
+  },
+  noteTitleRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  pinIcon: {
+    marginTop: 1,
   },
   noteHeaderRight: {
     flexDirection: 'row',

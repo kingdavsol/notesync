@@ -13,6 +13,7 @@ import {
   Image,
   Modal,
   FlatList,
+  Share,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Feather as Icon } from '@expo/vector-icons';
@@ -44,6 +45,8 @@ export default function NoteEditorScreen() {
   const { noteId, folderId } = route.params || {};
   const contentRef = useRef<TextInput>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveRef = useRef<() => Promise<void>>(async () => {});
+  const isMountedRef = useRef(true);
   const { markNoteForSync } = useSync();
 
   useEffect(() => {
@@ -101,6 +104,24 @@ export default function NoteEditorScreen() {
     };
   }
 
+  // Keep saveRef current so unmount effect can call the latest saveNote closure
+  useEffect(() => {
+    saveRef.current = saveNote;
+  });
+
+  // On unmount: cancel pending debounce and save immediately
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = null;
+        saveRef.current();
+      }
+    };
+  }, []);
+
   // Auto-save with debounce
   useEffect(() => {
     if (!note && !title && !content && images.length === 0) return;
@@ -110,14 +131,8 @@ export default function NoteEditorScreen() {
     }
 
     saveTimeoutRef.current = setTimeout(() => {
-      saveNote();
+      saveRef.current();
     }, 1000);
-
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
   }, [title, content, isPinned, images]);
 
   async function saveNote() {
@@ -149,7 +164,7 @@ export default function NoteEditorScreen() {
             n.syncStatus = 'pending';
             n.updatedAt = new Date();
           });
-          setNote(newNote);
+          if (isMountedRef.current) setNote(newNote);
           savedNoteId = newNote.id;
         }
       });
@@ -247,6 +262,17 @@ export default function NoteEditorScreen() {
     setIsPinned(prev => !prev);
   }
 
+  async function shareNote() {
+    try {
+      await Share.share({
+        title: title || 'Untitled',
+        message: `${title || 'Untitled'}\n\n${content}`,
+      });
+    } catch (err) {
+      // User dismissed share sheet — ignore
+    }
+  }
+
   function stripHtml(html: string): string {
     return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   }
@@ -337,6 +363,9 @@ export default function NoteEditorScreen() {
               {getSyncStatusText()}
             </Text>
           )}
+          <TouchableOpacity onPress={shareNote} style={styles.headerButton}>
+            <Icon name="share-2" size={20} color="rgba(255,255,255,0.7)" />
+          </TouchableOpacity>
           <TouchableOpacity onPress={togglePin} style={styles.headerButton}>
             <Icon
               name="bookmark"
@@ -353,7 +382,7 @@ export default function NoteEditorScreen() {
       ),
       title: note ? 'Edit Note' : 'New Note',
     });
-  }, [isPinned, note, note?.syncStatus]);
+  }, [isPinned, note, note?.syncStatus, title, content]);
 
   if (loading) {
     return (

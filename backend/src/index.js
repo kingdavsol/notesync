@@ -108,13 +108,13 @@ app.use('/api/auth/register', authLimiter);
 app.use('/api/import', uploadLimiter);
 
 // Body parsing with size limits
-app.use(express.json({ 
-    limit: '10mb',
+app.use(express.json({
+    limit: '50mb',
     verify: (req, res, buf) => {
         req.rawBody = buf;
     }
 }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Sanitize all inputs
 app.use(sanitizeMiddleware);

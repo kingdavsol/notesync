@@ -98,7 +98,7 @@ class SyncService {
         return {
           id: note.serverId,
           title: note.title,
-          content: note.content,
+          content: note.content.replace(/\n__IMG__[^\n]*/g, '').trim(),
           content_plain: note.contentPlain,
           folder_id: note.folderId,
           tags,
