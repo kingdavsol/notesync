@@ -6,10 +6,10 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "icon": "./assets/icon.png",
-    "owner": "check-9gg.app",
+    "owner": "markd98",
     "extra": {
       "eas": {
-        "projectId": "292ec9d7-9203-4be1-929e-8a37c770bbbd"
+        "projectId": "b30e6bd3-4217-4a85-b13f-628721a8462b"
       }
     },
     "splash": {
