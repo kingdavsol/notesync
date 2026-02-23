@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help & FAQ — NoteSync</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a1a; }
+  header { background: #2dbe60; padding: 20px 24px; }
+  header a { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .logo svg { width: 20px; height: 20px; fill: #fff; }
+  header h1 { color: #fff; font-size: 20px; font-weight: 700; }
+  .subtitle { color: rgba(255,255,255,0.8); font-size: 13px; }
+  .hero { background: #2dbe60; padding: 24px 24px 40px; }
+  .hero h2 { color: #fff; font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .hero p { color: rgba(255,255,255,0.85); font-size: 15px; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+  .section-title { font-size: 13px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.8px; margin: 32px 0 12px; padding-left: 4px; }
+  .faq { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  details { border-bottom: 1px solid #f0f0f0; }
+  details:last-child { border-bottom: none; }
+  summary { padding: 18px 20px; font-size: 15px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; font-size: 20px; color: #2dbe60; font-weight: 300; transition: transform 0.2s; }
+  details[open] summary::after { content: '−'; }
+  .answer { padding: 0 20px 18px; font-size: 14px; color: #555; line-height: 1.7; }
+  .answer p { margin-bottom: 8px; }
+  .answer ul { margin-left: 20px; margin-top: 4px; }
+  .answer li { margin-bottom: 4px; }
+  .contact-card { background: #2dbe60; border-radius: 14px; padding: 24px; text-align: center; margin-top: 32px; }
+  .contact-card h3 { color: #fff; font-size: 18px; margin-bottom: 8px; }
+  .contact-card p { color: rgba(255,255,255,0.85); font-size: 14px; margin-bottom: 16px; }
+  .contact-card a { display: inline-block; background: #fff; color: #2dbe60; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; }
+  footer { text-align: center; padding: 32px 16px; color: #999; font-size: 13px; }
+  footer a { color: #2dbe60; text-decoration: none; margin: 0 8px; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+    <div><div style="color:#fff;font-size:17px;font-weight:700;">NoteSync</div><div class="subtitle">Help & FAQ</div></div>
+  </a>
+</header>
+
+<div class="hero">
+  <h2>How can we help?</h2>
+  <p>Find answers to the most common questions about NoteSync.</p>
+</div>
+
+<main>
+  <div class="section-title">Getting Started</div>
+  <div class="faq">
+    <details>
+      <summary>How do I create my first note?</summary>
+      <div class="answer"><p>Tap the green <strong>+</strong> button at the bottom-right of the Notes screen. A new note editor will open where you can type a title and start writing immediately. Your note saves automatically as you type — no save button needed.</p></div>
+    </details>
+    <details>
+      <summary>How do I sync my notes across devices?</summary>
+      <div class="answer"><p>NoteSync syncs automatically whenever you're connected to the internet. You can also pull down on the notes list to trigger a manual sync, or tap <strong>Sync Now</strong> in Settings.</p><p>Each note shows a small colored dot indicating its sync status: <strong>green</strong> = fully synced, <strong>orange</strong> = waiting to sync.</p></div>
+    </details>
+    <details>
+      <summary>Can I use NoteSync offline?</summary>
+      <div class="answer"><p>Yes. All your notes are stored locally on your device using an offline-first database. You can read and edit notes with no internet connection. Changes sync automatically when you reconnect.</p></div>
+    </details>
+    <details>
+      <summary>How do I sign in or create an account?</summary>
+      <div class="answer"><p>Open NoteSync and tap <strong>Create one</strong> on the login screen to register with your email and a password (minimum 8 characters). If you already have an account, enter your email and password and tap <strong>Sign In</strong>.</p></div>
+    </details>
+  </div>
+
+  <div class="section-title">Writing & Formatting</div>
+  <div class="faq">
+    <details>
+      <summary>How do I format text (bold, italic, underline)?</summary>
+      <div class="answer">
+        <p>When you tap into the note body, a formatting toolbar appears above the keyboard with these buttons:</p>
+        <ul>
+          <li><strong>B</strong> — Bold (wraps text in **markers**)</li>
+          <li><em>I</em> — Italic (wraps text in *markers*)</li>
+          <li><u>U</u> — Underline</li>
+          <li><s>S</s> — Strikethrough</li>
+          <li><span style="background:#fff59d;padding:0 3px;">H</span> — Highlight</li>
+          <li><strong>H1 / H2</strong> — Headings</li>
+          <li>List and numbered list buttons</li>
+        </ul>
+        <p>Select text first to wrap it, or tap a button to insert a formatted placeholder.</p>
+      </div>
+    </details>
+    <details>
+      <summary>How does the checklist mode work?</summary>
+      <div class="answer"><p>Tap the <strong>checkbox icon</strong> (✓□) in the bottom toolbar to toggle checklist mode on. While active, every time you press Enter, the next line automatically starts with a <strong>☐</strong> checkbox. Tap the icon again to turn it off. The checklist button turns green when active.</p></div>
+    </details>
+    <details>
+      <summary>How do I attach a photo to a note?</summary>
+      <div class="answer"><p>In the note editor, tap the <strong>image icon</strong> to pick from your gallery, or the <strong>camera icon</strong> to take a new photo. The image appears below your text. Long-press a thumbnail to remove it.</p></div>
+    </details>
+    <details>
+      <summary>How do I use voice transcription?</summary>
+      <div class="answer"><p>Tap the <strong>microphone icon</strong> in the toolbar. Hold the record button to speak — NoteSync uses AI (Groq Whisper) to transcribe your speech into text and insert it into your note. Works best in quiet environments with clear speech.</p></div>
+    </details>
+  </div>
+
+  <div class="section-title">Organization</div>
+  <div class="faq">
+    <details>
+      <summary>How do I search for a note?</summary>
+      <div class="answer"><p>Use the search bar at the top of the Notes screen. It searches note titles and content in real time as you type. Tap <strong>✕</strong> to clear the search.</p></div>
+    </details>
+    <details>
+      <summary>How do I pin a note to the top?</summary>
+      <div class="answer"><p>Long-press any note in the list and tap <strong>Pin to top</strong>. Pinned notes appear in a separate "PINNED" section above your other notes, with a green left border. Long-press again and tap <strong>Unpin</strong> to move it back.</p></div>
+    </details>
+    <details>
+      <summary>How do I use notebooks (folders)?</summary>
+      <div class="answer"><p>Tap the <strong>Notebooks</strong> tab at the bottom. Tap <strong>+</strong> to create a new notebook, then tap a notebook to view or rename it. You can assign a note to a notebook while editing (tag selector).</p></div>
+    </details>
+    <details>
+      <summary>How do I use tags?</summary>
+      <div class="answer"><p>While editing a note, tap the <strong>tag icon</strong> in the toolbar. Type a new tag name and tap <strong>+</strong>, or select an existing tag. Tags appear as green chips below the note title and can be used to filter your search.</p></div>
+    </details>
+    <details>
+      <summary>How do I delete a note?</summary>
+      <div class="answer"><p>There are two ways: <strong>(1)</strong> Open the note and tap the trash icon in the top-right corner. <strong>(2)</strong> Long-press the note in the list and tap <strong>Delete</strong>. Deleted notes sync the deletion to the server.</p></div>
+    </details>
+    <details>
+      <summary>How do I share a note?</summary>
+      <div class="answer"><p>Open the note and tap the <strong>share icon</strong> (arrow pointing up) in the top-right. This opens your phone's native share sheet to send the note title and text via any app (Messages, Email, WhatsApp, etc.).</p></div>
+    </details>
+  </div>
+
+  <div class="section-title">Account & Billing</div>
+  <div class="faq">
+    <details>
+      <summary>What are the plan limits?</summary>
+      <div class="answer">
+        <ul>
+          <li><strong>Free:</strong> 50 notes, 2 devices, 10 voice transcriptions/month</li>
+          <li><strong>Starter ($2.99/mo):</strong> 500 notes, 5 devices, 50 transcriptions/month</li>
+          <li><strong>Power ($7.99/mo):</strong> Unlimited notes & devices, unlimited transcription</li>
+        </ul>
+      </div>
+    </details>
+    <details>
+      <summary>How do I change my password?</summary>
+      <div class="answer"><p>Password changes are not yet available in-app. Please contact support at <a href="mailto:support@notesync.app" style="color:#2dbe60;">support@notesync.app</a> and we'll assist you.</p></div>
+    </details>
+    <details>
+      <summary>How do I cancel my subscription?</summary>
+      <div class="answer"><p>Subscriptions can be cancelled through the Google Play Store (Android) billing settings. Go to <strong>Play Store → Profile → Payments & subscriptions → Subscriptions</strong>. Your access continues until the end of the billing period.</p></div>
+    </details>
+    <details>
+      <summary>Is my data backed up if I lose my phone?</summary>
+      <div class="answer"><p>Yes. Every note is synced to our secure servers whenever you're online. After installing NoteSync on a new device and logging in, your notes will sync down automatically within seconds.</p></div>
+    </details>
+  </div>
+
+  <div class="contact-card">
+    <h3>Still need help?</h3>
+    <p>Our support team typically responds within 24 hours.</p>
+    <a href="/contact">Contact Support</a>
+  </div>
+</main>
+
+<footer>
+  <p>© 2026 NoteSync. All rights reserved.</p>
+  <p style="margin-top:8px;">
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/terms">Terms of Service</a>
+    <a href="/security">Security</a>
+    <a href="/contact">Contact</a>
+  </p>
+</footer>
+</body>
+</html>

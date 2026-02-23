@@ -40,6 +40,11 @@ export default function NoteEditorScreen() {
   const [allTags, setAllTags] = useState<Tag[]>([]);
   const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
   const [newTagName, setNewTagName] = useState('');
+  // Checklist toggle mode
+  const [checklistMode, setChecklistMode] = useState(false);
+  // Formatting toolbar visibility (shows when content is focused)
+  const [formattingBarVisible, setFormattingBarVisible] = useState(false);
+
   const navigation = useNavigation();
   const route = useRoute<RouteProps>();
   const { noteId, folderId } = route.params || {};
@@ -47,6 +52,8 @@ export default function NoteEditorScreen() {
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const saveRef = useRef<() => Promise<void>>(async () => {});
   const isMountedRef = useRef(true);
+  // Track text selection for formatting
+  const selectionRef = useRef({ start: 0, end: 0 });
   const { markNoteForSync } = useSync();
 
   useEffect(() => {
@@ -73,12 +80,10 @@ export default function NoteEditorScreen() {
       setTitle(noteRecord.title);
       setIsPinned(noteRecord.isPinned);
 
-      // Split content and images (images stored as __IMG__base64 markers)
       const { text, imgs } = parseContent(noteRecord.content);
       setContent(text);
       setImages(imgs);
 
-      // Load existing tags for this note
       const noteTags = await noteRecord.noteTags.fetch();
       setSelectedTagIds(new Set(noteTags.map(nt => nt.tagId)));
     } catch (err) {
@@ -90,7 +95,6 @@ export default function NoteEditorScreen() {
     }
   }
 
-  // Encode images into content string using markers
   function buildContent(text: string, imgs: string[]): string {
     if (imgs.length === 0) return text;
     return text + imgs.map(img => `\n__IMG__${img}`).join('');
@@ -147,7 +151,7 @@ export default function NoteEditorScreen() {
           await note.update(n => {
             n.title = title || 'Untitled';
             n.content = fullContent;
-            n.contentPlain = stripHtml(content);
+            n.contentPlain = stripMarkdown(content);
             n.isPinned = isPinned;
             n.syncStatus = 'pending';
             n.updatedAt = new Date();
@@ -157,7 +161,7 @@ export default function NoteEditorScreen() {
           const newNote = await database.collections.get<Note>('notes').create(n => {
             n.title = title || 'Untitled';
             n.content = fullContent;
-            n.contentPlain = stripHtml(content);
+            n.contentPlain = stripMarkdown(content);
             n.folderId = folderId || null;
             n.isPinned = isPinned;
             n.offlineEnabled = false;
@@ -177,7 +181,6 @@ export default function NoteEditorScreen() {
 
   async function saveNoteTags(noteId: string) {
     try {
-      // Remove all existing note_tags for this note
       const existing = await database.collections
         .get<NoteTag>('note_tags')
         .query(Q.where('note_id', noteId))
@@ -187,7 +190,6 @@ export default function NoteEditorScreen() {
         for (const nt of existing) {
           await nt.destroyPermanently();
         }
-        // Create new note_tags
         for (const tagId of selectedTagIds) {
           await database.collections.get<NoteTag>('note_tags').create(nt => {
             nt.noteId = noteId;
@@ -206,7 +208,6 @@ export default function NoteEditorScreen() {
 
     try {
       let tag: Tag;
-      // Check if tag with this name already exists
       const existing = await database.collections
         .get<Tag>('tags')
         .query(Q.where('name', name))
@@ -268,13 +269,21 @@ export default function NoteEditorScreen() {
         title: title || 'Untitled',
         message: `${title || 'Untitled'}\n\n${content}`,
       });
-    } catch (err) {
-      // User dismissed share sheet — ignore
-    }
+    } catch (_) {}
   }
 
-  function stripHtml(html: string): string {
-    return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  // Strip markdown and HTML for plain text storage
+  function stripMarkdown(text: string): string {
+    return text
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/__([^_]+)__/g, '$1')
+      .replace(/~~([^~]+)~~/g, '$1')
+      .replace(/==([^=]+)==/g, '$1')
+      .replace(/^#{1,6}\s/gm, '')
+      .replace(/<[^>]*>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   function handleTranscription(text: string) {
@@ -282,14 +291,81 @@ export default function NoteEditorScreen() {
     setShowVoiceRecorder(false);
   }
 
-  function insertCheckbox() {
-    setContent(prev => {
-      const suffix = prev.endsWith('\n') || prev === '' ? '' : '\n';
-      return `${prev}${suffix}☐ `;
-    });
+  // ─── Checklist mode ───────────────────────────────────────────
+  function toggleChecklistMode() {
+    const next = !checklistMode;
+    setChecklistMode(next);
+    if (next) {
+      // Seed first checkbox if content area is empty or ends with newline
+      setContent(prev => {
+        if (prev === '' || prev.endsWith('\n')) return prev + '☐ ';
+        return prev + '\n☐ ';
+      });
+      contentRef.current?.focus();
+    }
+  }
+
+  function handleContentChange(newText: string) {
+    if (checklistMode) {
+      // Detect Enter pressed at end: new text is 1 char longer and ends with \n
+      if (newText.length === content.length + 1 && newText.endsWith('\n')) {
+        setContent(newText + '☐ ');
+        return;
+      }
+      // Detect Enter inserted anywhere (pasting with newline, etc.)
+      if (newText.length > content.length) {
+        const added = newText.slice(content.length);
+        if (added.includes('\n')) {
+          const enhanced = newText.replace(/\n(?!☐ |☑ )/g, '\n☐ ');
+          setContent(enhanced);
+          return;
+        }
+      }
+    }
+    setContent(newText);
+  }
+
+  // Tap ☐ to toggle it to ☑ (and vice versa) by replacing at cursor position
+  function handleCheckboxTap(pos: number) {
+    const char = content[pos];
+    if (char === '☐') {
+      setContent(content.substring(0, pos) + '☑' + content.substring(pos + 1));
+    } else if (char === '☑') {
+      setContent(content.substring(0, pos) + '☐' + content.substring(pos + 1));
+    }
+  }
+
+  // ─── Formatting helpers ───────────────────────────────────────
+  function applyFormat(before: string, after: string = before) {
+    const { start, end } = selectionRef.current;
+    const selected = content.substring(start, end);
+    const newContent =
+      content.substring(0, start) +
+      before +
+      (selected || 'text') +
+      after +
+      content.substring(end);
+    setContent(newContent);
     contentRef.current?.focus();
   }
 
+  function applyLinePrefix(prefix: string) {
+    const { start } = selectionRef.current;
+    // Find the start of the current line
+    const lineStart = content.lastIndexOf('\n', start - 1) + 1;
+    const line = content.substring(lineStart);
+    // Toggle: if line already starts with this prefix, remove it
+    if (line.startsWith(prefix)) {
+      setContent(
+        content.substring(0, lineStart) + line.substring(prefix.length)
+      );
+    } else {
+      setContent(content.substring(0, lineStart) + prefix + line);
+    }
+    contentRef.current?.focus();
+  }
+
+  // ─── Image picker ─────────────────────────────────────────────
   async function pickFromGallery() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -338,10 +414,11 @@ export default function NoteEditorScreen() {
     ]);
   }
 
+  // ─── Sync status display ──────────────────────────────────────
   function getSyncStatusText(): string {
     if (!note) return '';
     if (note.syncStatus === 'synced') return 'Synced';
-    if (note.syncStatus === 'pending') return 'Syncing...';
+    if (note.syncStatus === 'pending') return 'Pending';
     if (note.syncStatus === 'conflict') return 'Conflict';
     return '';
   }
@@ -437,10 +514,15 @@ export default function NoteEditorScreen() {
         <TextInput
           ref={contentRef}
           style={styles.contentInput}
-          placeholder="Start writing..."
+          placeholder={checklistMode ? '☐ First item...' : 'Start writing...'}
           placeholderTextColor="#999"
           value={content}
-          onChangeText={setContent}
+          onChangeText={handleContentChange}
+          onSelectionChange={e => {
+            selectionRef.current = e.nativeEvent.selection;
+          }}
+          onFocus={() => setFormattingBarVisible(true)}
+          onBlur={() => setFormattingBarVisible(false)}
           multiline
           textAlignVertical="top"
         />
@@ -463,7 +545,81 @@ export default function NoteEditorScreen() {
         )}
       </ScrollView>
 
-      {/* Toolbar */}
+      {/* ─── Formatting toolbar (visible when content is focused) ── */}
+      {formattingBarVisible && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.formattingBar}
+          contentContainerStyle={styles.formattingBarContent}
+          keyboardShouldPersistTaps="always"
+        >
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyFormat('**', '**')}
+          >
+            <Text style={styles.fmtBtnTextBold}>B</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyFormat('*', '*')}
+          >
+            <Text style={styles.fmtBtnTextItalic}>I</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyFormat('<u>', '</u>')}
+          >
+            <Text style={styles.fmtBtnTextUnderline}>U</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyFormat('~~', '~~')}
+          >
+            <Text style={styles.fmtBtnTextStrike}>S</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyFormat('==', '==')}
+          >
+            <Text style={[styles.fmtBtnText, { backgroundColor: '#fff59d', paddingHorizontal: 3, borderRadius: 2 }]}>H</Text>
+          </TouchableOpacity>
+          <View style={styles.fmtDivider} />
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyLinePrefix('# ')}
+          >
+            <Text style={styles.fmtBtnText}>H1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyLinePrefix('## ')}
+          >
+            <Text style={styles.fmtBtnText}>H2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyLinePrefix('> ')}
+          >
+            <Icon name="corner-down-right" size={16} color="#555" />
+          </TouchableOpacity>
+          <View style={styles.fmtDivider} />
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyLinePrefix('• ')}
+          >
+            <Icon name="list" size={16} color="#555" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.fmtBtn}
+            onPress={() => applyLinePrefix('1. ')}
+          >
+            <Icon name="hash" size={16} color="#555" />
+          </TouchableOpacity>
+        </ScrollView>
+      )}
+
+      {/* ─── Media + actions toolbar ─────────────────────────────── */}
       <View style={styles.toolbar}>
         <TouchableOpacity style={styles.toolbarButton} onPress={() => setShowVoiceRecorder(true)}>
           <Icon name="mic" size={22} color="#666" />
@@ -474,8 +630,16 @@ export default function NoteEditorScreen() {
         <TouchableOpacity style={styles.toolbarButton} onPress={pickFromCamera}>
           <Icon name="camera" size={22} color="#666" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.toolbarButton} onPress={insertCheckbox}>
-          <Icon name="check-square" size={22} color="#666" />
+        {/* Checklist toggle — green when active */}
+        <TouchableOpacity
+          style={[styles.toolbarButton, checklistMode && styles.toolbarButtonActive]}
+          onPress={toggleChecklistMode}
+        >
+          <Icon
+            name="check-square"
+            size={22}
+            color={checklistMode ? '#2dbe60' : '#666'}
+          />
         </TouchableOpacity>
         <TouchableOpacity style={styles.toolbarButton} onPress={() => setShowTagModal(true)}>
           <Icon name="tag" size={22} color={selectedTagIds.size > 0 ? '#2dbe60' : '#666'} />
@@ -512,7 +676,6 @@ export default function NoteEditorScreen() {
             <View style={styles.tagModalHandle} />
             <Text style={styles.tagModalTitle}>Tags</Text>
 
-            {/* New tag input */}
             <View style={styles.newTagRow}>
               <TextInput
                 style={styles.newTagInput}
@@ -528,7 +691,6 @@ export default function NoteEditorScreen() {
               </TouchableOpacity>
             </View>
 
-            {/* Existing tags */}
             <FlatList
               data={allTags}
               keyExtractor={item => item.id}
@@ -624,6 +786,35 @@ const styles = StyleSheet.create({
   headerButtons: { flexDirection: 'row', alignItems: 'center' },
   headerButton: { padding: 8, marginLeft: 8 },
   syncStatus: { fontSize: 12, fontWeight: '500', marginRight: 8 },
+  // Formatting bar
+  formattingBar: {
+    borderTopWidth: 1,
+    borderTopColor: '#e8e8e8',
+    backgroundColor: '#f5f5f5',
+    maxHeight: 44,
+  },
+  formattingBarContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    height: 44,
+  },
+  fmtBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginHorizontal: 2,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 32,
+  },
+  fmtBtnText: { fontSize: 14, color: '#333', fontWeight: '500' },
+  fmtBtnTextBold: { fontSize: 15, color: '#333', fontWeight: '900' },
+  fmtBtnTextItalic: { fontSize: 15, color: '#333', fontStyle: 'italic', fontWeight: '500' },
+  fmtBtnTextUnderline: { fontSize: 15, color: '#333', textDecorationLine: 'underline', fontWeight: '600' },
+  fmtBtnTextStrike: { fontSize: 15, color: '#333', textDecorationLine: 'line-through', fontWeight: '500' },
+  fmtDivider: { width: 1, height: 20, backgroundColor: '#ddd', marginHorizontal: 4 },
+  // Media toolbar
   toolbar: {
     flexDirection: 'row',
     borderTopWidth: 1,
@@ -633,6 +824,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   toolbarButton: { padding: 12, marginRight: 8 },
+  toolbarButtonActive: {
+    backgroundColor: 'rgba(45, 190, 96, 0.1)',
+    borderRadius: 8,
+  },
   // Tag modal
   tagModalOverlay: {
     flex: 1,

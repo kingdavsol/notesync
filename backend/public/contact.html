@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Support — NoteSync</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a1a; }
+  header { background: #2dbe60; padding: 20px 24px; display: flex; align-items: center; gap: 10px; }
+  .logo { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .logo svg { width: 20px; height: 20px; fill: #fff; }
+  .header-text h1 { color: #fff; font-size: 17px; font-weight: 700; }
+  .header-text p { color: rgba(255,255,255,0.8); font-size: 13px; }
+  .hero { background: #2dbe60; padding: 24px 24px 40px; }
+  .hero h2 { color: #fff; font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .hero p { color: rgba(255,255,255,0.85); font-size: 14px; }
+  main { max-width: 600px; margin: 0 auto; padding: 24px 16px 60px; }
+  .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
+  label { display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+  input, select, textarea { width: 100%; padding: 12px 14px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 15px; color: #1a1a1a; background: #fafafa; margin-bottom: 16px; font-family: inherit; transition: border-color 0.2s; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: #2dbe60; background: #fff; }
+  textarea { resize: vertical; min-height: 120px; }
+  .btn { width: 100%; background: #2dbe60; color: #fff; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+  .btn:hover { opacity: 0.9; }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .success { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; text-align: center; display: none; }
+  .success h3 { color: #166534; font-size: 18px; margin-bottom: 8px; }
+  .success p { color: #166534; font-size: 14px; }
+  .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .quick-link { background: #fff; border-radius: 12px; padding: 16px; text-decoration: none; box-shadow: 0 1px 4px rgba(0,0,0,0.06); display: block; }
+  .quick-link h4 { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+  .quick-link p { font-size: 13px; color: #666; }
+  footer { text-align: center; padding: 32px 16px; color: #999; font-size: 13px; }
+  footer a { color: #2dbe60; text-decoration: none; margin: 0 8px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>
+  <div class="header-text"><h1>NoteSync</h1><p>Contact Support</p></div>
+</header>
+
+<div class="hero">
+  <h2>Contact Support</h2>
+  <p>We typically respond within 24 hours on business days.</p>
+</div>
+
+<main>
+  <div class="quick-links">
+    <a href="/help" class="quick-link">
+      <h4>📖 Help & FAQ</h4>
+      <p>Find instant answers to common questions</p>
+    </a>
+    <a href="/privacy" class="quick-link">
+      <h4>🔒 Privacy Policy</h4>
+      <p>How we handle your data</p>
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="success" id="successMsg">
+      <h3>Message Sent ✓</h3>
+      <p>Thanks for reaching out! We'll get back to you within 24 hours.</p>
+    </div>
+
+    <form id="contactForm" onsubmit="submitForm(event)">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" placeholder="John Smith" required>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="you@example.com" required>
+
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        <option value="general">General Question</option>
+        <option value="bug">Bug Report</option>
+        <option value="billing">Billing & Subscriptions</option>
+        <option value="account">Account Issue</option>
+        <option value="feature">Feature Request</option>
+        <option value="privacy">Privacy / Data Request</option>
+        <option value="security">Security Concern</option>
+      </select>
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" placeholder="Describe your issue or question in detail..." required></textarea>
+
+      <button type="submit" class="btn" id="submitBtn">Send Message</button>
+    </form>
+  </div>
+</main>
+
+<footer>
+  <p>© 2026 NoteSync. All rights reserved.</p>
+  <p style="margin-top:8px;">
+    <a href="/help">Help & FAQ</a>
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/terms">Terms</a>
+    <a href="/security">Security</a>
+  </p>
+</footer>
+
+<script>
+async function submitForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  const body = {
+    name: document.getElementById('name').value,
+    email: document.getElementById('email').value,
+    category: document.getElementById('category').value,
+    message: document.getElementById('message').value,
+  };
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    if (res.ok) {
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    } else {
+      throw new Error('Server error');
+    }
+  } catch (err) {
+    alert('Failed to send message. Please email us directly at support@notesync.app');
+    btn.disabled = false;
+    btn.textContent = 'Send Message';
+  }
+}
+</script>
+</body>
+</html>

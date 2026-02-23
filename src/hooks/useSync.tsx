@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import NetInfo from '@react-native-community/netinfo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { database } from '../models';
 import SyncService from '../services/sync';
 import { AppState } from '../models';
@@ -61,6 +62,15 @@ export function SyncProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function loadLastSync() {
+    // Try AsyncStorage first — it's updated synchronously during sync
+    try {
+      const asyncTime = await AsyncStorage.getItem('last_sync_at');
+      if (asyncTime) {
+        setLastSync(asyncTime);
+        return;
+      }
+    } catch (_) {}
+    // Fallback to WatermelonDB AppState
     const time = await AppState.getValue(database, 'last_sync_at');
     setLastSync(time);
   }
@@ -71,6 +81,11 @@ export function SyncProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.error('Sync failed:', err);
     }
+    // Always reload sync time after attempt (catches successful partial syncs)
+    try {
+      const t = await AsyncStorage.getItem('last_sync_at');
+      if (t) setLastSync(t);
+    } catch (_) {}
   }, []);
 
   const markNoteForSync = useCallback(async (noteId: string) => {

@@ -396,6 +396,9 @@ class SyncService {
   }
 
   private async setLastSyncTime(timestamp: string): Promise<void> {
+    // Write to AsyncStorage first (fast, reliable for UI reads)
+    await AsyncStorage.setItem('last_sync_at', timestamp);
+    // Also persist in WatermelonDB for consistency
     await AppState.setValue(this.database, 'last_sync_at', timestamp);
   }
 

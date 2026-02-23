@@ -149,6 +149,42 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// ── Public help / legal pages ─────────────────────────────────────────────
+const publicDir = path.join(__dirname, '../public');
+app.get('/help',     (req, res) => res.sendFile(path.join(publicDir, 'help.html')));
+app.get('/privacy',  (req, res) => res.sendFile(path.join(publicDir, 'privacy.html')));
+app.get('/security', (req, res) => res.sendFile(path.join(publicDir, 'security.html')));
+app.get('/terms',    (req, res) => res.sendFile(path.join(publicDir, 'terms.html')));
+app.get('/contact',  (req, res) => res.sendFile(path.join(publicDir, 'contact.html')));
+
+// ── Contact form submission ───────────────────────────────────────────────
+const fs = require('fs');
+const contactLogPath = path.join(__dirname, '../../logs/contact.log');
+
+app.post('/api/contact', (req, res) => {
+    try {
+        const { name, email, category, message } = req.body || {};
+        if (!name || !email || !message) {
+            return res.status(400).json({ error: 'name, email, and message are required' });
+        }
+        const entry = JSON.stringify({
+            timestamp: new Date().toISOString(),
+            name: String(name).substring(0, 200),
+            email: String(email).substring(0, 200),
+            category: String(category || 'general').substring(0, 50),
+            message: String(message).substring(0, 2000),
+        });
+        const logDir = path.dirname(contactLogPath);
+        if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+        fs.appendFileSync(contactLogPath, entry + '\n');
+        console.log(`[CONTACT] From: ${email} | Category: ${category}`);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Contact form error:', err);
+        res.status(500).json({ error: 'Failed to submit message' });
+    }
+});
+
 // Error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security — NoteSync</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a1a; }
+  header { background: #2dbe60; padding: 20px 24px; display: flex; align-items: center; gap: 10px; }
+  .logo { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .logo svg { width: 20px; height: 20px; fill: #fff; }
+  .header-text h1 { color: #fff; font-size: 17px; font-weight: 700; }
+  .header-text p { color: rgba(255,255,255,0.8); font-size: 13px; }
+  .hero { background: #2dbe60; padding: 24px 24px 40px; }
+  .hero h2 { color: #fff; font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .hero p { color: rgba(255,255,255,0.85); font-size: 14px; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
+  .feature { background: #fff; border-radius: 14px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .feature-icon { width: 40px; height: 40px; background: rgba(45,190,96,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .feature-icon svg { width: 20px; height: 20px; stroke: #2dbe60; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .feature h3 { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
+  .feature p { font-size: 13px; color: #666; line-height: 1.6; }
+  .card { background: #fff; border-radius: 14px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  h2 { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  h2::before { content: ''; width: 4px; height: 18px; background: #2dbe60; border-radius: 2px; display: inline-block; }
+  p { font-size: 14px; color: #555; line-height: 1.75; margin-bottom: 10px; }
+  ul { margin-left: 20px; margin-bottom: 10px; }
+  li { font-size: 14px; color: #555; line-height: 1.75; margin-bottom: 4px; }
+  strong { color: #1a1a1a; }
+  a { color: #2dbe60; }
+  .disclosure { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 14px; padding: 20px; margin-top: 24px; }
+  .disclosure h3 { color: #166534; font-size: 15px; margin-bottom: 8px; }
+  .disclosure p { color: #166534; font-size: 14px; }
+  footer { text-align: center; padding: 32px 16px; color: #999; font-size: 13px; }
+  footer a { color: #2dbe60; text-decoration: none; margin: 0 8px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="#fff"/></svg></div>
+  <div class="header-text"><h1>NoteSync</h1><p>Security</p></div>
+</header>
+
+<div class="hero">
+  <h2>Security at NoteSync</h2>
+  <p>We take the security of your notes and personal data seriously.</p>
+</div>
+
+<main>
+
+  <div class="grid">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h3>Encrypted in Transit</h3>
+      <p>All data between the app and our servers is encrypted using TLS 1.2+ (HTTPS). Your notes never travel over unencrypted connections.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>Password Hashing</h3>
+      <p>Passwords are hashed using bcrypt (cost factor 12). We never store or log your plaintext password — not even we can read it.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3>JWT Authentication</h3>
+      <p>Sessions use short-lived JSON Web Tokens signed with a server-side secret. Tokens expire automatically to minimize exposure if intercepted.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <h3>Rate Limiting</h3>
+      <p>Login and registration endpoints are rate-limited to 10 requests per 15 minutes per IP to prevent brute-force and credential-stuffing attacks.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h3>Input Sanitization</h3>
+      <p>All user input is sanitized server-side to prevent XSS and injection attacks. SQL queries use parameterized statements (no string interpolation).</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      </div>
+      <h3>Security Headers</h3>
+      <p>Our API uses Helmet.js to set strict HTTP security headers including Content-Security-Policy, X-Frame-Options, and X-Content-Type-Options.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Infrastructure Security</h2>
+    <ul>
+      <li>Servers run on dedicated VPS infrastructure (Contabo, Germany) — not shared hosting.</li>
+      <li>SSH access is key-based only; password authentication is disabled.</li>
+      <li>The PostgreSQL database is not exposed to the public internet — only accessible from localhost.</li>
+      <li>Nginx reverse proxy sits in front of the Node.js application server.</li>
+      <li>SSL/TLS certificates are managed by Let's Encrypt with automatic renewal.</li>
+      <li>The application runs as a non-root user via PM2 process management.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Data Protection</h2>
+    <ul>
+      <li>User passwords: bcrypt with salt (cost factor 12).</li>
+      <li>Database credentials: stored in environment variables, never in code.</li>
+      <li>JWT secret: stored in environment variables, rotated periodically.</li>
+      <li>Audio for transcription: transmitted to Groq API over HTTPS; audio files are never stored on our servers.</li>
+      <li>Deleted notes: soft-deleted immediately; purged from backups within 90 days.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>What We Don't Do</h2>
+    <ul>
+      <li>We do not store plaintext passwords.</li>
+      <li>We do not sell or share your note content with third parties.</li>
+      <li>We do not use advertising SDKs or tracking pixels.</li>
+      <li>We do not retain voice recordings after transcription.</li>
+      <li>We do not access your notes for any purpose other than serving them back to you.</li>
+    </ul>
+  </div>
+
+  <div class="disclosure">
+    <h3>🔒 Responsible Disclosure</h3>
+    <p>Found a security vulnerability? Please report it responsibly to <a href="mailto:security@notesync.app">security@notesync.app</a>. We will acknowledge receipt within 48 hours and work to resolve confirmed issues promptly. We appreciate responsible disclosure and do not take legal action against good-faith researchers.</p>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 NoteSync. All rights reserved.</p>
+  <p style="margin-top:8px;">
+    <a href="/help">Help & FAQ</a>
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/terms">Terms of Service</a>
+    <a href="/contact">Contact</a>
+  </p>
+</footer>
+</body>
+</html>

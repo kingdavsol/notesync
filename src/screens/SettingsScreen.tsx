@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Switch,
   Alert,
+  Linking,
 } from 'react-native';
 import { Feather as Icon } from '@expo/vector-icons';
 
@@ -225,7 +226,10 @@ export default function SettingsScreen() {
 
           <View style={styles.divider} />
 
-          <TouchableOpacity style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => Linking.openURL('https://notesync.9gg.app/terms')}
+          >
             <View style={styles.rowIcon}>
               <Icon name="file-text" size={20} color="#666" />
             </View>
@@ -237,7 +241,10 @@ export default function SettingsScreen() {
 
           <View style={styles.divider} />
 
-          <TouchableOpacity style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => Linking.openURL('https://notesync.9gg.app/privacy')}
+          >
             <View style={styles.rowIcon}>
               <Icon name="shield" size={20} color="#666" />
             </View>
@@ -249,12 +256,45 @@ export default function SettingsScreen() {
 
           <View style={styles.divider} />
 
-          <TouchableOpacity style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => Linking.openURL('https://notesync.9gg.app/security')}
+          >
+            <View style={styles.rowIcon}>
+              <Icon name="lock" size={20} color="#666" />
+            </View>
+            <View style={styles.rowContent}>
+              <Text style={styles.rowTitle}>Security</Text>
+            </View>
+            <Icon name="chevron-right" size={20} color="#ccc" />
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => Linking.openURL('https://notesync.9gg.app/help')}
+          >
             <View style={styles.rowIcon}>
               <Icon name="help-circle" size={20} color="#666" />
             </View>
             <View style={styles.rowContent}>
-              <Text style={styles.rowTitle}>Help & Support</Text>
+              <Text style={styles.rowTitle}>Help & FAQ</Text>
+            </View>
+            <Icon name="chevron-right" size={20} color="#ccc" />
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => Linking.openURL('https://notesync.9gg.app/contact')}
+          >
+            <View style={styles.rowIcon}>
+              <Icon name="mail" size={20} color="#666" />
+            </View>
+            <View style={styles.rowContent}>
+              <Text style={styles.rowTitle}>Contact Support</Text>
             </View>
             <Icon name="chevron-right" size={20} color="#ccc" />
           </TouchableOpacity>
