@@ -12,19 +12,44 @@
   .logo svg { width: 20px; height: 20px; fill: #fff; }
   .header-text h1 { color: #fff; font-size: 17px; font-weight: 700; }
   .header-text p { color: rgba(255,255,255,0.8); font-size: 13px; }
-  .hero { background: #2dbe60; padding: 24px 24px 40px; }
-  .hero h2 { color: #fff; font-size: 26px; font-weight: 700; margin-bottom: 6px; }
-  .hero p { color: rgba(255,255,255,0.85); font-size: 14px; }
-  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+  .hero { background: linear-gradient(135deg, #2dbe60 0%, #1e9e4d 100%); padding: 28px 24px 44px; }
+  .hero h2 { color: #fff; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .hero p { color: rgba(255,255,255,0.88); font-size: 14px; line-height: 1.6; max-width: 560px; }
+  nav { background: #fff; border-bottom: 1px solid #ececec; padding: 0 24px; display: flex; gap: 0; overflow-x: auto; }
+  nav a { color: #555; text-decoration: none; font-size: 13px; font-weight: 500; padding: 14px 16px; white-space: nowrap; border-bottom: 2px solid transparent; }
+  nav a:hover { color: #2dbe60; }
+  nav a.active { color: #2dbe60; border-bottom-color: #2dbe60; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 60px; }
+  .meta { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .updated { font-size: 13px; color: #999; }
+  .toc-card { background: #fff; border-radius: 14px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .toc-card h3 { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+  .toc-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+  .toc-cols a { font-size: 13px; color: #2dbe60; text-decoration: none; line-height: 1.9; }
+  .toc-cols a:hover { text-decoration: underline; }
+  @media (max-width: 500px) { .toc-cols { grid-template-columns: 1fr; } }
   .card { background: #fff; border-radius: 14px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  h2 { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  h2::before { content: ''; width: 4px; height: 18px; background: #2dbe60; border-radius: 2px; display: inline-block; }
-  p { font-size: 14px; color: #555; line-height: 1.75; margin-bottom: 10px; }
-  ul { margin-left: 20px; margin-bottom: 10px; }
-  li { font-size: 14px; color: #555; line-height: 1.75; margin-bottom: 4px; }
+  h2 { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  h2::before { content: ''; width: 4px; height: 18px; background: #2dbe60; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+  h3 { font-size: 14px; font-weight: 700; color: #1a1a1a; margin: 18px 0 8px; }
+  h3:first-child { margin-top: 0; }
+  p { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { margin-left: 20px; margin-bottom: 10px; }
+  li { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 5px; }
   strong { color: #1a1a1a; }
   a { color: #2dbe60; }
-  .updated { font-size: 13px; color: #999; margin-bottom: 20px; }
+  .highlight-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; }
+  .highlight-box p { color: #166534; margin: 0; font-size: 13px; line-height: 1.7; }
+  .plan-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 14px 0; }
+  @media (max-width: 500px) { .plan-grid { grid-template-columns: 1fr; } }
+  .plan-card { border-radius: 12px; padding: 16px; background: #f8f9fa; }
+  .plan-card.highlight { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .plan-card .plan-name { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+  .plan-card .plan-price { font-size: 20px; font-weight: 700; color: #2dbe60; margin-bottom: 8px; }
+  .plan-card .plan-price span { font-size: 13px; font-weight: 400; color: #999; }
+  .plan-card ul { margin-left: 16px; }
+  .plan-card li { font-size: 12px; color: #555; line-height: 1.7; margin-bottom: 3px; }
   footer { text-align: center; padding: 32px 16px; color: #999; font-size: 13px; }
   footer a { color: #2dbe60; text-decoration: none; margin: 0 8px; }
 </style>
@@ -34,111 +59,349 @@
   <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="#fff" stroke-width="2"/></svg></div>
   <div class="header-text"><h1>NoteSync</h1><p>Terms of Service</p></div>
 </header>
+<nav>
+  <a href="/help">Help & FAQ</a>
+  <a href="/privacy">Privacy</a>
+  <a href="/security">Security</a>
+  <a href="/terms" class="active">Terms</a>
+  <a href="/contact">Contact</a>
+</nav>
 
 <div class="hero">
   <h2>Terms of Service</h2>
-  <p>Please read these terms carefully before using NoteSync.</p>
+  <p>Please read these terms carefully. They form the legal agreement between you and Traffic2uMarketing for your use of NoteSync.</p>
 </div>
 
 <main>
-  <p class="updated">Last updated: February 26, 2026 &nbsp;·&nbsp; Effective: February 26, 2026</p>
+  <div class="meta">
+    <span class="updated">Last updated: February 26, 2026 &nbsp;·&nbsp; Effective: February 26, 2026</span>
+  </div>
 
-  <div class="card">
+  <div class="toc-card">
+    <h3>Contents</h3>
+    <div class="toc-cols">
+      <a href="#acceptance">1. Acceptance of Terms</a>
+      <a href="#description">2. Description of Service</a>
+      <a href="#eligibility">3. Eligibility</a>
+      <a href="#account">4. Account Registration</a>
+      <a href="#acceptable">5. Acceptable Use</a>
+      <a href="#plans">6. Subscription Plans & Payments</a>
+      <a href="#content">7. Your Content</a>
+      <a href="#ip">8. Intellectual Property</a>
+      <a href="#availability">9. Service Availability</a>
+      <a href="#privacy">10. Privacy</a>
+      <a href="#termination">11. Termination</a>
+      <a href="#liability">12. Limitation of Liability</a>
+      <a href="#warranties">13. Disclaimer of Warranties</a>
+      <a href="#indemnification">14. Indemnification</a>
+      <a href="#disputes">15. Dispute Resolution & Arbitration</a>
+      <a href="#governing">16. Governing Law</a>
+      <a href="#changes">17. Changes to Terms</a>
+      <a href="#contact-us">18. Contact Information</a>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <p><strong>Summary of key points:</strong> You own your notes. We don't sell your data. You can cancel anytime. Refunds must be requested through Google Play within 48 hours. These terms include an arbitration clause in Section 15.</p>
+  </div>
+
+  <div class="card" id="acceptance">
     <h2>1. Acceptance of Terms</h2>
-    <p>By downloading, installing, or using NoteSync ("the App", "the Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the Service.</p>
-    <p>These terms constitute a legally binding agreement between you and Traffic2uMarketing ("we", "us", "our"), the operator of NoteSync.</p>
+    <p>By downloading, installing, or using NoteSync (the "App", "Service", "Platform"), you confirm that you have read, understood, and agree to be bound by these Terms of Service ("Terms") and our <a href="/privacy">Privacy Policy</a>, which is incorporated by reference.</p>
+    <p>If you do not agree to these Terms, you must not install or use NoteSync. Your continued use of the Service after any updates to these Terms constitutes acceptance of the updated Terms.</p>
+    <p>These Terms constitute a legally binding agreement between you (the "User") and <strong>Traffic2uMarketing</strong> ("Company", "we", "us", "our"), the developer and operator of NoteSync. Traffic2uMarketing operates the NoteSync backend at notesync.9gg.app.</p>
   </div>
 
-  <div class="card">
+  <div class="card" id="description">
     <h2>2. Description of Service</h2>
-    <p>NoteSync is a note-taking application that allows users to create, edit, organize, and synchronize notes across multiple devices. The Service includes:</p>
+    <p>NoteSync is an offline-first note-taking application that allows users to create, edit, organize, and synchronize notes across multiple devices. The Service includes the following features:</p>
     <ul>
-      <li>Offline-first note storage and editing</li>
-      <li>Cloud synchronization across registered devices</li>
-      <li>Voice-to-text transcription powered by AI</li>
-      <li>Image attachments, checklists, and formatting tools</li>
-      <li>Notebook and tag organization</li>
+      <li><strong>Note creation and editing</strong> — rich text notes with formatting, checklists, images, and drawings.</li>
+      <li><strong>Offline-first storage</strong> — notes are stored locally on your device using SQLite and remain accessible without an internet connection.</li>
+      <li><strong>Cloud synchronization</strong> — notes sync automatically across all devices registered to your account when connected to the internet.</li>
+      <li><strong>Voice-to-text transcription</strong> — powered by AI (Groq Whisper), converts spoken words to text within notes.</li>
+      <li><strong>Organization tools</strong> — notebooks, folders, tags, and pinning to organize your notes.</li>
+      <li><strong>Search</strong> — full-text search across all your notes and notebooks.</li>
+      <li><strong>Note sharing</strong> — ability to generate shareable read-only links for specific notes.</li>
+      <li><strong>Note templates</strong> — create and reuse custom templates for common note formats.</li>
+      <li><strong>Version history</strong> — view and restore previous versions of edited notes.</li>
+      <li><strong>Reminders</strong> — set date-based reminders on individual notes.</li>
     </ul>
+    <p>Feature availability varies by subscription plan. We reserve the right to add, modify, or discontinue features at any time, with notice where material changes are involved.</p>
   </div>
 
-  <div class="card">
-    <h2>3. Account Registration</h2>
-    <p>To use NoteSync, you must create an account using a valid email address and a password of at least 8 characters. You are responsible for:</p>
+  <div class="card" id="eligibility">
+    <h2>3. Eligibility</h2>
+    <p>To use NoteSync, you must be at least <strong>13 years of age</strong> (or the minimum age required by your country's laws for digital services — 16 in most EEA countries). By creating an account, you represent and warrant that you meet this age requirement.</p>
+    <p>If you are using NoteSync on behalf of an organization (a company, institution, or other legal entity), you represent that you have the authority to bind that organization to these Terms.</p>
+    <p>NoteSync is available worldwide except where prohibited by applicable law. We make no representation that the Service is appropriate or available in all locations.</p>
+  </div>
+
+  <div class="card" id="account">
+    <h2>4. Account Registration & Security</h2>
+    <p>To use NoteSync beyond a read-only demonstration, you must register an account using a valid email address and a password of at least <strong>8 characters</strong>. You must verify your email address before accessing the Service.</p>
+    <p>You agree to:</p>
     <ul>
-      <li>Maintaining the confidentiality of your account credentials.</li>
-      <li>All activity that occurs under your account.</li>
-      <li>Notifying us immediately of any unauthorized use of your account.</li>
+      <li>Provide accurate, complete, and current registration information.</li>
+      <li>Maintain the confidentiality of your password and not share it with anyone.</li>
+      <li>Be responsible for all activity that occurs under your account, whether or not authorized by you.</li>
+      <li>Notify us immediately at <a href="mailto:security@notesync.app">security@notesync.app</a> if you suspect unauthorized access to your account.</li>
+      <li>Not create multiple accounts to circumvent plan limits or other restrictions.</li>
+      <li>Not create accounts for others without their consent.</li>
     </ul>
-    <p>You must provide accurate and complete information. Accounts registered with false information may be terminated.</p>
+    <p>Accounts registered with false information, used for abuse, or created to circumvent suspensions may be terminated without notice. We will not be liable for any loss or damage arising from your failure to maintain the security of your account credentials.</p>
   </div>
 
-  <div class="card">
-    <h2>4. Acceptable Use</h2>
-    <p>You agree <strong>not</strong> to use NoteSync to:</p>
+  <div class="card" id="acceptable">
+    <h2>5. Acceptable Use Policy</h2>
+    <p>NoteSync is a personal productivity tool. You agree to use it only for lawful purposes and in compliance with these Terms. You agree <strong>not</strong> to:</p>
+
+    <h3>Illegal or Harmful Content</h3>
     <ul>
-      <li>Store, transmit, or share illegal content of any kind.</li>
-      <li>Violate any applicable laws or regulations.</li>
-      <li>Infringe on the intellectual property rights of others.</li>
-      <li>Attempt to reverse-engineer, decompile, or hack the Service.</li>
-      <li>Use the Service to transmit spam, malware, or harmful code.</li>
-      <li>Share your account credentials with third parties.</li>
-      <li>Use automated tools to access the Service in a way that could disrupt it.</li>
+      <li>Store, transmit, or share content that is illegal in your jurisdiction or in the jurisdiction where our servers are located (Germany).</li>
+      <li>Store, transmit, or share child sexual abuse material (CSAM) or any content that sexually exploits minors. Violations will be reported to the appropriate authorities immediately.</li>
+      <li>Use NoteSync to plan, facilitate, or execute criminal activity.</li>
     </ul>
-  </div>
 
-  <div class="card">
-    <h2>5. Subscription Plans & Payments</h2>
-    <p>NoteSync offers the following plans:</p>
+    <h3>Platform Integrity</h3>
     <ul>
-      <li><strong>Free:</strong> Limited notes, devices, and transcriptions. No payment required.</li>
-      <li><strong>Starter ($2.99/month):</strong> Expanded limits billed monthly through Google Play.</li>
-      <li><strong>Power ($7.99/month):</strong> Unlimited usage billed monthly through Google Play.</li>
+      <li>Attempt to reverse-engineer, decompile, disassemble, or derive the source code of the NoteSync application or API.</li>
+      <li>Use automated bots, scripts, or tools to access the Service in a way that circumvents rate limits or disrupts service for other users.</li>
+      <li>Attempt to gain unauthorized access to other users' accounts or data.</li>
+      <li>Conduct penetration testing or security research without prior written permission from us. (See our responsible disclosure program on the <a href="/security">Security page</a>.)</li>
+      <li>Introduce malware, viruses, ransomware, or other harmful code through the Service.</li>
     </ul>
-    <p>Subscription payments are processed through Google Play. Subscriptions automatically renew unless cancelled at least 24 hours before the renewal date. We do not process or store payment information directly — all billing is handled by Google Play.</p>
-    <p><strong>Refunds:</strong> Refund requests must be submitted through Google Play within 48 hours of charge. We do not offer refunds for partial billing periods.</p>
+
+    <h3>Intellectual Property</h3>
+    <ul>
+      <li>Store or distribute content that infringes any copyright, trademark, patent, or other intellectual property rights.</li>
+      <li>Use NoteSync for unauthorized mass reproduction or distribution of copyrighted works.</li>
+    </ul>
+
+    <h3>Account & Plan Abuse</h3>
+    <ul>
+      <li>Share your account credentials with others to avoid paying for multiple subscriptions.</li>
+      <li>Use third-party services to abuse the Free plan limits (e.g., creating and deleting notes in cycles to stay within limits).</li>
+      <li>Misrepresent your subscription status or attempt to obtain features without paying for them.</li>
+    </ul>
+    <p>We reserve the right to investigate and terminate accounts that violate this policy, and to take legal action where appropriate.</p>
   </div>
 
-  <div class="card">
-    <h2>6. Your Content</h2>
-    <p>You retain full ownership of all notes, text, and content you create in NoteSync. By using the Service, you grant us a limited, non-exclusive license to store and process your content solely for the purpose of providing the Service to you.</p>
-    <p>We do not claim ownership of your notes, and we do not use your note content for advertising, training AI models, or any purpose other than delivering the Service.</p>
+  <div class="card" id="plans">
+    <h2>6. Subscription Plans & Payments</h2>
+    <p>NoteSync is available under three subscription plans:</p>
+    <div class="plan-grid">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0 <span>/ month</span></div>
+        <ul>
+          <li>Up to 50 notes</li>
+          <li>1 device sync</li>
+          <li>5 voice transcriptions/month</li>
+          <li>Basic formatting</li>
+          <li>Local storage only for offline</li>
+        </ul>
+      </div>
+      <div class="plan-card highlight">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$2.99 <span>/ month</span></div>
+        <ul>
+          <li>Up to 500 notes</li>
+          <li>3 device sync</li>
+          <li>30 voice transcriptions/month</li>
+          <li>Full formatting toolbar</li>
+          <li>Offline access for all notes</li>
+          <li>Note sharing</li>
+        </ul>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Power</div>
+        <div class="plan-price">$7.99 <span>/ month</span></div>
+        <ul>
+          <li>Unlimited notes</li>
+          <li>Unlimited devices</li>
+          <li>Unlimited transcriptions</li>
+          <li>All features included</li>
+          <li>Priority support</li>
+          <li>Version history (30 days)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Billing</h3>
+    <p>Paid subscriptions are billed monthly through the <strong>Google Play Store</strong>. We do not process or store payment card information directly — all billing and payment security is handled by Google. By subscribing, you agree to Google Play's billing terms in addition to these Terms.</p>
+    <p>Subscriptions <strong>automatically renew</strong> at the end of each billing period unless cancelled at least 24 hours before the renewal date. You can cancel your subscription at any time through the Google Play Store under "Subscriptions". Cancellation takes effect at the end of the current billing period — you retain access to paid features until then.</p>
+
+    <h3>Refunds</h3>
+    <p>Due to the nature of digital subscriptions, we do not offer refunds for partial billing periods. Refund requests for charges made in error must be submitted through the <strong>Google Play Store within 48 hours</strong> of the charge. Google's refund policies apply. We cannot process refunds directly.</p>
+
+    <h3>Plan Changes</h3>
+    <p>You can upgrade your plan at any time through Google Play — the upgrade takes effect immediately and you will be charged a prorated amount for the remainder of the billing period. Downgrading takes effect at the start of the next billing period. If your note or usage count exceeds the limits of your new plan, you will be able to view existing content but not create new items until you are within plan limits.</p>
+
+    <h3>Price Changes</h3>
+    <p>We may change subscription prices at any time. We will notify subscribers at least <strong>30 days before</strong> any price increase takes effect. Your subscription will continue at the current price until the effective date of the price change, at which point your renewal will be at the new rate. If you do not agree to the new price, you may cancel before the effective date.</p>
+
+    <h3>Free Plan Limits</h3>
+    <p>Free plan usage limits are enforced on a per-account basis. Attempts to circumvent limits through account manipulation may result in account suspension.</p>
   </div>
 
-  <div class="card">
-    <h2>7. Service Availability</h2>
-    <p>We strive to maintain high availability but do not guarantee uninterrupted access. Scheduled maintenance, unforeseen outages, or circumstances beyond our control may cause temporary service interruptions. NoteSync stores notes locally on your device, so your data remains accessible even when the sync service is unavailable.</p>
+  <div class="card" id="content">
+    <h2>7. Your Content</h2>
+    <p>You retain <strong>full ownership</strong> of all notes, text, images, drawings, voice recordings, and other content you create in NoteSync ("User Content"). We claim no ownership rights over your content.</p>
+    <p>By using NoteSync, you grant us a limited, non-exclusive, royalty-free, worldwide license to store, process, transmit, and display your User Content <em>solely for the purpose of providing the Service to you</em>. This license:</p>
+    <ul>
+      <li>Is limited to what is necessary to operate, maintain, and improve the Service for you.</li>
+      <li>Does not grant us the right to use your content for advertising, marketing, AI model training, research, or sharing with third parties.</li>
+      <li>Terminates when you delete your content or close your account (subject to the 90-day deletion schedule).</li>
+    </ul>
+    <p>You represent and warrant that: (a) you own or have the necessary rights to the User Content you submit; (b) your User Content does not violate the rights of any third party; and (c) your User Content does not violate any applicable laws.</p>
+    <p><strong>Content export:</strong> You can request an export of your notes at any time by contacting <a href="mailto:support@notesync.app">support@notesync.app</a>. We will provide your data in a standard format (JSON or plain text) within 14 days.</p>
   </div>
 
-  <div class="card">
-    <h2>8. Termination</h2>
-    <p>You may delete your account at any time by contacting support. We reserve the right to suspend or terminate accounts that violate these Terms, with or without notice.</p>
-    <p>Upon account deletion, your data will be scheduled for permanent deletion within 90 days. You may export your data before deleting your account by contacting support.</p>
+  <div class="card" id="ip">
+    <h2>8. Intellectual Property</h2>
+    <p>NoteSync and all of its components — including but not limited to the app design, user interface, graphics, code, API, trademarks, logos, and documentation — are the exclusive property of Traffic2uMarketing and are protected by copyright, trademark, and other intellectual property laws.</p>
+    <p>We grant you a limited, non-exclusive, non-transferable, revocable license to use the NoteSync application on your personal devices for the purposes described in these Terms. This license does not include:</p>
+    <ul>
+      <li>The right to copy, modify, distribute, sell, or lease any part of the Service.</li>
+      <li>The right to reverse-engineer or attempt to extract the source code.</li>
+      <li>The right to use the NoteSync name, logo, or branding without written permission.</li>
+      <li>The right to create derivative works based on the Service.</li>
+    </ul>
+    <p>Any feedback, suggestions, or ideas you provide about NoteSync may be used by us without compensation or attribution to you.</p>
   </div>
 
-  <div class="card">
-    <h2>9. Limitation of Liability</h2>
-    <p>To the fullest extent permitted by law, NoteSync and Traffic2uMarketing shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of data, loss of profits, or loss of goodwill.</p>
-    <p>Our total liability to you for any claim arising from use of the Service shall not exceed the amount you paid for the Service in the 12 months preceding the claim.</p>
+  <div class="card" id="availability">
+    <h2>9. Service Availability</h2>
+    <p>We strive to maintain high availability for the NoteSync sync service and APIs, but we do not guarantee uninterrupted access. The following may cause temporary service interruptions:</p>
+    <ul>
+      <li>Scheduled maintenance (we will provide advance notice where possible).</li>
+      <li>Infrastructure failures, hardware issues, or network outages beyond our control.</li>
+      <li>Force majeure events (natural disasters, government actions, third-party failures).</li>
+      <li>Security incidents requiring emergency service interruption.</li>
+    </ul>
+    <p>NoteSync's <strong>offline-first architecture</strong> means that even when the sync service is unavailable, all your notes remain fully accessible and editable on your device. Changes made offline will sync automatically when connectivity is restored. The sync service outage does not affect your ability to use NoteSync as a local note-taking app.</p>
+    <p>We do not offer Service Level Agreements (SLAs) or uptime guarantees under free or paid consumer plans.</p>
   </div>
 
-  <div class="card">
-    <h2>10. Disclaimer of Warranties</h2>
-    <p>The Service is provided "as is" and "as available" without warranties of any kind, express or implied. We do not warrant that the Service will be error-free, uninterrupted, or free of viruses or other harmful components.</p>
+  <div class="card" id="privacy">
+    <h2>10. Privacy</h2>
+    <p>Our collection and use of your personal information is governed by our <a href="/privacy">Privacy Policy</a>, which is incorporated into these Terms by reference. By using NoteSync, you consent to the data practices described in the Privacy Policy.</p>
+    <p>The privacy policy describes what data we collect, how we use it, how long we retain it, your rights regarding your data, and how to exercise those rights. Please review it carefully.</p>
   </div>
 
-  <div class="card">
-    <h2>11. Changes to Terms</h2>
-    <p>We may update these Terms of Service from time to time. Material changes will be communicated via in-app notification or email at least 14 days before they take effect. Continued use of the Service after the effective date constitutes acceptance of the updated terms.</p>
+  <div class="card" id="termination">
+    <h2>11. Termination</h2>
+    <h3>Termination by You</h3>
+    <p>You may delete your account at any time by contacting <a href="mailto:support@notesync.app">support@notesync.app</a>. Upon account deletion request, your account is deactivated immediately and your data is queued for permanent deletion within 90 days. Please export your notes before deleting your account if you wish to keep them.</p>
+    <p>Cancelling a subscription through Google Play does not delete your account. You retain access on the Free plan until your account is explicitly deleted.</p>
+
+    <h3>Termination by Us</h3>
+    <p>We reserve the right to suspend or terminate your account and access to the Service, with or without notice, if:</p>
+    <ul>
+      <li>You violate any provision of these Terms, particularly the Acceptable Use Policy (Section 5).</li>
+      <li>Your account is used for illegal activity or to harm other users.</li>
+      <li>You provide false registration information.</li>
+      <li>A payment for a paid subscription fails and is not resolved within 7 days.</li>
+      <li>We are required to do so by law or legal process.</li>
+    </ul>
+    <p>For violations of the Acceptable Use Policy, we will generally attempt to notify you and give you an opportunity to remedy the violation before termination, unless the violation is severe (e.g., CSAM, active security attacks) in which case immediate termination without notice is warranted.</p>
+
+    <h3>Effect of Termination</h3>
+    <p>Upon termination: (a) your right to access the Service immediately ceases; (b) we may delete your account data on an accelerated schedule; (c) provisions of these Terms that by their nature should survive (including Sections 7, 8, 12, 13, 14, 15) continue to apply.</p>
   </div>
 
-  <div class="card">
-    <h2>12. Governing Law</h2>
-    <p>These Terms are governed by the laws of the jurisdiction in which Traffic2uMarketing operates. Any disputes shall be resolved through binding arbitration unless prohibited by local law.</p>
+  <div class="card" id="liability">
+    <h2>12. Limitation of Liability</h2>
+    <p>TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL TRAFFIC2UMARKETING, ITS OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY:</p>
+    <ul>
+      <li>Indirect, incidental, special, consequential, punitive, or exemplary damages;</li>
+      <li>Loss of profits, revenue, data, goodwill, business opportunities, or anticipated savings;</li>
+      <li>Cost of substitute goods or services;</li>
+      <li>Any damage or loss arising from your use of or inability to use the Service;</li>
+      <li>Unauthorized access to or alteration of your data;</li>
+      <li>Statements or conduct of any third party on or through the Service;</li>
+    </ul>
+    <p>even if we have been advised of the possibility of such damages and regardless of the theory of liability (contract, tort, strict liability, or otherwise).</p>
+    <p>OUR TOTAL CUMULATIVE LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THE USE OF THE SERVICE SHALL NOT EXCEED THE GREATER OF: (a) THE TOTAL AMOUNT YOU PAID US IN THE 12 MONTHS IMMEDIATELY PRECEDING THE EVENT GIVING RISE TO THE CLAIM, OR (b) USD $10.00.</p>
+    <p>Some jurisdictions do not allow the exclusion or limitation of certain damages. In such jurisdictions, our liability is limited to the maximum extent permitted by law.</p>
   </div>
 
-  <div class="card">
-    <h2>13. Contact</h2>
-    <p>Questions about these Terms? Contact us at <a href="mailto:legal@notesync.app">legal@notesync.app</a> or through our <a href="/contact">contact form</a>.</p>
+  <div class="card" id="warranties">
+    <h2>13. Disclaimer of Warranties</h2>
+    <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY. WE EXPRESSLY DISCLAIM ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO:</p>
+    <ul>
+      <li>Implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</li>
+      <li>Warranties that the Service will be uninterrupted, error-free, or free from viruses or other harmful components.</li>
+      <li>Warranties that the Service will meet your specific requirements or expectations.</li>
+      <li>Warranties regarding the accuracy, reliability, or completeness of any content returned by AI features (e.g., voice transcription).</li>
+      <li>Warranties that data stored in the Service will not be lost or corrupted.</li>
+    </ul>
+    <p>We strongly recommend maintaining your own backup of important notes. NoteSync's offline storage provides one level of redundancy, but it should not be your sole backup for irreplaceable content.</p>
+  </div>
+
+  <div class="card" id="indemnification">
+    <h2>14. Indemnification</h2>
+    <p>You agree to indemnify, defend, and hold harmless Traffic2uMarketing and its officers, directors, employees, agents, and successors from and against any claims, liabilities, damages, losses, costs, and expenses (including reasonable attorneys' fees) arising from or related to:</p>
+    <ul>
+      <li>Your use of the Service in violation of these Terms;</li>
+      <li>Your User Content, including any claims that your content infringes a third party's rights;</li>
+      <li>Your violation of any applicable law or regulation;</li>
+      <li>Your violation of any third party's rights, including intellectual property rights.</li>
+    </ul>
+    <p>We reserve the right to assume exclusive control of the defense of any matter for which you are required to indemnify us, in which case you agree to cooperate with our defense at your expense.</p>
+  </div>
+
+  <div class="card" id="disputes">
+    <h2>15. Dispute Resolution & Arbitration</h2>
+    <p><strong>Informal Resolution First:</strong> Before initiating any formal dispute process, you agree to contact us at <a href="mailto:legal@notesync.app">legal@notesync.app</a> and give us 30 days to resolve the dispute informally. Most issues can be resolved quickly through direct communication.</p>
+
+    <h3>Binding Arbitration</h3>
+    <p>If informal resolution fails, any dispute, claim, or controversy arising from or relating to these Terms or your use of the Service shall be resolved by <strong>binding individual arbitration</strong>, rather than in court, except for claims that may be brought in small claims court.</p>
+    <p>The arbitration shall be conducted by a recognized arbitration provider mutually agreed upon by both parties. The arbitrator's decision will be final and binding on both parties and may be entered as a judgment in any court with jurisdiction.</p>
+
+    <h3>Class Action Waiver</h3>
+    <p>TO THE FULLEST EXTENT PERMITTED BY LAW, YOU AND WE EACH WAIVE THE RIGHT TO PARTICIPATE IN CLASS-ACTION LITIGATION OR CLASS-WIDE ARBITRATION. All claims must be brought individually and not on a class or representative basis.</p>
+
+    <h3>Exceptions</h3>
+    <p>Notwithstanding the arbitration clause, either party may seek emergency injunctive or other equitable relief in a court of competent jurisdiction to prevent imminent harm (e.g., to prevent ongoing infringement or unauthorized access to data).</p>
+
+    <h3>Opt-Out</h3>
+    <p>You may opt out of the arbitration agreement within 30 days of first agreeing to these Terms by emailing <a href="mailto:legal@notesync.app">legal@notesync.app</a> with the subject "Arbitration Opt-Out" and your account email. Opting out does not affect any other part of these Terms.</p>
+
+    <h3>Residents of the EEA or UK</h3>
+    <p>If you are a resident of the European Economic Area or United Kingdom, the arbitration clause and class action waiver above do not apply to you. You retain the right to bring claims before your national courts and use EU consumer dispute resolution mechanisms.</p>
+  </div>
+
+  <div class="card" id="governing">
+    <h2>16. Governing Law</h2>
+    <p>These Terms are governed by and construed in accordance with the laws applicable to Traffic2uMarketing's jurisdiction of operation, without regard to conflict of law principles. For users outside the EEA and UK, any disputes not resolved by arbitration shall be subject to the exclusive jurisdiction of the courts in our operating jurisdiction.</p>
+    <p>For users in the European Economic Area or United Kingdom, these Terms do not affect your rights under mandatory consumer protection laws in your country of residence, which cannot be contractually waived.</p>
+    <p>The United Nations Convention on Contracts for the International Sale of Goods does not apply to these Terms.</p>
+  </div>
+
+  <div class="card" id="changes">
+    <h2>17. Changes to These Terms</h2>
+    <p>We may update these Terms of Service from time to time to reflect changes in the Service, legal requirements, or our policies. When we make changes:</p>
+    <ul>
+      <li>We will update the "Last updated" date at the top of this page.</li>
+      <li>For <strong>material changes</strong> (changes to your rights, payment terms, or arbitration provisions), we will notify you via in-app notification or email at least <strong>14 days before</strong> the changes take effect.</li>
+      <li>For minor administrative changes (grammar, formatting, clarifications with no substantive effect), we may update without advance notice.</li>
+    </ul>
+    <p>Your continued use of NoteSync after material changes become effective constitutes your acceptance of the revised Terms. If you disagree with revised Terms, you may close your account before the effective date and those Terms will not apply to you.</p>
+  </div>
+
+  <div class="card" id="contact-us">
+    <h2>18. Contact Information</h2>
+    <p>If you have questions about these Terms, want to report a violation, or need to reach us for any legal matter:</p>
+    <ul>
+      <li><strong>General legal inquiries:</strong> <a href="mailto:legal@notesync.app">legal@notesync.app</a></li>
+      <li><strong>Privacy matters:</strong> <a href="mailto:privacy@notesync.app">privacy@notesync.app</a></li>
+      <li><strong>Security reports:</strong> <a href="mailto:security@notesync.app">security@notesync.app</a></li>
+      <li><strong>User support:</strong> <a href="mailto:support@notesync.app">support@notesync.app</a> or our <a href="/contact">contact form</a></li>
+    </ul>
+    <p>We will respond to legal inquiries within 10 business days.</p>
+    <p style="margin-top:14px; font-size:13px; color:#999;">These Terms of Service were last reviewed and updated February 26, 2026. This document constitutes the entire agreement between you and Traffic2uMarketing regarding your use of NoteSync and supersedes all prior agreements relating to the same subject matter.</p>
   </div>
 </main>
 

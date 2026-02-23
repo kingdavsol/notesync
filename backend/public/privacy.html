@@ -12,110 +12,426 @@
   .logo svg { width: 20px; height: 20px; fill: #fff; }
   .header-text h1 { color: #fff; font-size: 17px; font-weight: 700; }
   .header-text p { color: rgba(255,255,255,0.8); font-size: 13px; }
-  .hero { background: #2dbe60; padding: 24px 24px 40px; }
-  .hero h2 { color: #fff; font-size: 26px; font-weight: 700; margin-bottom: 6px; }
-  .hero p { color: rgba(255,255,255,0.85); font-size: 14px; }
-  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+  .hero { background: linear-gradient(135deg, #2dbe60 0%, #1e9e4d 100%); padding: 28px 24px 44px; }
+  .hero h2 { color: #fff; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .hero p { color: rgba(255,255,255,0.88); font-size: 14px; line-height: 1.6; max-width: 560px; }
+  nav { background: #fff; border-bottom: 1px solid #ececec; padding: 0 24px; display: flex; gap: 0; overflow-x: auto; }
+  nav a { color: #555; text-decoration: none; font-size: 13px; font-weight: 500; padding: 14px 16px; white-space: nowrap; border-bottom: 2px solid transparent; }
+  nav a:hover { color: #2dbe60; }
+  nav a.active { color: #2dbe60; border-bottom-color: #2dbe60; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 60px; }
+  .meta { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .badge { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; }
+  .updated { font-size: 13px; color: #999; }
+  .toc-card { background: #fff; border-radius: 14px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .toc-card h3 { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+  .toc-grid a { font-size: 13px; color: #2dbe60; text-decoration: none; line-height: 1.8; }
+  .toc-grid a:hover { text-decoration: underline; }
   .card { background: #fff; border-radius: 14px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  h2 { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  h2::before { content: ''; width: 4px; height: 18px; background: #2dbe60; border-radius: 2px; display: inline-block; }
-  p { font-size: 14px; color: #555; line-height: 1.75; margin-bottom: 10px; }
-  ul { margin-left: 20px; margin-bottom: 10px; }
-  li { font-size: 14px; color: #555; line-height: 1.75; margin-bottom: 4px; }
+  h2 { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  h2::before { content: ''; width: 4px; height: 18px; background: #2dbe60; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+  h3 { font-size: 14px; font-weight: 700; color: #1a1a1a; margin: 16px 0 8px; }
+  p { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { margin-left: 20px; margin-bottom: 10px; }
+  li { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 5px; }
   strong { color: #1a1a1a; }
   a { color: #2dbe60; }
-  .updated { font-size: 13px; color: #999; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+  th { background: #f8f9fa; color: #1a1a1a; font-weight: 600; padding: 10px 12px; text-align: left; border-bottom: 2px solid #e0e0e0; }
+  td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; color: #555; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .highlight-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px 18px; margin: 14px 0; }
+  .highlight-box p { color: #166534; margin: 0; font-size: 13px; line-height: 1.7; }
+  .highlight-box strong { color: #166534; }
+  .rights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+  @media (max-width: 500px) { .rights-grid { grid-template-columns: 1fr; } .toc-grid { grid-template-columns: 1fr; } }
+  .right-item { background: #f8f9fa; border-radius: 10px; padding: 14px; }
+  .right-item strong { display: block; font-size: 13px; color: #1a1a1a; margin-bottom: 4px; }
+  .right-item span { font-size: 13px; color: #666; line-height: 1.6; }
   footer { text-align: center; padding: 32px 16px; color: #999; font-size: 13px; }
   footer a { color: #2dbe60; text-decoration: none; margin: 0 8px; }
 </style>
 </head>
 <body>
 <header>
-  <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+  <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="#fff" stroke-width="2"/></svg></div>
   <div class="header-text"><h1>NoteSync</h1><p>Privacy Policy</p></div>
 </header>
+<nav>
+  <a href="/help">Help & FAQ</a>
+  <a href="/privacy" class="active">Privacy</a>
+  <a href="/security">Security</a>
+  <a href="/terms">Terms</a>
+  <a href="/contact">Contact</a>
+</nav>
 
 <div class="hero">
   <h2>Privacy Policy</h2>
-  <p>We respect your privacy and are committed to protecting your personal data.</p>
+  <p>We built NoteSync to be a private note-taking tool you can trust. Your notes belong to you — not us. This policy explains exactly what data we collect, why, and how you can control it.</p>
 </div>
 
 <main>
-  <p class="updated">Last updated: February 26, 2026 &nbsp;·&nbsp; Effective: February 26, 2026</p>
+  <div class="meta">
+    <span class="badge">GDPR Compliant</span>
+    <span class="badge">CCPA Compliant</span>
+    <span class="updated">Last updated: February 26, 2026 &nbsp;·&nbsp; Effective: February 26, 2026</span>
+  </div>
 
-  <div class="card">
+  <div class="toc-card">
+    <h3>Contents</h3>
+    <div class="toc-grid">
+      <a href="#who">1. Who We Are</a>
+      <a href="#collect">2. Data We Collect</a>
+      <a href="#how-use">3. How We Use Your Data</a>
+      <a href="#legal-basis">4. Legal Basis (GDPR)</a>
+      <a href="#third-parties">5. Third-Party Services</a>
+      <a href="#storage">6. Data Storage & Retention</a>
+      <a href="#sharing">7. Data Sharing</a>
+      <a href="#cookies">8. Cookies & Local Storage</a>
+      <a href="#rights">9. Your Rights</a>
+      <a href="#california">10. California Residents (CCPA)</a>
+      <a href="#children">11. Children's Privacy</a>
+      <a href="#transfers">12. International Data Transfers</a>
+      <a href="#changes">13. Changes to This Policy</a>
+      <a href="#contact-us">14. Contact Us</a>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <p><strong>The short version:</strong> We collect only what is necessary to run NoteSync. We never sell your data. We never read your notes. Your data is stored on servers we control in Germany. You can delete your account and all data at any time.</p>
+  </div>
+
+  <div class="card" id="who">
     <h2>1. Who We Are</h2>
-    <p>NoteSync ("we", "us", "our") is a note-taking application operated by Traffic2uMarketing. Our backend is hosted at <strong>notesync.9gg.app</strong>. For privacy inquiries, contact us at <a href="mailto:privacy@notesync.app">privacy@notesync.app</a>.</p>
+    <p>NoteSync is a note-taking application developed and operated by <strong>Traffic2uMarketing</strong>. Our backend API and data storage is hosted at <strong>notesync.9gg.app</strong> on dedicated servers in Germany.</p>
+    <p>For all privacy-related inquiries, data access requests, or concerns, please contact our privacy team at <a href="mailto:privacy@notesync.app">privacy@notesync.app</a>.</p>
+    <p>When this policy refers to "NoteSync", "we", "us", or "our", it means Traffic2uMarketing as the data controller for your personal data.</p>
   </div>
 
-  <div class="card">
+  <div class="card" id="collect">
     <h2>2. Data We Collect</h2>
-    <p>We collect only what is necessary to provide the service:</p>
+    <p>We collect the minimum data necessary to provide a reliable, synchronized note-taking service. Here is a complete list:</p>
+
+    <h3>Account Data</h3>
     <ul>
-      <li><strong>Account data:</strong> Email address and hashed password (we never store plaintext passwords).</li>
-      <li><strong>Note content:</strong> Titles, text bodies, tags, folder names, and metadata (created/updated timestamps, pin status).</li>
-      <li><strong>Images:</strong> Photos attached to notes are stored as base64-encoded data associated with your account.</li>
-      <li><strong>Voice recordings:</strong> Audio recorded for transcription is transmitted to our transcription service and immediately discarded after processing — we do not retain audio files.</li>
-      <li><strong>Device identifiers:</strong> A randomly generated device ID to enable multi-device sync conflict resolution.</li>
-      <li><strong>Usage logs:</strong> Authentication events (login, logout, registration) are logged for security auditing. We do not log note content access.</li>
+      <li><strong>Email address</strong> — used for account identification, login, email verification, and critical security notifications. We do not use your email for marketing without explicit opt-in.</li>
+      <li><strong>Password (hashed)</strong> — your password is hashed using bcrypt (cost factor 12) before storage. We never store or transmit your plaintext password, and we cannot recover it.</li>
+      <li><strong>Account creation date and last login date</strong> — used for security and account lifecycle management.</li>
+      <li><strong>Email verification status</strong> — whether your email has been confirmed.</li>
+    </ul>
+
+    <h3>Note Content</h3>
+    <ul>
+      <li><strong>Note titles and body text</strong> — the full content of your notes, stored in our database to enable sync across devices.</li>
+      <li><strong>Note metadata</strong> — created/updated timestamps, pin status, archive status, deletion status.</li>
+      <li><strong>Folder names and structure</strong> — the organizational hierarchy you create.</li>
+      <li><strong>Tags</strong> — tag names you apply to notes.</li>
+      <li><strong>Image attachments</strong> — photos embedded in notes are stored as part of the note record in our database.</li>
+      <li><strong>Drawings</strong> — freehand sketches created within notes are stored as drawing data.</li>
+    </ul>
+
+    <h3>Voice Transcription</h3>
+    <ul>
+      <li><strong>Audio recordings</strong> — when you use the voice-to-text feature, your device records audio and sends it to our server over HTTPS. We immediately forward it to Groq's Whisper API for transcription. <strong>We do not store audio files at any point.</strong> The audio is used only for the duration of the transcription request and is then discarded.</li>
+      <li><strong>Transcription text</strong> — the resulting text is saved to your note as note content.</li>
+    </ul>
+
+    <h3>Device & Sync Data</h3>
+    <ul>
+      <li><strong>Device ID</strong> — a randomly generated identifier assigned to each device you use to access NoteSync. Used for sync conflict resolution and device management. Not linked to your hardware identifiers.</li>
+      <li><strong>Sync timestamps</strong> — the last time each device successfully synced, used to determine which changes need to be pushed/pulled.</li>
+    </ul>
+
+    <h3>Security & Server Logs</h3>
+    <ul>
+      <li><strong>Authentication logs</strong> — login attempts (success/failure), registration events, and token refresh events are logged with IP address and timestamp for security monitoring and abuse prevention.</li>
+      <li><strong>API request logs</strong> — our server software (Node.js/Express + nginx) may log request metadata (endpoint, HTTP status code, timestamp). We do not log request bodies or note content in server logs.</li>
+      <li><strong>Contact form submissions</strong> — if you submit a message through our contact form, we log your name, email, category, and message content.</li>
+    </ul>
+
+    <h3>What We Do NOT Collect</h3>
+    <ul>
+      <li>We do not collect GPS location data.</li>
+      <li>We do not collect device hardware identifiers (IMEI, advertising ID, etc.).</li>
+      <li>We do not collect contacts, calendar, photos outside of what you explicitly attach to notes.</li>
+      <li>We do not collect browsing history or behavior outside the NoteSync app.</li>
+      <li>We do not use analytics SDKs or crash reporting services that send data to third parties.</li>
     </ul>
   </div>
 
-  <div class="card">
+  <div class="card" id="how-use">
     <h2>3. How We Use Your Data</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Purpose</th>
+          <th>Data Used</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Providing the service</strong> — storing and syncing your notes</td>
+          <td>Note content, account data, device IDs</td>
+        </tr>
+        <tr>
+          <td><strong>Authentication</strong> — verifying your identity on login</td>
+          <td>Email, hashed password, JWT tokens</td>
+        </tr>
+        <tr>
+          <td><strong>Email verification</strong> — confirming account ownership</td>
+          <td>Email address, verification tokens</td>
+        </tr>
+        <tr>
+          <td><strong>Voice transcription</strong> — converting speech to text</td>
+          <td>Audio (in transit only, not stored)</td>
+        </tr>
+        <tr>
+          <td><strong>Security monitoring</strong> — detecting and preventing abuse</td>
+          <td>IP address, auth event logs</td>
+        </tr>
+        <tr>
+          <td><strong>Security notifications</strong> — alerting you to suspicious activity</td>
+          <td>Email address</td>
+        </tr>
+        <tr>
+          <td><strong>Customer support</strong> — responding to your inquiries</td>
+          <td>Email, contact form data</td>
+        </tr>
+        <tr>
+          <td><strong>Service improvements</strong> — fixing bugs and improving features</td>
+          <td>Anonymized error logs and aggregate usage patterns (no note content)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>We <strong>do not</strong> use your note content for advertising, AI model training, behavioral profiling, or any purpose other than serving it back to you.</p>
+  </div>
+
+  <div class="card" id="legal-basis">
+    <h2>4. Legal Basis for Processing (GDPR)</h2>
+    <p>If you are located in the European Economic Area (EEA) or United Kingdom, we process your personal data under the following legal bases as required by GDPR Article 6:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Processing Activity</th>
+          <th>Legal Basis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Storing and syncing your notes</td>
+          <td><strong>Contract performance</strong> (Art. 6(1)(b)) — necessary to deliver the service you signed up for</td>
+        </tr>
+        <tr>
+          <td>Authentication and account management</td>
+          <td><strong>Contract performance</strong> (Art. 6(1)(b))</td>
+        </tr>
+        <tr>
+          <td>Sending email verification and security alerts</td>
+          <td><strong>Contract performance</strong> (Art. 6(1)(b)) and <strong>Legitimate interests</strong> (Art. 6(1)(f)) — keeping your account secure</td>
+        </tr>
+        <tr>
+          <td>Security monitoring and abuse prevention</td>
+          <td><strong>Legitimate interests</strong> (Art. 6(1)(f)) — protecting users and systems from harm</td>
+        </tr>
+        <tr>
+          <td>Processing voice transcription audio</td>
+          <td><strong>Contract performance</strong> (Art. 6(1)(b)) — you explicitly initiate each transcription</td>
+        </tr>
+        <tr>
+          <td>Customer support correspondence</td>
+          <td><strong>Legitimate interests</strong> (Art. 6(1)(f)) — responding to your requests</td>
+        </tr>
+        <tr>
+          <td>Marketing communications (if any, opt-in only)</td>
+          <td><strong>Consent</strong> (Art. 6(1)(a)) — we will always ask for explicit permission</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>You have the right to withdraw consent at any time (where consent is the basis), or to object to processing based on legitimate interests. See Section 9 for how to exercise your rights.</p>
+  </div>
+
+  <div class="card" id="third-parties">
+    <h2>5. Third-Party Services</h2>
+    <p>We use a small number of third-party services to operate NoteSync. We do not use any advertising networks, analytics platforms, or social SDKs.</p>
+
+    <h3>Groq (Voice Transcription)</h3>
+    <p>When you record audio for transcription, the audio file is transmitted to Groq's API (api.groq.com) over HTTPS using the <em>whisper-large-v3</em> model. Groq processes the audio to produce a text transcript, which is returned to our server and saved as your note text. Audio data is not retained by Groq after processing per their API terms. Groq is bound by standard contractual clauses for data protection. Review <a href="https://groq.com/privacy-policy/" target="_blank" rel="noopener">Groq's Privacy Policy</a> for details.</p>
+
+    <h3>Contabo GmbH (Server Infrastructure)</h3>
+    <p>Our application servers and PostgreSQL database are hosted on dedicated VPS infrastructure provided by Contabo GmbH, located in Frankfurt, Germany. Contabo operates under EU data protection law. Your data never leaves EU infrastructure during normal operations. Review <a href="https://contabo.com/en/legal/privacy/" target="_blank" rel="noopener">Contabo's Privacy Policy</a> for details.</p>
+
+    <h3>Let's Encrypt (SSL Certificates)</h3>
+    <p>SSL/TLS certificates are issued by Let's Encrypt (Internet Security Research Group). Certificate issuance involves your domain name only — no personal data. Review <a href="https://letsencrypt.org/privacy/" target="_blank" rel="noopener">Let's Encrypt's Privacy Policy</a>.</p>
+
+    <h3>Google Play (Billing)</h3>
+    <p>If you purchase a NoteSync subscription through the Google Play Store, payment processing is handled entirely by Google. We receive only a subscription status confirmation — we do not receive your payment card details. Review <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a> for billing data handling.</p>
+
+    <p><strong>We do not integrate:</strong> Facebook SDK, Google Analytics, Firebase Analytics, Crashlytics, Mixpanel, Segment, Amplitude, Sentry, or any other third-party analytics or crash reporting service that would access your note data.</p>
+  </div>
+
+  <div class="card" id="storage">
+    <h2>6. Data Storage & Retention</h2>
+    <h3>Where Your Data Is Stored</h3>
+    <p>All user data (notes, account information, device records) is stored in a PostgreSQL database on a dedicated VPS server located in Frankfurt, Germany, operated by Contabo GmbH. The database is not accessible from the public internet. Backups are encrypted and also stored within Germany.</p>
+
+    <h3>On-Device Storage</h3>
+    <p>The NoteSync app stores a local copy of your notes in SQLite on your device. This enables offline access. This on-device data is protected by your device's own security and encryption features. Deleting the app will remove local data from your device, but your data remains on our servers until you delete your account.</p>
+
+    <h3>Data Retention Schedule</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Data Type</th>
+          <th>Retention Period</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Active account data (notes, folders, tags)</td>
+          <td>Retained for the lifetime of your account</td>
+        </tr>
+        <tr>
+          <td>Deleted notes (soft-deleted)</td>
+          <td>Immediately soft-deleted; permanently purged from database and backups within 90 days</td>
+        </tr>
+        <tr>
+          <td>Account data after account deletion</td>
+          <td>Queued for permanent deletion within 90 days of account deletion request</td>
+        </tr>
+        <tr>
+          <td>Authentication / security logs</td>
+          <td>30 days rolling window</td>
+        </tr>
+        <tr>
+          <td>Voice audio (transcription)</td>
+          <td>Not stored — discarded immediately after transcription</td>
+        </tr>
+        <tr>
+          <td>Contact form submissions</td>
+          <td>12 months (for support resolution tracking)</td>
+        </tr>
+        <tr>
+          <td>Billing records (Google Play)</td>
+          <td>Handled by Google; we retain only subscription status (active/inactive)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>You can request early deletion of any of your data at any time by contacting <a href="mailto:privacy@notesync.app">privacy@notesync.app</a>.</p>
+  </div>
+
+  <div class="card" id="sharing">
+    <h2>7. Data Sharing & Disclosure</h2>
+    <p>We do not sell, rent, or trade your personal data. We do not share your note content with any third party except where strictly required to deliver the service (Groq for audio transcription). We may disclose personal data only in the following limited circumstances:</p>
     <ul>
-      <li>To provide, maintain, and improve the NoteSync service.</li>
-      <li>To sync your notes across your registered devices.</li>
-      <li>To authenticate you and protect your account from unauthorized access.</li>
-      <li>To transcribe voice recordings into text using our AI provider.</li>
-      <li>To send important service emails (verification, security alerts) — no marketing emails without your consent.</li>
+      <li><strong>Legal compliance:</strong> If required to comply with a valid legal obligation, court order, or governmental request. We will notify you before disclosure if legally permitted.</li>
+      <li><strong>Protection of rights:</strong> To protect the safety of our users, prevent fraud, or defend against legal claims, where disclosure is proportionate and necessary.</li>
+      <li><strong>Business transfers:</strong> In the event of a merger, acquisition, or sale of assets, user data may be transferred. We will notify affected users in advance and give you the option to delete your account before any transfer occurs.</li>
     </ul>
-    <p>We <strong>do not</strong> sell, rent, or share your personal data or note content with third parties for advertising or marketing purposes.</p>
+    <p>We will never share your data with advertisers, data brokers, or anyone who would use it for purposes other than operating NoteSync.</p>
   </div>
 
-  <div class="card">
-    <h2>4. Third-Party Services</h2>
-    <p>We use the following third-party services to operate NoteSync:</p>
+  <div class="card" id="cookies">
+    <h2>8. Cookies & Local Storage</h2>
+    <p>The NoteSync mobile app does not use browser cookies. It uses the following on-device storage mechanisms:</p>
     <ul>
-      <li><strong>Groq (whisper-large-v3):</strong> Processes audio for voice-to-text transcription. Audio is sent to Groq's API over HTTPS and is not retained after transcription. Groq's privacy policy applies to this processing.</li>
-      <li><strong>Contabo VPS:</strong> Our servers are hosted on Contabo infrastructure in Germany. Your data is stored on servers we control and operate.</li>
+      <li><strong>SQLite (WatermelonDB):</strong> Stores your notes and app data locally for offline access. This data stays on your device and is synced with our server when you are online.</li>
+      <li><strong>AsyncStorage:</strong> Stores your authentication token and last sync timestamp locally. The authentication token is used to authenticate API requests.</li>
     </ul>
-    <p>We do not use analytics SDKs, advertising networks, or social login providers that would share your data with third parties.</p>
+    <p>If you access any NoteSync web pages (such as this privacy policy) through a browser, our web server does not set any tracking cookies. We only use session-based CSRF protection tokens for form submissions, which are not used for tracking.</p>
   </div>
 
-  <div class="card">
-    <h2>5. Data Storage & Security</h2>
-    <p>All data in transit is encrypted using TLS 1.2+ (HTTPS). Passwords are hashed using bcrypt with a cost factor of 12. Your note data is stored in a PostgreSQL database on servers we control. See our <a href="/security">Security page</a> for full technical details.</p>
-    <p>We retain your data for as long as your account is active. Deleted notes are soft-deleted (marked as deleted) and purged from backups within 90 days.</p>
+  <div class="card" id="rights">
+    <h2>9. Your Privacy Rights</h2>
+    <p>Regardless of where you live, we honor the following rights for all NoteSync users. If you are in the EEA/UK, these rights are guaranteed by the GDPR.</p>
+    <div class="rights-grid">
+      <div class="right-item">
+        <strong>Right to Access</strong>
+        <span>Request a copy of all personal data we hold about you, including your account info, notes, and logs.</span>
+      </div>
+      <div class="right-item">
+        <strong>Right to Rectification</strong>
+        <span>Correct any inaccurate personal data (such as your email address) at any time through the app or by contacting us.</span>
+      </div>
+      <div class="right-item">
+        <strong>Right to Erasure</strong>
+        <span>Request deletion of your account and all associated data. We will process your request within 30 days and confirm when deletion is complete.</span>
+      </div>
+      <div class="right-item">
+        <strong>Right to Data Portability</strong>
+        <span>Request an export of your notes in a machine-readable format (JSON or plain text). Contact support to request an export.</span>
+      </div>
+      <div class="right-item">
+        <strong>Right to Restriction</strong>
+        <span>Ask us to pause processing your data while we address a concern, without requiring full deletion.</span>
+      </div>
+      <div class="right-item">
+        <strong>Right to Object</strong>
+        <span>Object to processing based on legitimate interests (e.g., security logging). We will honor objections unless we have compelling legitimate grounds.</span>
+      </div>
+      <div class="right-item">
+        <strong>Right to Withdraw Consent</strong>
+        <span>Where processing is based on consent (e.g., marketing emails), withdraw consent at any time without affecting prior processing.</span>
+      </div>
+      <div class="right-item">
+        <strong>Right to Lodge a Complaint</strong>
+        <span>If you are in the EEA, you have the right to lodge a complaint with your local supervisory authority (e.g., your national Data Protection Authority).</span>
+      </div>
+    </div>
+    <p style="margin-top:16px;">To exercise any of these rights, email <a href="mailto:privacy@notesync.app">privacy@notesync.app</a> with the subject line matching your request (e.g., "Data Access Request" or "Account Deletion Request"). We will respond within <strong>30 days</strong>. We may ask you to verify your identity before processing sensitive requests.</p>
   </div>
 
-  <div class="card">
-    <h2>6. Your Rights</h2>
-    <p>Depending on your location, you may have the right to:</p>
+  <div class="card" id="california">
+    <h2>10. California Residents — CCPA Rights</h2>
+    <p>If you are a California resident, the California Consumer Privacy Act (CCPA) grants you additional rights:</p>
     <ul>
-      <li><strong>Access</strong> the personal data we hold about you.</li>
-      <li><strong>Correct</strong> inaccurate data.</li>
-      <li><strong>Delete</strong> your account and all associated data.</li>
-      <li><strong>Export</strong> your notes (contact support for a data export).</li>
-      <li><strong>Object</strong> to processing of your data.</li>
+      <li><strong>Right to Know:</strong> You can request disclosure of the categories and specific pieces of personal information we have collected about you in the past 12 months, the sources of that data, the purposes for collection, and any third parties it was shared with.</li>
+      <li><strong>Right to Delete:</strong> You can request deletion of personal information we have collected, subject to certain exceptions (e.g., data we are legally required to retain).</li>
+      <li><strong>Right to Opt-Out of Sale:</strong> We do not sell personal information. No opt-out action is required.</li>
+      <li><strong>Right to Non-Discrimination:</strong> We will not discriminate against you for exercising your CCPA rights — you will receive the same service quality regardless.</li>
     </ul>
-    <p>To exercise any of these rights, contact us at <a href="mailto:privacy@notesync.app">privacy@notesync.app</a>. We will respond within 30 days.</p>
+    <p>To submit a CCPA request, email <a href="mailto:privacy@notesync.app">privacy@notesync.app</a> with "CCPA Request" in the subject line. We will verify your identity and respond within 45 days (extendable to 90 days with notice).</p>
+    <p>In the past 12 months, NoteSync has not sold any personal information to third parties.</p>
   </div>
 
-  <div class="card">
-    <h2>7. Children's Privacy</h2>
-    <p>NoteSync is not directed at children under 13. We do not knowingly collect personal data from children. If you believe a child has provided us with their data, contact us and we will delete it promptly.</p>
+  <div class="card" id="children">
+    <h2>11. Children's Privacy</h2>
+    <p>NoteSync is not designed for or directed at children under the age of 13 (or under 16 in EEA countries where a higher age of digital consent applies). We do not knowingly collect personal information from children.</p>
+    <p>If you are a parent or guardian and believe your child has created a NoteSync account or provided us with personal data, please contact us immediately at <a href="mailto:privacy@notesync.app">privacy@notesync.app</a>. We will promptly delete the account and all associated data upon verification of the request.</p>
   </div>
 
-  <div class="card">
-    <h2>8. Changes to This Policy</h2>
-    <p>We may update this Privacy Policy from time to time. Material changes will be communicated via in-app notification or email. Continued use of NoteSync after changes take effect constitutes acceptance of the updated policy.</p>
+  <div class="card" id="transfers">
+    <h2>12. International Data Transfers</h2>
+    <p>Your data is stored on servers located in Germany (EU) and is not routinely transferred outside the EU/EEA. The only case where data may leave the EU is when audio is sent to Groq's API for transcription processing. This transfer is protected by:</p>
+    <ul>
+      <li>Transmission over HTTPS/TLS encryption</li>
+      <li>Groq's compliance with standard contractual clauses for international data transfers</li>
+      <li>Data minimization — only the audio clip for a specific transcription request is sent, no account identifiers</li>
+    </ul>
+    <p>If you are concerned about this transfer, you can choose not to use the voice transcription feature. All other NoteSync features process data exclusively within Germany.</p>
   </div>
 
-  <div class="card">
-    <h2>9. Contact Us</h2>
-    <p>For privacy questions or requests: <a href="mailto:privacy@notesync.app">privacy@notesync.app</a><br>
-    Or use our <a href="/contact">contact form</a>.</p>
+  <div class="card" id="changes">
+    <h2>13. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy to reflect changes in our practices, technology, legal requirements, or for other operational reasons. When we make changes, we will:</p>
+    <ul>
+      <li>Update the "Last updated" date at the top of this page.</li>
+      <li>For <strong>material changes</strong> (changes to the types of data collected, new third-party sharing, or changes to your rights), notify you via in-app notification or email at least <strong>14 days before</strong> the changes take effect.</li>
+      <li>For minor changes (wording clarifications, formatting), update the policy without advance notification.</li>
+    </ul>
+    <p>Your continued use of NoteSync after material changes become effective constitutes acceptance of the updated policy. If you disagree with changes, you have the right to delete your account before the effective date.</p>
+  </div>
+
+  <div class="card" id="contact-us">
+    <h2>14. Contact Us</h2>
+    <p>For any privacy-related questions, data access requests, or concerns about how we handle your information:</p>
+    <ul>
+      <li><strong>Email:</strong> <a href="mailto:privacy@notesync.app">privacy@notesync.app</a></li>
+      <li><strong>Contact form:</strong> <a href="/contact">notesync.9gg.app/contact</a></li>
+      <li><strong>Response time:</strong> We will acknowledge all privacy requests within 5 business days and resolve them within 30 days.</li>
+    </ul>
+    <p>If you are a European resident and have an unresolved complaint, you may also contact your national Data Protection Authority. A list of EU DPA contact details is available at <a href="https://edpb.europa.eu/about-edpb/about-edpb/members_en" target="_blank" rel="noopener">edpb.europa.eu</a>.</p>
   </div>
 </main>
 

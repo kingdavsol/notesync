@@ -12,25 +12,71 @@
   .logo svg { width: 20px; height: 20px; fill: #fff; }
   .header-text h1 { color: #fff; font-size: 17px; font-weight: 700; }
   .header-text p { color: rgba(255,255,255,0.8); font-size: 13px; }
-  .hero { background: #2dbe60; padding: 24px 24px 40px; }
-  .hero h2 { color: #fff; font-size: 26px; font-weight: 700; margin-bottom: 6px; }
-  .hero p { color: rgba(255,255,255,0.85); font-size: 14px; }
-  main { max-width: 600px; margin: 0 auto; padding: 24px 16px 60px; }
-  .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
-  label { display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
-  input, select, textarea { width: 100%; padding: 12px 14px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 15px; color: #1a1a1a; background: #fafafa; margin-bottom: 16px; font-family: inherit; transition: border-color 0.2s; outline: none; }
+  .hero { background: linear-gradient(135deg, #2dbe60 0%, #1e9e4d 100%); padding: 28px 24px 44px; }
+  .hero h2 { color: #fff; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .hero p { color: rgba(255,255,255,0.88); font-size: 14px; line-height: 1.6; max-width: 480px; }
+  nav { background: #fff; border-bottom: 1px solid #ececec; padding: 0 24px; display: flex; gap: 0; overflow-x: auto; }
+  nav a { color: #555; text-decoration: none; font-size: 13px; font-weight: 500; padding: 14px 16px; white-space: nowrap; border-bottom: 2px solid transparent; }
+  nav a:hover { color: #2dbe60; }
+  nav a.active { color: #2dbe60; border-bottom-color: #2dbe60; }
+  main { max-width: 640px; margin: 0 auto; padding: 28px 16px 60px; }
+
+  /* Quick answer tiles */
+  .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  @media (max-width: 480px) { .quick-grid { grid-template-columns: 1fr; } }
+  .quick-tile { background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); text-decoration: none; display: block; transition: transform 0.15s, box-shadow 0.15s; }
+  .quick-tile:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .quick-tile .icon { font-size: 24px; margin-bottom: 8px; }
+  .quick-tile h4 { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+  .quick-tile p { font-size: 13px; color: #666; line-height: 1.5; }
+
+  /* Response info bar */
+  .info-bar { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .info-chip { background: #fff; border-radius: 10px; padding: 12px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); flex: 1; min-width: 140px; }
+  .info-chip .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #999; margin-bottom: 4px; }
+  .info-chip .value { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .info-chip .sub { font-size: 12px; color: #999; margin-top: 2px; }
+
+  /* Common issues accordion */
+  .faq-section { background: #fff; border-radius: 14px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .faq-section h3 { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
+  details { border-top: 1px solid #f0f0f0; }
+  details:last-child { border-bottom: none; }
+  summary { font-size: 14px; font-weight: 500; color: #1a1a1a; padding: 13px 0; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; color: #2dbe60; font-size: 18px; font-weight: 300; flex-shrink: 0; transition: transform 0.2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  .faq-answer { font-size: 14px; color: #555; line-height: 1.75; padding: 0 0 14px; }
+  .faq-answer a { color: #2dbe60; }
+  .faq-answer ol, .faq-answer ul { margin-left: 18px; margin-top: 6px; }
+  .faq-answer li { margin-bottom: 4px; }
+
+  /* Contact form */
+  .form-card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
+  .form-card h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
+  .form-card .subtitle { font-size: 14px; color: #666; margin-bottom: 22px; }
+  label { display: block; font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+  .label-note { font-weight: 400; color: #999; }
+  input, select, textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 15px; color: #1a1a1a; background: #fafafa; margin-bottom: 18px; font-family: inherit; transition: border-color 0.2s, background 0.2s; outline: none; }
   input:focus, select:focus, textarea:focus { border-color: #2dbe60; background: #fff; }
-  textarea { resize: vertical; min-height: 120px; }
-  .btn { width: 100%; background: #2dbe60; color: #fff; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+  textarea { resize: vertical; min-height: 130px; }
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px) { .input-row { grid-template-columns: 1fr; } }
+  .field-hint { font-size: 12px; color: #999; margin-top: -14px; margin-bottom: 18px; }
+  .btn { width: 100%; background: #2dbe60; color: #fff; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
   .btn:hover { opacity: 0.9; }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  .success { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; text-align: center; display: none; }
+  .btn:active { transform: scale(0.99); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .success { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 28px 20px; text-align: center; display: none; }
+  .success .check { font-size: 36px; margin-bottom: 12px; }
   .success h3 { color: #166534; font-size: 18px; margin-bottom: 8px; }
-  .success p { color: #166534; font-size: 14px; }
-  .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-  .quick-link { background: #fff; border-radius: 12px; padding: 16px; text-decoration: none; box-shadow: 0 1px 4px rgba(0,0,0,0.06); display: block; }
-  .quick-link h4 { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
-  .quick-link p { font-size: 13px; color: #666; }
+  .success p { color: #166534; font-size: 14px; line-height: 1.6; }
+
+  /* Direct email CTA */
+  .email-cta { background: #fff; border-radius: 14px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); text-align: center; }
+  .email-cta p { font-size: 14px; color: #666; margin-bottom: 4px; }
+  .email-cta a { color: #2dbe60; font-weight: 600; font-size: 15px; text-decoration: none; }
+
   footer { text-align: center; padding: 32px 16px; color: #999; font-size: 13px; }
   footer a { color: #2dbe60; text-decoration: none; margin: 0 8px; }
 </style>
@@ -40,54 +86,215 @@
   <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>
   <div class="header-text"><h1>NoteSync</h1><p>Contact Support</p></div>
 </header>
+<nav>
+  <a href="/help">Help & FAQ</a>
+  <a href="/privacy">Privacy</a>
+  <a href="/security">Security</a>
+  <a href="/terms">Terms</a>
+  <a href="/contact" class="active">Contact</a>
+</nav>
 
 <div class="hero">
-  <h2>Contact Support</h2>
-  <p>We typically respond within 24 hours on business days.</p>
+  <h2>How Can We Help?</h2>
+  <p>Check our FAQ below for instant answers — most common issues are covered. If you still need help, send us a message and we'll respond promptly.</p>
 </div>
 
 <main>
-  <div class="quick-links">
-    <a href="/help" class="quick-link">
-      <h4>📖 Help & FAQ</h4>
-      <p>Find instant answers to common questions</p>
+
+  <!-- Quick self-service tiles -->
+  <div class="quick-grid">
+    <a href="/help#syncing" class="quick-tile">
+      <div class="icon">🔄</div>
+      <h4>Sync Problems</h4>
+      <p>Notes not syncing, stuck offline, or missing on another device</p>
     </a>
-    <a href="/privacy" class="quick-link">
-      <h4>🔒 Privacy Policy</h4>
-      <p>How we handle your data</p>
+    <a href="/help#account" class="quick-tile">
+      <div class="icon">👤</div>
+      <h4>Account & Login</h4>
+      <p>Can't log in, forgot password, or email verification issues</p>
+    </a>
+    <a href="/help#getting-started" class="quick-tile">
+      <div class="icon">📖</div>
+      <h4>Getting Started</h4>
+      <p>Setup guide, app overview, and first steps</p>
+    </a>
+    <a href="/help#troubleshooting" class="quick-tile">
+      <div class="icon">🔧</div>
+      <h4>Troubleshooting</h4>
+      <p>App crashes, performance issues, and common errors</p>
     </a>
   </div>
 
-  <div class="card">
+  <!-- Response time info -->
+  <div class="info-bar">
+    <div class="info-chip">
+      <div class="label">Response Time</div>
+      <div class="value">Within 24 hours</div>
+      <div class="sub">Business days (Mon–Fri)</div>
+    </div>
+    <div class="info-chip">
+      <div class="label">Support Hours</div>
+      <div class="value">9am – 6pm EST</div>
+      <div class="sub">Monday to Friday</div>
+    </div>
+    <div class="info-chip">
+      <div class="label">Priority Support</div>
+      <div class="value">Power Plan</div>
+      <div class="sub">Same-day response</div>
+    </div>
+  </div>
+
+  <!-- Common questions before form -->
+  <div class="faq-section">
+    <h3>Common Questions — Check Before Contacting</h3>
+
+    <details>
+      <summary>My notes aren't syncing to my other device.</summary>
+      <div class="faq-answer">
+        <p>Try these steps in order:</p>
+        <ol>
+          <li>Pull down on the notes list to manually trigger a sync.</li>
+          <li>Check that both devices are logged in to the same account (Settings → Account).</li>
+          <li>Check your internet connection — try loading a webpage.</li>
+          <li>Force-close the app and reopen it.</li>
+          <li>Log out and log back in (your notes are saved locally and won't be lost).</li>
+        </ol>
+        <p>If you see an orange dot next to a note, it is queued for sync but not yet uploaded. This usually resolves within a minute of reconnecting.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>I forgot my password and can't log in.</summary>
+      <div class="faq-answer">
+        <p>Tap "Forgot Password" on the login screen and enter your email address. You'll receive a reset link within a few minutes. If you don't see it, check your spam/junk folder. The reset link expires after 1 hour — if it expires, request a new one.</p>
+        <p>If you no longer have access to your email address, contact us at <a href="mailto:support@notesync.app">support@notesync.app</a> and we'll help verify your identity through other means.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>I didn't receive the email verification link.</summary>
+      <div class="faq-answer">
+        <p>Check your spam/junk folder first. The sender is no-reply@notesync.app. If it's not there:</p>
+        <ol>
+          <li>On the verification screen, tap "Resend Email".</li>
+          <li>Wait 2–5 minutes and check again.</li>
+          <li>Make sure you registered with the correct email address.</li>
+        </ol>
+        <p>If you're still not receiving emails after two attempts, contact us with your registered email address and we'll manually verify your account.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>I accidentally deleted a note. Can I get it back?</summary>
+      <div class="faq-answer">
+        <p>Notes are soft-deleted for up to 90 days before being permanently purged. Contact us with the title or approximate content of the deleted note and your account email — we may be able to recover it from our database or backups if within the 90-day window. Power plan users have access to version history directly in the app.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I cancel my subscription?</summary>
+      <div class="faq-answer">
+        <p>Subscriptions are managed entirely through the Google Play Store:</p>
+        <ol>
+          <li>Open the Google Play Store app.</li>
+          <li>Tap your profile picture → "Payments & subscriptions" → "Subscriptions".</li>
+          <li>Find NoteSync and tap "Cancel subscription".</li>
+        </ol>
+        <p>Cancellation takes effect at the end of the current billing period. You keep access to paid features until then. Your notes and account remain intact on the Free plan after cancellation.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>I was charged but didn't get my subscription upgrade.</summary>
+      <div class="faq-answer">
+        <p>Subscription activations from Google Play can sometimes take a few minutes to reflect in the app. Try:</p>
+        <ol>
+          <li>Pull down on the notes list to refresh.</li>
+          <li>Log out and log back in.</li>
+          <li>Close and reopen the app.</li>
+        </ol>
+        <p>If your plan still shows as Free after 15 minutes, contact us with your Google Play order number (found in the Google Play receipt email) and your account email address and we'll activate it manually.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>The app is crashing or running slowly.</summary>
+      <div class="faq-answer">
+        <p>Try these steps:</p>
+        <ol>
+          <li>Force-close the app and reopen it.</li>
+          <li>Restart your device.</li>
+          <li>Check for app updates in the Google Play Store.</li>
+          <li>Ensure you have at least 100MB of free storage on your device.</li>
+          <li>If the app crashes on a specific note, try opening that note and checking if it contains a very large image or file.</li>
+        </ol>
+        <p>If crashes persist, please contact us with your device model, Android version, and a description of what you were doing when it crashed.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I request a copy of my data or delete my account?</summary>
+      <div class="faq-answer">
+        <p><strong>Data export:</strong> Email <a href="mailto:privacy@notesync.app">privacy@notesync.app</a> with the subject "Data Export Request". We'll prepare a JSON export of all your notes and send it within 14 days.</p>
+        <p><strong>Account deletion:</strong> Email <a href="mailto:support@notesync.app">support@notesync.app</a> with the subject "Delete My Account". Please export your notes first if you want to keep them. Your account will be deactivated within 24 hours and all data permanently deleted within 90 days.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Contact Form -->
+  <div class="form-card">
+    <h3>Send Us a Message</h3>
+    <p class="subtitle">Didn't find your answer above? We'll get back to you within 24 hours on business days.</p>
+
     <div class="success" id="successMsg">
-      <h3>Message Sent ✓</h3>
-      <p>Thanks for reaching out! We'll get back to you within 24 hours.</p>
+      <div class="check">✅</div>
+      <h3>Message Received!</h3>
+      <p>Thanks for reaching out. We'll review your message and get back to you at the email address you provided within 24 hours (Monday–Friday).</p>
     </div>
 
     <form id="contactForm" onsubmit="submitForm(event)">
-      <label for="name">Your Name</label>
-      <input type="text" id="name" name="name" placeholder="John Smith" required>
+      <div class="input-row">
+        <div>
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" placeholder="Jane Smith" required autocomplete="name">
+        </div>
+        <div>
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="jane@example.com" required autocomplete="email">
+        </div>
+      </div>
 
-      <label for="email">Email Address</label>
-      <input type="email" id="email" name="email" placeholder="you@example.com" required>
-
-      <label for="category">Category</label>
+      <label for="category">What is your request about?</label>
       <select id="category" name="category">
-        <option value="general">General Question</option>
+        <option value="sync">Sync / Connectivity Issue</option>
+        <option value="account">Account / Login Problem</option>
+        <option value="billing">Billing / Subscription</option>
         <option value="bug">Bug Report</option>
-        <option value="billing">Billing & Subscriptions</option>
-        <option value="account">Account Issue</option>
         <option value="feature">Feature Request</option>
-        <option value="privacy">Privacy / Data Request</option>
-        <option value="security">Security Concern</option>
+        <option value="data">Data Export / Account Deletion</option>
+        <option value="privacy">Privacy / Data Request (GDPR/CCPA)</option>
+        <option value="security">Security Concern or Vulnerability</option>
+        <option value="general">General Question</option>
       </select>
 
-      <label for="message">Message</label>
-      <textarea id="message" name="message" placeholder="Describe your issue or question in detail..." required></textarea>
+      <label for="device">Device & App Version <span class="label-note">(optional but helpful)</span></label>
+      <input type="text" id="device" name="device" placeholder="e.g. Samsung Galaxy S22, Android 14, NoteSync v1.2">
+      <p class="field-hint">Find your app version in Settings → About NoteSync.</p>
+
+      <label for="message">Describe Your Issue</label>
+      <textarea id="message" name="message" placeholder="Please describe your issue in as much detail as possible. Include steps to reproduce if it's a bug, or your order number if it's a billing question." required></textarea>
 
       <button type="submit" class="btn" id="submitBtn">Send Message</button>
     </form>
   </div>
+
+  <!-- Direct email option -->
+  <div class="email-cta">
+    <p>Prefer email? Reach us directly:</p>
+    <a href="mailto:support@notesync.app">support@notesync.app</a>
+    <p style="margin-top:8px; font-size:13px;">For security issues: <a href="mailto:security@notesync.app">security@notesync.app</a> &nbsp;·&nbsp; Privacy: <a href="mailto:privacy@notesync.app">privacy@notesync.app</a></p>
+  </div>
+
 </main>
 
 <footer>
@@ -105,13 +312,16 @@ async function submitForm(e) {
   e.preventDefault();
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = 'Sending...';
+  btn.textContent = 'Sending…';
 
   const body = {
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
     category: document.getElementById('category').value,
-    message: document.getElementById('message').value,
+    message: [
+      document.getElementById('device').value ? 'Device: ' + document.getElementById('device').value : '',
+      document.getElementById('message').value
+    ].filter(Boolean).join('\n\n'),
   };
 
   try {
@@ -125,7 +335,8 @@ async function submitForm(e) {
       document.getElementById('contactForm').style.display = 'none';
       document.getElementById('successMsg').style.display = 'block';
     } else {
-      throw new Error('Server error');
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Server error');
     }
   } catch (err) {
     alert('Failed to send message. Please email us directly at support@notesync.app');
