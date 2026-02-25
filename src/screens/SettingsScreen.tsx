@@ -10,6 +10,7 @@ import {
   Linking,
 } from 'react-native';
 import { Feather as Icon } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
@@ -22,6 +23,7 @@ export default function SettingsScreen() {
   const [offlineMode, setOfflineMode] = useState(false);
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
+  const navigation = useNavigation();
 
   function handleLogout() {
     Alert.alert(
@@ -136,6 +138,28 @@ export default function SettingsScreen() {
               thumbColor={offlineMode ? '#2dbe60' : '#f4f4f4'}
             />
           </View>
+        </View>
+      </View>
+
+      {/* Data Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Data</Text>
+        <View style={styles.card}>
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => navigation.navigate('Import' as never)}
+          >
+            <View style={styles.rowIcon}>
+              <Icon name="upload" size={20} color="#666" />
+            </View>
+            <View style={styles.rowContent}>
+              <Text style={styles.rowTitle}>Import Notes</Text>
+              <Text style={styles.rowSubtitle}>
+                Import from Evernote, Google Keep, and more
+              </Text>
+            </View>
+            <Icon name="chevron-right" size={20} color="#ccc" />
+          </TouchableOpacity>
         </View>
       </View>
 

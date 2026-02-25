@@ -8,11 +8,13 @@ import NoteEditorScreen from '../screens/NoteEditorScreen';
 import SearchScreen from '../screens/SearchScreen';
 import NotebooksScreen from '../screens/NotebooksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ImportScreen from '../screens/ImportScreen';
 
 export type MainStackParamList = {
   MainTabs: undefined;
   NoteEditor: { noteId?: string; folderId?: string };
   Search: undefined;
+  Import: undefined;
 };
 
 export type TabParamList = {
@@ -104,6 +106,17 @@ export default function MainNavigator() {
         component={SearchScreen}
         options={{
           title: 'Search',
+          headerStyle: {
+            backgroundColor: '#2dbe60',
+          },
+          headerTintColor: '#fff',
+        }}
+      />
+      <Stack.Screen
+        name="Import"
+        component={ImportScreen}
+        options={{
+          title: 'Import Notes',
           headerStyle: {
             backgroundColor: '#2dbe60',
           },
