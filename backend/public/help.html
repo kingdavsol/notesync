@@ -3,175 +3,647 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Help & FAQ — NoteSync</title>
+<title>Help Center — NoteSync</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a1a; }
-  header { background: #2dbe60; padding: 20px 24px; }
-  header a { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .logo { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-  .logo svg { width: 20px; height: 20px; fill: #fff; }
-  header h1 { color: #fff; font-size: 20px; font-weight: 700; }
-  .subtitle { color: rgba(255,255,255,0.8); font-size: 13px; }
-  .hero { background: #2dbe60; padding: 24px 24px 40px; }
-  .hero h2 { color: #fff; font-size: 26px; font-weight: 700; margin-bottom: 6px; }
-  .hero p { color: rgba(255,255,255,0.85); font-size: 15px; }
-  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
-  .section-title { font-size: 13px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.8px; margin: 32px 0 12px; padding-left: 4px; }
-  .faq { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  details { border-bottom: 1px solid #f0f0f0; }
-  details:last-child { border-bottom: none; }
-  summary { padding: 18px 20px; font-size: 15px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none; }
-  summary::-webkit-details-marker { display: none; }
-  summary::after { content: '+'; font-size: 20px; color: #2dbe60; font-weight: 300; transition: transform 0.2s; }
-  details[open] summary::after { content: '−'; }
-  .answer { padding: 0 20px 18px; font-size: 14px; color: #555; line-height: 1.7; }
-  .answer p { margin-bottom: 8px; }
-  .answer ul { margin-left: 20px; margin-top: 4px; }
-  .answer li { margin-bottom: 4px; }
-  .contact-card { background: #2dbe60; border-radius: 14px; padding: 24px; text-align: center; margin-top: 32px; }
-  .contact-card h3 { color: #fff; font-size: 18px; margin-bottom: 8px; }
-  .contact-card p { color: rgba(255,255,255,0.85); font-size: 14px; margin-bottom: 16px; }
-  .contact-card a { display: inline-block; background: #fff; color: #2dbe60; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; }
-  footer { text-align: center; padding: 32px 16px; color: #999; font-size: 13px; }
-  footer a { color: #2dbe60; text-decoration: none; margin: 0 8px; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,sans-serif;background:#f5f6fa;color:#1a1a2e;line-height:1.6}
+  a{color:#2dbe60;text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* NAV */
+  nav{background:#1a7a3f;padding:0 24px;display:flex;align-items:center;height:56px;gap:12px}
+  nav .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .logo-box{width:32px;height:32px;background:rgba(255,255,255,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .logo-box svg{width:18px;height:18px;fill:#fff}
+  .brand-name{color:#fff;font-size:17px;font-weight:700}
+  nav .nav-links{margin-left:auto;display:flex;gap:20px}
+  nav .nav-links a{color:rgba(255,255,255,0.85);font-size:14px}
+  nav .nav-links a:hover{color:#fff;text-decoration:none}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,#2dbe60 0%,#1a9a4a 100%);padding:52px 24px 64px;text-align:center}
+  .hero h1{color:#fff;font-size:32px;font-weight:800;margin-bottom:10px}
+  .hero p{color:rgba(255,255,255,0.9);font-size:17px;max-width:500px;margin:0 auto 28px}
+  .search-box{max-width:480px;margin:0 auto;position:relative}
+  .search-box input{width:100%;padding:14px 20px 14px 48px;border:none;border-radius:12px;font-size:16px;outline:none;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+  .search-box svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;stroke:#999;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* CATEGORY TILES */
+  .categories{max-width:860px;margin:-32px auto 0;padding:0 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:600px){.categories{grid-template-columns:1fr 1fr}}
+  .cat-tile{background:#fff;border-radius:14px;padding:20px 16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.07);cursor:pointer;transition:transform .15s,box-shadow .15s}
+  .cat-tile:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.11)}
+  .cat-icon{width:48px;height:48px;border-radius:12px;background:rgba(45,190,96,0.1);margin:0 auto 12px;display:flex;align-items:center;justify-content:center}
+  .cat-icon svg{width:24px;height:24px;stroke:#2dbe60;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .cat-tile h3{font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+  .cat-tile p{font-size:12px;color:#888}
+
+  /* MAIN */
+  main{max-width:800px;margin:40px auto;padding:0 16px 80px}
+  .section-label{font-size:11px;font-weight:800;color:#2dbe60;text-transform:uppercase;letter-spacing:1.2px;margin:40px 0 14px 4px}
+  .faq-group{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:8px}
+  details{border-bottom:1px solid #f0f2f5}
+  details:last-child{border-bottom:none}
+  summary{padding:18px 20px;font-size:15px;font-weight:600;color:#1a1a2e;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none}
+  summary::-webkit-details-marker{display:none}
+  .chevron{width:20px;height:20px;stroke:#2dbe60;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;transition:transform .2s}
+  details[open] .chevron{transform:rotate(180deg)}
+  .ans{padding:0 20px 20px;font-size:14px;color:#555;line-height:1.8}
+  .ans p{margin-bottom:10px}
+  .ans p:last-child{margin-bottom:0}
+  .ans ul,.ans ol{margin-left:22px;margin-bottom:10px}
+  .ans li{margin-bottom:6px}
+  .ans strong{color:#1a1a2e}
+  .ans .tip{background:#f0fdf4;border-left:3px solid #2dbe60;padding:10px 14px;border-radius:0 8px 8px 0;margin-top:8px;font-size:13px;color:#166534}
+  .ans .warn{background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 8px 8px 0;margin-top:8px;font-size:13px;color:#92400e}
+  .ans kbd{background:#f0f2f5;border:1px solid #d0d5dd;border-radius:4px;padding:2px 7px;font-size:12px;font-family:monospace;color:#333}
+  .step-list{counter-reset:step;list-style:none;margin-left:0 !important}
+  .step-list li{counter-increment:step;padding-left:32px;position:relative;margin-bottom:10px}
+  .step-list li::before{content:counter(step);position:absolute;left:0;top:0;width:22px;height:22px;background:#2dbe60;color:#fff;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+
+  /* CTA BANNER */
+  .cta{background:linear-gradient(135deg,#2dbe60,#1a9a4a);border-radius:16px;padding:32px;text-align:center;margin-top:48px}
+  .cta h3{color:#fff;font-size:20px;font-weight:700;margin-bottom:8px}
+  .cta p{color:rgba(255,255,255,0.88);margin-bottom:20px;font-size:15px}
+  .cta a{display:inline-block;background:#fff;color:#2dbe60;padding:13px 32px;border-radius:10px;font-weight:700;font-size:15px}
+
+  footer{background:#fff;border-top:1px solid #e8eaf0;padding:28px 16px;text-align:center;font-size:13px;color:#888}
+  footer .ft-links{margin-bottom:10px;display:flex;justify-content:center;flex-wrap:wrap;gap:6px 20px}
+  footer .ft-links a{color:#555}
+  footer .ft-links a:hover{color:#2dbe60}
 </style>
 </head>
 <body>
-<header>
-  <a href="/">
-    <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-    <div><div style="color:#fff;font-size:17px;font-weight:700;">NoteSync</div><div class="subtitle">Help & FAQ</div></div>
+
+<nav>
+  <a href="/" class="brand">
+    <div class="logo-box"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" style="fill:none;stroke:#fff;stroke-width:2"/></svg></div>
+    <span class="brand-name">NoteSync</span>
   </a>
-</header>
+  <div class="nav-links">
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="/security">Security</a>
+    <a href="/contact">Contact</a>
+  </div>
+</nav>
 
 <div class="hero">
-  <h2>How can we help?</h2>
-  <p>Find answers to the most common questions about NoteSync.</p>
+  <h1>How can we help you?</h1>
+  <p>Browse guides, tips, and answers to everything NoteSync.</p>
+  <div class="search-box">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" placeholder="Search for answers…" id="searchInput" oninput="filterFAQ(this.value)">
+  </div>
+</div>
+
+<div class="categories">
+  <div class="cat-tile" onclick="scrollTo('#getting-started')">
+    <div class="cat-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+    <h3>Getting Started</h3>
+    <p>Setup, accounts, sync</p>
+  </div>
+  <div class="cat-tile" onclick="scrollTo('#writing')">
+    <div class="cat-icon"><svg viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></div>
+    <h3>Writing & Formatting</h3>
+    <p>Text, checklists, media</p>
+  </div>
+  <div class="cat-tile" onclick="scrollTo('#organize')">
+    <div class="cat-icon"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+    <h3>Organization</h3>
+    <p>Notebooks, tags, search</p>
+  </div>
+  <div class="cat-tile" onclick="scrollTo('#sync')">
+    <div class="cat-icon"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+    <h3>Syncing</h3>
+    <p>Multi-device, offline</p>
+  </div>
+  <div class="cat-tile" onclick="scrollTo('#account')">
+    <div class="cat-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    <h3>Account & Plans</h3>
+    <p>Billing, upgrades, limits</p>
+  </div>
+  <div class="cat-tile" onclick="scrollTo('#troubleshoot')">
+    <div class="cat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+    <h3>Troubleshooting</h3>
+    <p>Fixes for common issues</p>
+  </div>
 </div>
 
 <main>
-  <div class="section-title">Getting Started</div>
-  <div class="faq">
-    <details>
-      <summary>How do I create my first note?</summary>
-      <div class="answer"><p>Tap the green <strong>+</strong> button at the bottom-right of the Notes screen. A new note editor will open where you can type a title and start writing immediately. Your note saves automatically as you type — no save button needed.</p></div>
-    </details>
-    <details>
-      <summary>How do I sync my notes across devices?</summary>
-      <div class="answer"><p>NoteSync syncs automatically whenever you're connected to the internet. You can also pull down on the notes list to trigger a manual sync, or tap <strong>Sync Now</strong> in Settings.</p><p>Each note shows a small colored dot indicating its sync status: <strong>green</strong> = fully synced, <strong>orange</strong> = waiting to sync.</p></div>
-    </details>
-    <details>
-      <summary>Can I use NoteSync offline?</summary>
-      <div class="answer"><p>Yes. All your notes are stored locally on your device using an offline-first database. You can read and edit notes with no internet connection. Changes sync automatically when you reconnect.</p></div>
-    </details>
-    <details>
-      <summary>How do I sign in or create an account?</summary>
-      <div class="answer"><p>Open NoteSync and tap <strong>Create one</strong> on the login screen to register with your email and a password (minimum 8 characters). If you already have an account, enter your email and password and tap <strong>Sign In</strong>.</p></div>
-    </details>
-  </div>
 
-  <div class="section-title">Writing & Formatting</div>
-  <div class="faq">
+  <!-- ── GETTING STARTED ───────────────────────────────────── -->
+  <div class="section-label" id="getting-started">Getting Started</div>
+  <div class="faq-group">
+
     <details>
-      <summary>How do I format text (bold, italic, underline)?</summary>
-      <div class="answer">
-        <p>When you tap into the note body, a formatting toolbar appears above the keyboard with these buttons:</p>
-        <ul>
-          <li><strong>B</strong> — Bold (wraps text in **markers**)</li>
-          <li><em>I</em> — Italic (wraps text in *markers*)</li>
-          <li><u>U</u> — Underline</li>
-          <li><s>S</s> — Strikethrough</li>
-          <li><span style="background:#fff59d;padding:0 3px;">H</span> — Highlight</li>
-          <li><strong>H1 / H2</strong> — Headings</li>
-          <li>List and numbered list buttons</li>
-        </ul>
-        <p>Select text first to wrap it, or tap a button to insert a formatted placeholder.</p>
+      <summary>How do I create an account?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Creating a NoteSync account takes under 30 seconds:</p>
+        <ol class="step-list">
+          <li>Open the NoteSync app on your Android device.</li>
+          <li>Tap <strong>Create one</strong> on the sign-in screen.</li>
+          <li>Enter your email address and choose a password of at least 8 characters.</li>
+          <li>Tap <strong>Create Account</strong>.</li>
+          <li>Check your inbox for a verification email and tap the link to activate your account.</li>
+        </ol>
+        <p>Once verified, you'll be signed in automatically and your notes will begin syncing.</p>
+        <div class="tip">💡 Use an email address you check regularly — we send important account and security notices there only.</div>
       </div>
     </details>
+
     <details>
-      <summary>How does the checklist mode work?</summary>
-      <div class="answer"><p>Tap the <strong>checkbox icon</strong> (✓□) in the bottom toolbar to toggle checklist mode on. While active, every time you press Enter, the next line automatically starts with a <strong>☐</strong> checkbox. Tap the icon again to turn it off. The checklist button turns green when active.</p></div>
+      <summary>How do I sign in on a new device?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Install NoteSync on your new device, open it, and sign in with your existing email and password. Your notes will begin downloading automatically within seconds of signing in. On a fast connection, a typical account with a few hundred notes syncs completely in under a minute.</p>
+        <p>If you've forgotten your password, tap <strong>Forgot password?</strong> on the sign-in screen and we'll send a reset link to your email. If that option isn't available in the current version, contact <a href="mailto:support@notesync.app">support@notesync.app</a> for a manual reset.</p>
+      </div>
     </details>
+
     <details>
-      <summary>How do I attach a photo to a note?</summary>
-      <div class="answer"><p>In the note editor, tap the <strong>image icon</strong> to pick from your gallery, or the <strong>camera icon</strong> to take a new photo. The image appears below your text. Long-press a thumbnail to remove it.</p></div>
+      <summary>What devices does NoteSync support?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>NoteSync is currently available as a native <strong>Android</strong> application. The app requires Android 8.0 (Oreo) or later. iOS support is planned for a future release.</p>
+        <p>Your notes are accessible on as many Android devices as your plan allows. Free accounts support 2 devices simultaneously; Starter supports 5; Power supports unlimited devices.</p>
+      </div>
     </details>
+
     <details>
-      <summary>How do I use voice transcription?</summary>
-      <div class="answer"><p>Tap the <strong>microphone icon</strong> in the toolbar. Hold the record button to speak — NoteSync uses AI (Groq Whisper) to transcribe your speech into text and insert it into your note. Works best in quiet environments with clear speech.</p></div>
+      <summary>Does NoteSync work without an internet connection?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Yes — NoteSync is built offline-first. Every note is stored directly on your device using a local database (WatermelonDB). You can create, edit, search, and organize notes with no internet connection at all.</p>
+        <p>When your device reconnects to Wi-Fi or mobile data, NoteSync automatically detects the connection and syncs any changes you made offline to the server, and pulls down any changes from your other devices. You'll see the sync dot on each note card change from orange (pending) to green (synced) as this happens.</p>
+        <div class="tip">💡 Voice transcription requires an internet connection because it uses an AI service. All other features work fully offline.</div>
+      </div>
     </details>
+
   </div>
 
-  <div class="section-title">Organization</div>
-  <div class="faq">
-    <details>
-      <summary>How do I search for a note?</summary>
-      <div class="answer"><p>Use the search bar at the top of the Notes screen. It searches note titles and content in real time as you type. Tap <strong>✕</strong> to clear the search.</p></div>
-    </details>
-    <details>
-      <summary>How do I pin a note to the top?</summary>
-      <div class="answer"><p>Long-press any note in the list and tap <strong>Pin to top</strong>. Pinned notes appear in a separate "PINNED" section above your other notes, with a green left border. Long-press again and tap <strong>Unpin</strong> to move it back.</p></div>
-    </details>
-    <details>
-      <summary>How do I use notebooks (folders)?</summary>
-      <div class="answer"><p>Tap the <strong>Notebooks</strong> tab at the bottom. Tap <strong>+</strong> to create a new notebook, then tap a notebook to view or rename it. You can assign a note to a notebook while editing (tag selector).</p></div>
-    </details>
-    <details>
-      <summary>How do I use tags?</summary>
-      <div class="answer"><p>While editing a note, tap the <strong>tag icon</strong> in the toolbar. Type a new tag name and tap <strong>+</strong>, or select an existing tag. Tags appear as green chips below the note title and can be used to filter your search.</p></div>
-    </details>
-    <details>
-      <summary>How do I delete a note?</summary>
-      <div class="answer"><p>There are two ways: <strong>(1)</strong> Open the note and tap the trash icon in the top-right corner. <strong>(2)</strong> Long-press the note in the list and tap <strong>Delete</strong>. Deleted notes sync the deletion to the server.</p></div>
-    </details>
-    <details>
-      <summary>How do I share a note?</summary>
-      <div class="answer"><p>Open the note and tap the <strong>share icon</strong> (arrow pointing up) in the top-right. This opens your phone's native share sheet to send the note title and text via any app (Messages, Email, WhatsApp, etc.).</p></div>
-    </details>
-  </div>
+  <!-- ── WRITING & FORMATTING ──────────────────────────────── -->
+  <div class="section-label" id="writing">Writing &amp; Formatting</div>
+  <div class="faq-group">
 
-  <div class="section-title">Account & Billing</div>
-  <div class="faq">
     <details>
-      <summary>What are the plan limits?</summary>
-      <div class="answer">
+      <summary>How do I create a new note?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Tap the green <strong>+</strong> button in the bottom-right corner of the Notes screen. The note editor opens immediately. Tap the title field at the top and start typing your title, then tap the body area to write your note content.</p>
+        <p><strong>Your note saves automatically</strong> as you type — there is no Save button. NoteSync saves one second after you stop typing, and also saves instantly when you navigate away from the editor.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I use the formatting toolbar (bold, italic, underline, highlight)?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>When you tap inside the note body, a <strong>formatting toolbar</strong> appears between the text area and your keyboard. It scrolls horizontally and contains:</p>
         <ul>
-          <li><strong>Free:</strong> 50 notes, 2 devices, 10 voice transcriptions/month</li>
-          <li><strong>Starter ($2.99/mo):</strong> 500 notes, 5 devices, 50 transcriptions/month</li>
-          <li><strong>Power ($7.99/mo):</strong> Unlimited notes & devices, unlimited transcription</li>
+          <li><strong>B</strong> — Bold. Wraps selected text in <kbd>**bold**</kbd> markers.</li>
+          <li><em>I</em> — Italic. Wraps selected text in <kbd>*italic*</kbd> markers.</li>
+          <li><u>U</u> — Underline. Wraps selected text in HTML underline tags.</li>
+          <li><s>S</s> — Strikethrough. Wraps selected text in <kbd>~~strikethrough~~</kbd>.</li>
+          <li><span style="background:#fff59d;padding:0 4px;border-radius:2px">H</span> — Highlight. Wraps text in <kbd>==highlight==</kbd> markers.</li>
+          <li><strong>H1 / H2</strong> — Heading levels 1 and 2. Prefixes the current line with <kbd>#</kbd> or <kbd>##</kbd>.</li>
+          <li>❝ — Block quote. Prefixes the current line with <kbd>&gt;</kbd>.</li>
+          <li>• — Bullet list item. Prefixes the current line with <kbd>•</kbd>.</li>
+          <li>1. — Numbered list item. Prefixes the current line with <kbd>1.</kbd>.</li>
+        </ul>
+        <p><strong>To format existing text:</strong> Select the text first, then tap a format button. The markers wrap around your selection. <strong>To insert at the cursor:</strong> Place your cursor where you want the format, tap a button, and a <kbd>text</kbd> placeholder is inserted with the markers.</p>
+        <div class="tip">💡 Heading and list buttons toggle — tapping them a second time removes the prefix from the current line.</div>
+      </div>
+    </details>
+
+    <details>
+      <summary>How does checklist mode work?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Checklist mode is a persistent toggle in the bottom toolbar (the checkbox icon <strong>☐</strong>). Here's how it works:</p>
+        <ul>
+          <li>Tap the checkbox icon to turn on checklist mode — the icon turns <strong>green</strong> to show it's active.</li>
+          <li>NoteSync automatically adds a <strong>☐</strong> character to the start of the current line when you enable it.</li>
+          <li>Every time you press <strong>Enter</strong> to start a new line, the next line automatically starts with <strong>☐</strong>.</li>
+          <li>Tap the checkbox icon again to turn off checklist mode. Existing checkboxes remain in your note; new lines will no longer get them automatically.</li>
+        </ul>
+        <p>You can mix checklist lines and regular lines in the same note — simply toggle the mode on and off as needed. This makes it easy to write a shopping list with some header lines in between.</p>
+        <div class="tip">💡 Checklist mode works best for to-do lists, grocery lists, packing lists, and meeting action items. The ☐ and ☑ characters are plain text, so your checklist items sync and search correctly.</div>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I attach a photo to a note?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>In the note editor, the bottom toolbar has two image buttons:</p>
+        <ul>
+          <li><strong>Image icon</strong> — opens your device's photo library to pick an existing image.</li>
+          <li><strong>Camera icon</strong> — opens the camera to take a new photo directly.</li>
+        </ul>
+        <p>After selecting or capturing a photo, it appears as a thumbnail below the text body. You can attach multiple photos to a single note. Images are compressed to reduce storage usage (quality 40%) before being saved.</p>
+        <p><strong>To remove an image:</strong> Long-press the thumbnail and confirm the removal prompt.</p>
+        <div class="warn">⚠ Images are stored as base64 data and are not included in the text that syncs to the server (to keep sync fast and avoid size limits). Images are stored locally on your device only. Back up your device to preserve them.</div>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I use voice transcription?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>NoteSync includes AI-powered voice-to-text using the Groq Whisper model:</p>
+        <ol class="step-list">
+          <li>Tap the <strong>microphone icon</strong> in the bottom toolbar.</li>
+          <li>Tap and hold the <strong>Record</strong> button to start recording. Speak clearly and at a normal pace.</li>
+          <li>Release the button when finished. The recording is sent to the transcription service.</li>
+          <li>Within a few seconds, the transcribed text is inserted into your note at the current cursor position.</li>
+        </ol>
+        <p>Voice transcription requires an active internet connection. It works best with clear speech in a quiet environment, supports multiple languages, and can handle technical and medical terminology.</p>
+        <div class="tip">💡 Voice transcription is great for quickly capturing meeting notes, ideas on the go, or lengthy content that would take too long to type.</div>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I share a note with someone?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Open the note you want to share and tap the <strong>share icon</strong> (an arrow pointing up and right) in the top-right corner. This opens your Android system share sheet, which lets you send the note's title and text content via:</p>
+        <ul>
+          <li>Email, Gmail, or Outlook</li>
+          <li>WhatsApp, Telegram, Signal</li>
+          <li>SMS / Messages</li>
+          <li>Google Drive, Dropbox, or any other app that accepts text</li>
+          <li>Copy to clipboard</li>
+        </ul>
+        <p>The shared content includes the note title followed by the full body text. Formatting markers (like <kbd>**bold**</kbd>) are included as-is in the shared text.</p>
+      </div>
+    </details>
+
+  </div>
+
+  <!-- ── ORGANIZATION ──────────────────────────────────────── -->
+  <div class="section-label" id="organize">Organization</div>
+  <div class="faq-group">
+
+    <details>
+      <summary>How do I search for a note?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>The <strong>search bar</strong> at the top of the Notes screen searches in real time. As you type, NoteSync instantly filters your notes list to show only notes whose title or content contains your search term. The search is case-insensitive.</p>
+        <p>Tap the <strong>✕</strong> on the right of the search bar to clear it and return to your full notes list. You can also use the dedicated <strong>Search</strong> tab in the bottom navigation for a full-screen search experience with access to server-side search.</p>
+        <div class="tip">💡 Search works completely offline — it searches your locally stored notes without needing an internet connection.</div>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I pin a note to the top of my list?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>To pin a note, <strong>long-press</strong> on any note card in the Notes list. After about half a second, an action menu appears with options:</p>
+        <ul>
+          <li><strong>Pin to top</strong> — moves the note to a dedicated "PINNED" section above all other notes. Pinned notes have a green left border to distinguish them.</li>
+          <li><strong>Delete</strong> — permanently deletes the note.</li>
+        </ul>
+        <p>To unpin a note, long-press it again and tap <strong>Unpin</strong>. You can also pin/unpin from within the note editor by tapping the <strong>bookmark icon</strong> in the top-right header.</p>
+        <p>Pins sync across all your devices, so a note pinned on your phone also appears pinned on your tablet.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I use notebooks (folders)?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Notebooks let you group related notes together, like separate notebooks for Work, Personal, Travel, or Recipes.</p>
+        <ol class="step-list">
+          <li>Tap the <strong>Notebooks</strong> tab in the bottom navigation bar.</li>
+          <li>Tap <strong>+</strong> to create a new notebook and give it a name.</li>
+          <li>To rename a notebook, tap the pencil icon next to its name.</li>
+          <li>To assign a note to a notebook, open the note, tap the <strong>tag icon</strong>, and select the notebook there — or assign it during creation.</li>
+        </ol>
+        <p>Notes not assigned to any notebook appear in the main Notes view alongside all other notes.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I add and use tags?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Tags are keywords that you can attach to any note for quick categorization across notebooks. Unlike notebooks, a note can have multiple tags.</p>
+        <ol class="step-list">
+          <li>Open a note in the editor.</li>
+          <li>Tap the <strong>tag icon</strong> in the bottom toolbar.</li>
+          <li>Type a new tag name in the field at the top and tap <strong>+</strong> to create it — or select an existing tag from the list below.</li>
+          <li>Tap <strong>Done</strong> to save. Your selected tags appear as green chips below the note title.</li>
+        </ol>
+        <p>To remove a tag from a note, tap the green tag chip and it will be de-selected, or open the tag sheet and deselect it.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I delete a note?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>You can delete a note in two ways:</p>
+        <ul>
+          <li><strong>From the list:</strong> Long-press the note card → tap <strong>Delete</strong> → confirm. The note disappears from your list immediately.</li>
+          <li><strong>From the editor:</strong> Open the note → tap the <strong>trash icon</strong> in the top-right corner → confirm.</li>
+        </ul>
+        <p>Deleted notes are soft-deleted locally and the deletion is synced to the server on the next sync. Once synced, the deletion propagates to all your other devices. Notes are permanently purged from server backups after 90 days.</p>
+        <div class="warn">⚠ There is currently no recycle bin or undo for deleted notes. Once deleted, the note cannot be recovered unless you have a local device backup.</div>
+      </div>
+    </details>
+
+  </div>
+
+  <!-- ── SYNCING ────────────────────────────────────────────── -->
+  <div class="section-label" id="sync">Syncing &amp; Devices</div>
+  <div class="faq-group">
+
+    <details>
+      <summary>How does automatic sync work?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>NoteSync syncs in two ways:</p>
+        <ul>
+          <li><strong>Auto-sync:</strong> Every time your device detects an internet connection (or regains one after being offline), NoteSync automatically initiates a sync in the background. This happens without you having to do anything.</li>
+          <li><strong>Pull-to-refresh:</strong> On the Notes screen, pull down on the list to manually force an immediate sync.</li>
+          <li><strong>Manual sync:</strong> In <strong>Settings → Sync Now</strong>, tap to sync at any time.</li>
+        </ul>
+        <p>During a sync, NoteSync first pushes your local changes to the server, then pulls down any changes from your other devices. The process typically completes in 1–3 seconds on a normal connection.</p>
+        <p><strong>Sync status dots on each note:</strong></p>
+        <ul>
+          <li>🟢 Green dot — fully synced with the server.</li>
+          <li>🟠 Orange dot — pending sync (change is saved locally but not yet sent).</li>
+          <li>⚠ Orange triangle — sync conflict (two devices edited the same note before syncing).</li>
         </ul>
       </div>
     </details>
+
     <details>
-      <summary>How do I change my password?</summary>
-      <div class="answer"><p>Password changes are not yet available in-app. Please contact support at <a href="mailto:support@notesync.app" style="color:#2dbe60;">support@notesync.app</a> and we'll assist you.</p></div>
+      <summary>Why does Settings show "Never synced" even though I have synced?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>This was a bug in early versions of NoteSync where the last sync timestamp was not always saved correctly to local storage. It was fixed in version 1.0.1. After updating to the latest version, trigger one manual sync (Settings → Sync Now) and the timestamp will update correctly from that point forward.</p>
+        <p>If you continue to see "Never synced" after updating and manually syncing, please contact support with your device model and Android version.</p>
+      </div>
     </details>
+
     <details>
-      <summary>How do I cancel my subscription?</summary>
-      <div class="answer"><p>Subscriptions can be cancelled through the Google Play Store (Android) billing settings. Go to <strong>Play Store → Profile → Payments & subscriptions → Subscriptions</strong>. Your access continues until the end of the billing period.</p></div>
+      <summary>What happens if I edit the same note on two devices at the same time?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>NoteSync uses timestamp-based conflict detection. If you edit a note on Device A while offline, and someone else (or you) also edits the same note on Device B before Device A syncs, a <strong>sync conflict</strong> is detected when Device A reconnects.</p>
+        <p>In the current version, when a conflict occurs:</p>
+        <ul>
+          <li>The note's sync dot shows an <strong>orange warning triangle</strong>.</li>
+          <li>The server version of the note takes precedence to avoid data loss on the server side.</li>
+          <li>Your local changes are preserved locally until you resolve the conflict.</li>
+        </ul>
+        <p>To avoid conflicts, make sure your devices sync before you go offline and edit notes on multiple devices simultaneously.</p>
+      </div>
     </details>
+
     <details>
-      <summary>Is my data backed up if I lose my phone?</summary>
-      <div class="answer"><p>Yes. Every note is synced to our secure servers whenever you're online. After installing NoteSync on a new device and logging in, your notes will sync down automatically within seconds.</p></div>
+      <summary>How do I remove a device from my account?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Device management is not yet available directly in the app. If you need to remove a specific device (for example, a lost or sold phone), sign out of NoteSync on that device if possible, then contact <a href="mailto:support@notesync.app">support@notesync.app</a> with the request. We can revoke the device's sync token remotely.</p>
+        <p>Changing your password also effectively invalidates all existing sessions on all devices, requiring a fresh sign-in.</p>
+      </div>
     </details>
+
   </div>
 
-  <div class="contact-card">
-    <h3>Still need help?</h3>
-    <p>Our support team typically responds within 24 hours.</p>
-    <a href="/contact">Contact Support</a>
+  <!-- ── ACCOUNT & PLANS ───────────────────────────────────── -->
+  <div class="section-label" id="account">Account &amp; Plans</div>
+  <div class="faq-group">
+
+    <details>
+      <summary>What are the differences between Free, Starter, and Power plans?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:4px">
+          <thead>
+            <tr style="background:#f5f6fa">
+              <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e8eaf0;color:#1a1a2e">Feature</th>
+              <th style="padding:10px 12px;text-align:center;border-bottom:2px solid #e8eaf0;color:#1a1a2e">Free</th>
+              <th style="padding:10px 12px;text-align:center;border-bottom:2px solid #e8eaf0;color:#2dbe60">Starter<br><span style="font-weight:400;color:#888">$2.99/mo</span></th>
+              <th style="padding:10px 12px;text-align:center;border-bottom:2px solid #e8eaf0;color:#2dbe60">Power<br><span style="font-weight:400;color:#888">$7.99/mo</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #f0f2f5">Notes</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">50</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">500</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">Unlimited</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #f0f2f5">Devices</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">2</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">5</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">Unlimited</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #f0f2f5">Voice transcriptions/month</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">10</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">50</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">Unlimited</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #f0f2f5">Notebooks</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">3</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">20</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">Unlimited</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #f0f2f5">Offline access</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">✓</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">✓</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">✓</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #f0f2f5">Formatting toolbar</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">✓</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">✓</td><td style="padding:10px 12px;text-align:center;border-bottom:1px solid #f0f2f5">✓</td></tr>
+            <tr><td style="padding:10px 12px">Priority support</td><td style="padding:10px 12px;text-align:center">—</td><td style="padding:10px 12px;text-align:center">—</td><td style="padding:10px 12px;text-align:center">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I upgrade my plan?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>In-app upgrades are available through the Google Play billing system. Go to <strong>Settings → Account</strong> in the app, tap your current plan, and choose an upgrade option. Your upgraded plan is activated immediately after payment and applies across all your devices.</p>
+        <p>If you're having trouble upgrading in-app, you can also contact <a href="mailto:support@notesync.app">support@notesync.app</a> for assistance.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I cancel my subscription?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Subscriptions are managed through Google Play. To cancel:</p>
+        <ol class="step-list">
+          <li>Open the <strong>Google Play Store</strong> app on your Android device.</li>
+          <li>Tap your <strong>profile picture</strong> in the top-right corner.</li>
+          <li>Tap <strong>Payments &amp; subscriptions → Subscriptions</strong>.</li>
+          <li>Find <strong>NoteSync</strong> in the list and tap it.</li>
+          <li>Tap <strong>Cancel subscription</strong> and follow the prompts.</li>
+        </ol>
+        <p>Your subscription remains active until the end of the current billing period. After it expires, your account automatically moves to the Free plan. Your notes are never deleted when downgrading — but if you exceed the Free plan's 50-note limit, older notes become read-only until you reduce your count or re-subscribe.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I change my email address or password?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Account settings such as email and password changes are not yet available directly in the app. To update your credentials, contact <a href="mailto:support@notesync.app">support@notesync.app</a> from the email address currently on your account. Include your request and we'll process it within 24 business hours.</p>
+        <p>For security reasons, all account change requests must be verified against your current email address before changes are made.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I delete my account and all my data?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>To permanently delete your NoteSync account and all associated data:</p>
+        <ol class="step-list">
+          <li>Cancel any active subscription first (see above) to avoid future charges.</li>
+          <li>Email <a href="mailto:privacy@notesync.app">privacy@notesync.app</a> from your registered account email with the subject line "Account Deletion Request".</li>
+          <li>We will verify your identity, delete your account, notes, and all server-stored data within 5 business days.</li>
+          <li>You will receive a confirmation email once deletion is complete.</li>
+        </ol>
+        <p>After deletion, your data is purged from active systems immediately. Encrypted backup copies are overwritten within 90 days. This action cannot be undone — we strongly recommend exporting your notes before requesting deletion.</p>
+      </div>
+    </details>
+
   </div>
+
+  <!-- ── TROUBLESHOOTING ───────────────────────────────────── -->
+  <div class="section-label" id="troubleshoot">Troubleshooting</div>
+  <div class="faq-group">
+
+    <details>
+      <summary>My notes aren't syncing — what should I do?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>If your notes show an orange dot and don't sync, work through these steps:</p>
+        <ol class="step-list">
+          <li><strong>Check your internet connection.</strong> Try opening a web page or another app to confirm you're online.</li>
+          <li><strong>Pull down to refresh</strong> on the Notes screen to trigger a manual sync.</li>
+          <li><strong>Go to Settings → Sync Now</strong> and watch the "Syncing…" indicator.</li>
+          <li><strong>Check connection status</strong> in Settings. If it shows "Offline," your device thinks it has no internet even if it does. Toggle airplane mode off and on to reset the network state.</li>
+          <li><strong>Sign out and sign back in.</strong> This refreshes your authentication token. Go to Settings → Sign Out, then sign back in with your email and password.</li>
+          <li>If none of the above works, contact <a href="mailto:support@notesync.app">support@notesync.app</a> with your device model, Android version, and a description of the problem.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details>
+      <summary>The app is slow or freezing — how do I fix it?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Slowness is most commonly caused by very large notes with many images. Try these steps:</p>
+        <ul>
+          <li><strong>Force-close and reopen the app.</strong> Swipe it away from the recent apps tray and relaunch.</li>
+          <li><strong>Clear the app cache.</strong> Go to Android Settings → Apps → NoteSync → Storage → Clear Cache. Your notes are stored in the app's database, not the cache, so this won't delete anything.</li>
+          <li><strong>Reduce image size.</strong> Notes with many high-resolution images can slow the editor. Consider reducing the number of attached images in large notes.</li>
+          <li><strong>Update the app.</strong> Make sure you have the latest version from Google Play.</li>
+          <li><strong>Restart your device.</strong> A fresh restart clears memory and often resolves sluggishness in all apps.</li>
+        </ul>
+        <p>If the app is consistently slow on notes with only text, please report it as a bug to <a href="mailto:support@notesync.app">support@notesync.app</a>.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Voice transcription isn't working — what should I try?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Voice transcription requires a microphone and an active internet connection. Check the following:</p>
+        <ul>
+          <li><strong>Microphone permission:</strong> Go to Android Settings → Apps → NoteSync → Permissions and make sure <strong>Microphone</strong> is allowed.</li>
+          <li><strong>Internet connection:</strong> Transcription uses an external AI service. Confirm you're connected to Wi-Fi or mobile data.</li>
+          <li><strong>Background noise:</strong> Transcription accuracy drops significantly in noisy environments. Try recording in a quieter location.</li>
+          <li><strong>Recording length:</strong> Very short recordings (under 1 second) may not produce a result. Speak for at least 3–5 seconds.</li>
+          <li><strong>Server status:</strong> Occasionally the transcription service may be temporarily unavailable. Wait a minute and try again.</li>
+        </ul>
+        <p>If you consistently get empty transcriptions or error messages after trying the above, please contact support.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>I accidentally deleted a note — can I get it back?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Currently, NoteSync does not have a Trash or recycle bin feature. Once a note is deleted and the deletion is synced, recovery is not possible through the app.</p>
+        <p><strong>Possible recovery options:</strong></p>
+        <ul>
+          <li>If the deletion happened recently and you have not yet synced, try signing out immediately (which halts sync) then contacting support. We may be able to restore the note from server records before the deletion is fully processed.</li>
+          <li>If you have a recent Android device backup (Google One, Samsung Cloud, etc.) that predates the deletion, you may be able to restore your device to recover the local copy.</li>
+        </ul>
+        <p>A Trash / 30-day recovery feature is on our roadmap. Contact support at <a href="mailto:support@notesync.app">support@notesync.app</a> for urgent recovery assistance.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>The app won't let me log in — what's happening?
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="ans">
+        <p>Common causes and fixes:</p>
+        <ul>
+          <li><strong>"Invalid credentials":</strong> Double-check that you're using the correct email address and password. Note that passwords are case-sensitive.</li>
+          <li><strong>"Too many attempts":</strong> Login is rate-limited to 10 attempts per 15 minutes per device. Wait 15 minutes and try again.</li>
+          <li><strong>Email not verified:</strong> If you registered but never verified your email, you may not be able to log in. Check your inbox (and spam folder) for the verification email and click the link.</li>
+          <li><strong>No internet connection:</strong> You must be online to log in (authentication requires server verification).</li>
+          <li><strong>Forgotten password:</strong> Contact <a href="mailto:support@notesync.app">support@notesync.app</a> for a password reset.</li>
+        </ul>
+      </div>
+    </details>
+
+  </div>
+
+  <div class="cta">
+    <h3>Didn't find your answer?</h3>
+    <p>Our support team is available Monday–Friday, 9 am–6 pm EST. We typically respond within a few hours.</p>
+    <a href="/contact">Contact Support →</a>
+  </div>
+
 </main>
 
 <footer>
-  <p>© 2026 NoteSync. All rights reserved.</p>
-  <p style="margin-top:8px;">
+  <div class="ft-links">
+    <a href="/help">Help Center</a>
     <a href="/privacy">Privacy Policy</a>
     <a href="/terms">Terms of Service</a>
     <a href="/security">Security</a>
-    <a href="/contact">Contact</a>
-  </p>
+    <a href="/contact">Contact Us</a>
+  </div>
+  <p>© 2026 NoteSync by Traffic2uMarketing. All rights reserved.</p>
 </footer>
+
+<script>
+function scrollTo(id){document.querySelector(id).scrollIntoView({behavior:'smooth',block:'start'})}
+function filterFAQ(q){
+  q=q.toLowerCase().trim();
+  document.querySelectorAll('details').forEach(d=>{
+    const text=d.textContent.toLowerCase();
+    d.style.display=(!q||text.includes(q))?'':'none';
+  });
+  document.querySelectorAll('.faq-group').forEach(g=>{
+    const visible=[...g.querySelectorAll('details')].some(d=>d.style.display!=='none');
+    g.style.display=visible?'':'none';
+  });
+  document.querySelectorAll('.section-label').forEach(s=>{
+    const next=s.nextElementSibling;
+    s.style.display=(next&&next.style.display!=='none')?'':'none';
+  });
+}
+</script>
 </body>
 </html>
