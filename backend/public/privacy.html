@@ -64,6 +64,7 @@
   <a href="/privacy" class="active">Privacy</a>
   <a href="/security">Security</a>
   <a href="/terms">Terms</a>
+  <a href="/disclosure">Disclosure</a>
   <a href="/contact">Contact</a>
 </nav>
 
@@ -96,6 +97,8 @@
       <a href="#transfers">12. International Data Transfers</a>
       <a href="#changes">13. Changes to This Policy</a>
       <a href="#contact-us">14. Contact Us</a>
+      <a href="#google-play">15. Google Play Data Safety</a>
+      <a href="#apple-privacy">16. Apple App Store Privacy</a>
     </div>
   </div>
 
@@ -434,6 +437,71 @@
     <p>If you are a European resident and have an unresolved complaint, you may also contact your national Data Protection Authority. A list of EU DPA contact details is available at <a href="https://edpb.europa.eu/about-edpb/about-edpb/members_en" target="_blank" rel="noopener">edpb.europa.eu</a>.</p>
   </div>
 </main>
+
+  <div class="card" id="google-play">
+    <h2>15. Google Play Data Safety</h2>
+    <p>The following information is disclosed for the Google Play Data Safety section, in compliance with Google Play policy requirements.</p>
+
+    <h3>Data Collected</h3>
+    <table>
+      <thead>
+        <tr><th>Data Type</th><th>Category</th><th>Required?</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Email address</td><td>Personal info</td><td>Yes</td><td>Account creation, authentication, security alerts</td></tr>
+        <tr><td>User ID</td><td>Identifiers</td><td>Yes</td><td>Identify your account within the service</td></tr>
+        <tr><td>Notes &amp; text content</td><td>User content</td><td>Yes</td><td>Core service — storing and syncing your notes</td></tr>
+        <tr><td>Photos / images</td><td>User content</td><td>No (optional)</td><td>Image attachments added by the user to notes</td></tr>
+        <tr><td>Audio recordings</td><td>User content</td><td>No (optional)</td><td>Voice-to-text transcription only; not stored after transcription</td></tr>
+        <tr><td>Device ID (random)</td><td>Device identifiers</td><td>Yes</td><td>Multi-device sync; not linked to hardware identifiers</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Data Sharing with Third Parties</h3>
+    <p><strong>Audio only:</strong> When you use voice transcription, audio is sent to <strong>Groq</strong> (api.groq.com) for transcription. No other data is shared with third parties. NoteSync does not share your email, notes, or identifiers with any third party.</p>
+
+    <h3>Security Practices</h3>
+    <ul>
+      <li><strong>Data encrypted in transit:</strong> Yes — all communications use HTTPS/TLS.</li>
+      <li><strong>Data encrypted at rest:</strong> Yes — database stored on encrypted volumes.</li>
+      <li><strong>Users can request data deletion:</strong> Yes — email <a href="mailto:privacy@notesync.app">privacy@notesync.app</a> or delete account in-app.</li>
+    </ul>
+
+    <div class="highlight-box">
+      <p><strong>Independent security review:</strong> NoteSync has not undergone a third-party security audit at this time. We follow OWASP best practices and encrypt all data in transit and at rest.</p>
+    </div>
+  </div>
+
+  <div class="card" id="apple-privacy">
+    <h2>16. Apple App Store Privacy Nutrition Label</h2>
+    <p>The following summarizes the data NoteSync collects for the Apple App Store privacy label, as required by Apple&#39;s App Store Review Guidelines.</p>
+
+    <h3>Data Used to Track You</h3>
+    <p>None. NoteSync does not use any data to track you across apps or websites owned by other companies.</p>
+
+    <h3>Data Linked to You</h3>
+    <p>The following data types are collected and linked to your identity:</p>
+    <table>
+      <thead>
+        <tr><th>Category</th><th>Data Type</th><th>Use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Contact Info</td><td>Email address</td><td>Account, authentication, security</td></tr>
+        <tr><td>Identifiers</td><td>User ID (internal)</td><td>Account management, sync</td></tr>
+        <tr><td>User Content</td><td>Notes and text content</td><td>App functionality (core service)</td></tr>
+        <tr><td>User Content</td><td>Photos (optional)</td><td>App functionality (note attachments)</td></tr>
+        <tr><td>User Content</td><td>Audio data (transient)</td><td>Voice-to-text transcription; not stored</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Data Not Linked to You</h3>
+    <ul>
+      <li><strong>Diagnostics / crash data:</strong> NoteSync does not collect crash reports or performance data through third-party SDKs.</li>
+    </ul>
+
+    <p>For full details, see our complete <a href="/privacy">Privacy Policy</a>. To exercise your privacy rights, contact <a href="mailto:privacy@notesync.app">privacy@notesync.app</a>.</p>
+  </div>
+
 
 <footer>
   <p>© 2026 NoteSync. All rights reserved.</p>

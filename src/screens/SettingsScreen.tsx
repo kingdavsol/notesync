@@ -322,6 +322,38 @@ export default function SettingsScreen() {
             </View>
             <Icon name="chevron-right" size={20} color="#ccc" />
           </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => Linking.openURL('https://notesync.9gg.app/disclosure')}
+          >
+            <View style={styles.rowIcon}>
+              <Icon name="info" size={20} color="#666" />
+            </View>
+            <View style={styles.rowContent}>
+              <Text style={styles.rowTitle}>App Disclosure</Text>
+              <Text style={styles.rowSubtitle}>Data collection, permissions &amp; third parties</Text>
+            </View>
+            <Icon name="chevron-right" size={20} color="#ccc" />
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => Linking.openURL('https://notesync.9gg.app/privacy#gdpr')}
+          >
+            <View style={styles.rowIcon}>
+              <Icon name="globe" size={20} color="#666" />
+            </View>
+            <View style={styles.rowContent}>
+              <Text style={styles.rowTitle}>EU Privacy Rights (GDPR)</Text>
+              <Text style={styles.rowSubtitle}>Access, deletion, portability &amp; more</Text>
+            </View>
+            <Icon name="chevron-right" size={20} color="#ccc" />
+          </TouchableOpacity>
         </View>
       </View>
 

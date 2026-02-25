@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Disclosure — NoteSync</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a1a; }
+  header { background: #2dbe60; padding: 20px 24px; display: flex; align-items: center; gap: 10px; }
+  .logo { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .logo svg { width: 20px; height: 20px; fill: #fff; }
+  .header-text h1 { color: #fff; font-size: 17px; font-weight: 700; }
+  .header-text p { color: rgba(255,255,255,0.8); font-size: 13px; }
+  .hero { background: linear-gradient(135deg, #2dbe60 0%, #1e9e4d 100%); padding: 28px 24px 44px; }
+  .hero h2 { color: #fff; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .hero p { color: rgba(255,255,255,0.88); font-size: 14px; line-height: 1.6; max-width: 560px; }
+  nav { background: #fff; border-bottom: 1px solid #ececec; padding: 0 24px; display: flex; gap: 0; overflow-x: auto; }
+  nav a { color: #555; text-decoration: none; font-size: 13px; font-weight: 500; padding: 14px 16px; white-space: nowrap; border-bottom: 2px solid transparent; }
+  nav a:hover { color: #2dbe60; }
+  nav a.active { color: #2dbe60; border-bottom-color: #2dbe60; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 60px; }
+  .meta { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .badge { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; }
+  .updated { font-size: 13px; color: #999; }
+  .toc-card { background: #fff; border-radius: 14px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .toc-card h3 { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+  .toc-grid a { font-size: 13px; color: #2dbe60; text-decoration: none; line-height: 1.8; }
+  .toc-grid a:hover { text-decoration: underline; }
+  .card { background: #fff; border-radius: 14px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  h2 { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  h2::before { content: ''; width: 4px; height: 18px; background: #2dbe60; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+  h3 { font-size: 14px; font-weight: 700; color: #1a1a1a; margin: 16px 0 8px; }
+  h3:first-child { margin-top: 0; }
+  p { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { margin-left: 20px; margin-bottom: 10px; }
+  li { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 5px; }
+  strong { color: #1a1a1a; }
+  a { color: #2dbe60; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+  th { background: #f8f9fa; color: #1a1a1a; font-weight: 600; padding: 10px 12px; text-align: left; border-bottom: 2px solid #e0e0e0; }
+  td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; color: #555; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .highlight-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px 18px; margin: 14px 0; }
+  .highlight-box p { color: #166534; margin: 0; font-size: 13px; line-height: 1.7; }
+  .highlight-box strong { color: #166534; }
+  .none-box { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px 16px; display: inline-block; font-size: 13px; color: #888; margin: 8px 0; }
+  @media (max-width: 500px) { .toc-grid { grid-template-columns: 1fr; } }
+  footer { text-align: center; padding: 32px 16px; color: #999; font-size: 13px; }
+  footer a { color: #2dbe60; text-decoration: none; margin: 0 8px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="#fff" stroke-width="2"/></svg></div>
+  <div class="header-text"><h1>NoteSync</h1><p>App Disclosure</p></div>
+</header>
+<nav>
+  <a href="/help">Help &amp; FAQ</a>
+  <a href="/privacy">Privacy</a>
+  <a href="/security">Security</a>
+  <a href="/terms">Terms</a>
+  <a href="/disclosure" class="active">Disclosure</a>
+  <a href="/contact">Contact</a>
+</nav>
+
+<div class="hero">
+  <h2>App Disclosure</h2>
+  <p>Full transparency about what NoteSync collects, which services we use, what permissions we request, and what we don't do — no ads, no in-app purchases, no surprises.</p>
+</div>
+
+<main>
+  <div class="meta">
+    <span class="badge">No Ads</span>
+    <span class="badge">No In-App Purchases</span>
+    <span class="badge">Minimal Data</span>
+    <span class="updated">Last updated: February 26, 2026</span>
+  </div>
+
+  <div class="toc-card">
+    <h3>Contents</h3>
+    <div class="toc-grid">
+      <a href="#data-collection">1. Data Collection Disclosure</a>
+      <a href="#third-parties">2. Third-Party Services</a>
+      <a href="#permissions">3. App Permissions</a>
+      <a href="#purchases">4. In-App Purchases</a>
+      <a href="#ads">5. Advertising</a>
+      <a href="#analytics">6. Analytics &amp; Crash Reporting</a>
+      <a href="#data-rights">7. Your Data Rights</a>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <p><strong>Plain summary:</strong> NoteSync collects only what is needed to sync your notes. We use one external service (Groq) for voice transcription. We have no ads, no in-app purchases, no analytics SDKs, and no data brokers. You can delete all your data at any time.</p>
+  </div>
+
+  <div class="card" id="data-collection">
+    <h2>1. Data Collection Disclosure</h2>
+    <p>The following is a complete, itemized list of every piece of data NoteSync collects, why it is collected, and how long it is retained.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Data Item</th>
+          <th>Why Collected</th>
+          <th>Retention</th>
+          <th>Shared With?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Email address</strong></td>
+          <td>Account login, verification, security notifications</td>
+          <td>Until account deletion</td>
+          <td>No one</td>
+        </tr>
+        <tr>
+          <td><strong>Password (bcrypt hash)</strong></td>
+          <td>Authentication — plaintext never stored</td>
+          <td>Until account deletion</td>
+          <td>No one</td>
+        </tr>
+        <tr>
+          <td><strong>Note content (text)</strong></td>
+          <td>Core service: store and sync your notes</td>
+          <td>Until deleted by user or account deletion</td>
+          <td>No one</td>
+        </tr>
+        <tr>
+          <td><strong>Note metadata</strong> (timestamps, pin/archive status)</td>
+          <td>Sync state, organization</td>
+          <td>Until note/account deletion</td>
+          <td>No one</td>
+        </tr>
+        <tr>
+          <td><strong>Image attachments</strong></td>
+          <td>Images embedded in notes by user</td>
+          <td>Until note/account deletion</td>
+          <td>No one</td>
+        </tr>
+        <tr>
+          <td><strong>Folder/tag names</strong></td>
+          <td>Note organization</td>
+          <td>Until deleted or account deletion</td>
+          <td>No one</td>
+        </tr>
+        <tr>
+          <td><strong>Audio recordings</strong> (voice transcription)</td>
+          <td>Sent to Groq API for transcription only; <em>never stored</em></td>
+          <td>Not stored — discarded immediately after transcription</td>
+          <td>Groq (transcription only)</td>
+        </tr>
+        <tr>
+          <td><strong>Device ID</strong> (randomly generated)</td>
+          <td>Multi-device sync conflict resolution</td>
+          <td>Until account deletion</td>
+          <td>No one</td>
+        </tr>
+        <tr>
+          <td><strong>Auth/security logs</strong> (IP, timestamp, event type)</td>
+          <td>Detect unauthorized access, abuse prevention</td>
+          <td>30 days rolling</td>
+          <td>No one</td>
+        </tr>
+        <tr>
+          <td><strong>Contact form submissions</strong></td>
+          <td>Customer support</td>
+          <td>12 months</td>
+          <td>No one</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>What We Do NOT Collect</h3>
+    <ul>
+      <li>GPS / location data</li>
+      <li>Device hardware identifiers (IMEI, advertising ID, IDFA)</li>
+      <li>Contacts or calendar data</li>
+      <li>Browsing history or cross-app behavior</li>
+      <li>Biometric data</li>
+      <li>Financial data (payments handled by Google Play / Apple)</li>
+      <li>Photos outside of what you explicitly attach to a note</li>
+      <li>Microphone audio beyond the duration of a transcription request</li>
+    </ul>
+  </div>
+
+  <div class="card" id="third-parties">
+    <h2>2. Third-Party Services Used</h2>
+    <p>NoteSync uses a minimal number of third-party services. We do not integrate any advertising networks, social media SDKs, or behavioral analytics platforms.</p>
+
+    <h3>Groq — Voice Transcription</h3>
+    <p><strong>What it does:</strong> When you tap the microphone button in a note, your device records audio and sends it over HTTPS to <code>api.groq.com</code>. Groq's Whisper AI model converts the speech to text, returns the transcript to our server, and the text is saved to your note.</p>
+    <p><strong>Data sent:</strong> Audio file only. No account information, note content, or identifiers are sent to Groq.</p>
+    <p><strong>Data stored by Groq:</strong> Per Groq's API terms, audio data is not retained after processing.</p>
+    <p><strong>This is optional:</strong> You can use NoteSync without ever using voice transcription. All other features work without any data leaving our servers.</p>
+    <p><strong>Privacy policy:</strong> <a href="https://groq.com/privacy-policy/" target="_blank" rel="noopener">groq.com/privacy-policy</a></p>
+
+    <h3>Contabo GmbH — Server Infrastructure</h3>
+    <p><strong>What it does:</strong> Our API server and PostgreSQL database run on VPS infrastructure hosted by Contabo in Frankfurt, Germany. Your notes and account data are stored on these servers.</p>
+    <p><strong>Data location:</strong> All data remains within Germany (EU) unless you use voice transcription (see Groq above).</p>
+    <p><strong>Privacy policy:</strong> <a href="https://contabo.com/en/legal/privacy/" target="_blank" rel="noopener">contabo.com/en/legal/privacy</a></p>
+
+    <h3>Expo / EAS (expo.dev) — App Distribution &amp; Updates</h3>
+    <p><strong>What it does:</strong> NoteSync is built with React Native / Expo. The Expo Application Services (EAS) platform is used to build and distribute the app binaries to the Apple App Store and Google Play Store.</p>
+    <p><strong>Data sent:</strong> Expo does not receive your note content or account data. App builds and OTA update bundles may be distributed via Expo's CDN.</p>
+    <p><strong>Privacy policy:</strong> <a href="https://expo.dev/privacy" target="_blank" rel="noopener">expo.dev/privacy</a></p>
+
+    <h3>Let's Encrypt — SSL/TLS Certificates</h3>
+    <p><strong>What it does:</strong> Provides free SSL certificates that encrypt communications between your device and our server.</p>
+    <p><strong>Data sent:</strong> Domain name only — no personal data involved in certificate issuance.</p>
+    <p><strong>Privacy policy:</strong> <a href="https://letsencrypt.org/privacy/" target="_blank" rel="noopener">letsencrypt.org/privacy</a></p>
+
+    <h3>Google Play / Apple App Store — Distribution</h3>
+    <p>NoteSync is distributed through Google Play and the Apple App Store. These platforms handle app download, installation, and (for paid subscriptions) billing. Their data handling is governed by their own privacy policies. We receive only your subscription status from these platforms — we never receive payment details.</p>
+
+    <div class="highlight-box">
+      <p><strong>We do NOT integrate:</strong> Google Analytics, Firebase, Facebook SDK, Mixpanel, Amplitude, Segment, Sentry, Crashlytics, Appsflyer, Adjust, or any other advertising or behavioral analytics SDK.</p>
+    </div>
+  </div>
+
+  <div class="card" id="permissions">
+    <h2>3. App Permissions</h2>
+    <p>NoteSync requests the following permissions on Android and iOS. All permissions are requested only when relevant features are used, and all are optional — the core note-taking features work without any of them.</p>
+
+    <h3>Android Permissions</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Permission</th>
+          <th>Why It's Needed</th>
+          <th>Required?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>RECORD_AUDIO</code></td>
+          <td>Records audio when you tap the microphone button for voice-to-text transcription</td>
+          <td>No — only if you use voice transcription</td>
+        </tr>
+        <tr>
+          <td><code>READ_MEDIA_IMAGES</code> / <code>READ_EXTERNAL_STORAGE</code></td>
+          <td>Lets you pick photos from your gallery to attach to notes</td>
+          <td>No — only if you attach images to notes</td>
+        </tr>
+        <tr>
+          <td><code>CAMERA</code></td>
+          <td>Allows you to take a photo with your camera to attach directly to a note</td>
+          <td>No — only if you use in-note camera</td>
+        </tr>
+        <tr>
+          <td><code>INTERNET</code></td>
+          <td>Required to sync notes with the server, send voice transcription requests, and receive push notifications</td>
+          <td>Yes — required for sync features (app works offline without it)</td>
+        </tr>
+        <tr>
+          <td><code>RECEIVE_BOOT_COMPLETED</code></td>
+          <td>Allows the app to reschedule note reminders after the device restarts</td>
+          <td>No — only relevant if you set note reminders</td>
+        </tr>
+        <tr>
+          <td><code>POST_NOTIFICATIONS</code> (Android 13+)</td>
+          <td>Sends push notifications for note reminders and sync alerts</td>
+          <td>No — only if you enable notifications</td>
+        </tr>
+        <tr>
+          <td><code>VIBRATE</code></td>
+          <td>Vibration feedback for notifications</td>
+          <td>No — only with notifications enabled</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>iOS Permissions</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Permission</th>
+          <th>Why It's Needed</th>
+          <th>Required?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Microphone (<code>NSMicrophoneUsageDescription</code>)</td>
+          <td>Records audio for voice-to-text transcription</td>
+          <td>No — only if you use voice transcription</td>
+        </tr>
+        <tr>
+          <td>Photo Library (<code>NSPhotoLibraryUsageDescription</code>)</td>
+          <td>Lets you pick photos from your photo library to attach to notes</td>
+          <td>No — only if you attach images to notes</td>
+        </tr>
+        <tr>
+          <td>Camera (<code>NSCameraUsageDescription</code>)</td>
+          <td>Allows capturing photos directly in a note</td>
+          <td>No — only if you use in-note camera</td>
+        </tr>
+        <tr>
+          <td>Notifications (<code>UNUserNotificationCenter</code>)</td>
+          <td>Delivers note reminders and sync status alerts</td>
+          <td>No — only if you enable notifications</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>NoteSync does <strong>not</strong> request access to: Contacts, Calendar, Location, Health, Face ID/Touch ID for authentication (standard device lock is used), or any other sensor data beyond what is listed above.</p>
+  </div>
+
+  <div class="card" id="purchases">
+    <h2>4. In-App Purchases</h2>
+    <div class="none-box">&#10003; No in-app purchases are currently available in NoteSync.</div>
+    <p style="margin-top:12px;">NoteSync is currently offered as a free application. There are no in-app purchases, microtransactions, virtual currencies, loot boxes, or consumable items.</p>
+    <p>If paid subscription plans are introduced in the future, they will be offered through Google Play Billing (Android) or Apple In-App Purchase (iOS), and this disclosure will be updated accordingly. Any future paid features will be clearly labeled, and you will be informed before any charges occur.</p>
+    <p>See our <a href="/terms#plans">Terms of Service — Subscription Plans</a> section for the pricing structure if/when subscriptions are enabled.</p>
+  </div>
+
+  <div class="card" id="ads">
+    <h2>5. Advertising</h2>
+    <div class="none-box">&#10003; NoteSync contains no advertisements of any kind.</div>
+    <p style="margin-top:12px;">NoteSync does not display ads. We do not integrate any advertising SDK (including Google AdMob, Meta Audience Network, Unity Ads, or any other ad network). We do not sell advertising space, and we do not build advertising profiles based on your data.</p>
+    <p>NoteSync is sustained by subscriptions, not advertising. Your data is never used for advertising purposes — not for ads within the app, not for ads on other platforms, and not for sale to advertisers.</p>
+  </div>
+
+  <div class="card" id="analytics">
+    <h2>6. Analytics &amp; Crash Reporting</h2>
+    <div class="none-box">&#10003; No third-party analytics or crash reporting SDKs are integrated.</div>
+    <p style="margin-top:12px;">NoteSync does not use any third-party analytics service (such as Google Analytics, Firebase Analytics, Mixpanel, or Amplitude) or crash reporting service (such as Sentry, Crashlytics, or Bugsnag).</p>
+    <p>We do collect minimal server-side logs for security purposes (authentication events, API errors), as described in our <a href="/privacy#collect">Privacy Policy — Data We Collect</a>. These logs:</p>
+    <ul>
+      <li>Are stored only on our own servers (not sent to third parties).</li>
+      <li>Do not include note content.</li>
+      <li>Are retained for a maximum of 30 days.</li>
+      <li>Are used exclusively for security monitoring and abuse prevention.</li>
+    </ul>
+    <p>If you encounter a bug, please report it via our <a href="/contact">contact form</a> — we rely on user reports since we don't have automated crash tracking.</p>
+  </div>
+
+  <div class="card" id="data-rights">
+    <h2>7. Your Data Rights</h2>
+    <p>You have full control over your data. At any time you can:</p>
+    <ul>
+      <li><strong>Access your data:</strong> Request a copy of all data we hold about you by emailing <a href="mailto:privacy@notesync.app">privacy@notesync.app</a>.</li>
+      <li><strong>Export your notes:</strong> Contact support to receive an export in JSON or plain text format within 14 days.</li>
+      <li><strong>Delete your account:</strong> Email <a href="mailto:privacy@notesync.app">privacy@notesync.app</a> with "Account Deletion Request" — your account is deactivated immediately and data permanently deleted within 90 days.</li>
+      <li><strong>Correct your data:</strong> Update your email address through the app settings or by contacting support.</li>
+      <li><strong>Object to processing:</strong> Object to any non-essential data processing by contacting us.</li>
+    </ul>
+    <p>For full details on your privacy rights (GDPR, CCPA, and general rights), see our <a href="/privacy">Privacy Policy</a>.</p>
+    <p>Contact for all data requests: <a href="mailto:privacy@notesync.app">privacy@notesync.app</a></p>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 NoteSync. All rights reserved.</p>
+  <p style="margin-top:8px;">
+    <a href="/help">Help &amp; FAQ</a>
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/terms">Terms of Service</a>
+    <a href="/security">Security</a>
+    <a href="/contact">Contact</a>
+  </p>
+</footer>
+</body>
+</html>

@@ -156,6 +156,7 @@ app.get('/privacy',  (req, res) => res.sendFile(path.join(publicDir, 'privacy.ht
 app.get('/security', (req, res) => res.sendFile(path.join(publicDir, 'security.html')));
 app.get('/terms',    (req, res) => res.sendFile(path.join(publicDir, 'terms.html')));
 app.get('/contact',  (req, res) => res.sendFile(path.join(publicDir, 'contact.html')));
+app.get('/disclosure', (req, res) => res.sendFile(path.join(publicDir, 'disclosure.html')));
 
 // ── Contact form submission ───────────────────────────────────────────────
 const fs = require('fs');
