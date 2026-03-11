@@ -189,7 +189,7 @@ For very large migrations (100k+ notes), contact support@notesync.9gg.app and we
           tags: ['comparison', 'notion', 'simplicity']
         },
         {
-          question: 'Can I use NoteSync and Evernote together?',
+          question: "Can I use NoteSync and Evernote together?",
           answer: `Yes! Many users do:
 
 **Strategy 1: Gradual Migration**
@@ -215,7 +215,7 @@ NoteSync is designed for easy import/export, so you're never locked in.`,
       category: 'Getting Started',
       items: [
         {
-          question: 'What's the best way to start with NoteSync?',
+          question: "What's the best way to start with NoteSync?",
           answer: `**Step 1:** Sign up for free - no credit card needed
 **Step 2:** Create a few test notes to learn the app
 **Step 3:** Import your existing notes from another app
