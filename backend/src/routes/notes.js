@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../utils/db');
 const { authenticateToken } = require('../middleware/auth');
+const { checkNoteLimit, requireFeature } = require('../middleware/subscriptionGate');
 
 const router = express.Router();
 
@@ -102,7 +103,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create note
-router.post('/', async (req, res) => {
+router.post('/', checkNoteLimit(), async (req, res) => {
     try {
         const { title, content, folder_id, offline_enabled, tags } = req.body;
 

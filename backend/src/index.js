@@ -23,6 +23,7 @@ const versionsRoutes = require('./routes/versions');
 const transcribeRoutes = require('./routes/transcribe');
 
 const { sanitizeMiddleware, securityHeaders } = require('./middleware/security');
+const { subscriptionGate, checkNoteLimit, requireFeature } = require('./middleware/subscriptionGate');
 
 const app = express();
 const server = http.createServer(app);
@@ -130,19 +131,20 @@ app.use('/uploads', (req, res, next) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/notes', notesRoutes);
-app.use('/api/folders', foldersRoutes);
-app.use('/api/tags', tagsRoutes);
-app.use('/api/sync', syncRoutes);
-app.use('/api/import', importRoutes);
-app.use('/api/drawings', drawingsRoutes);
-app.use('/api/links', linksRoutes);
-app.use('/api/search', searchRoutes);
-app.use('/api/share', shareRoutes);
-app.use('/api/reminders', remindersRoutes);
-app.use('/api/templates', templatesRoutes);
-app.use('/api/versions', versionsRoutes);
-app.use('/api/transcribe', transcribeRoutes);
+// Apply subscription gate to all protected routes
+app.use('/api/notes', subscriptionGate, notesRoutes);
+app.use('/api/folders', subscriptionGate, foldersRoutes);
+app.use('/api/tags', subscriptionGate, tagsRoutes);
+app.use('/api/sync', subscriptionGate, syncRoutes);
+app.use('/api/import', subscriptionGate, importRoutes);
+app.use('/api/drawings', subscriptionGate, drawingsRoutes);
+app.use('/api/links', subscriptionGate, linksRoutes);
+app.use('/api/search', subscriptionGate, searchRoutes);
+app.use('/api/share', subscriptionGate, shareRoutes);
+app.use('/api/reminders', subscriptionGate, remindersRoutes);
+app.use('/api/templates', subscriptionGate, templatesRoutes);
+app.use('/api/versions', subscriptionGate, versionsRoutes);
+app.use('/api/transcribe', subscriptionGate, requireFeature('advanced-ai'), transcribeRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
