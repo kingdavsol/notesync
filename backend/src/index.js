@@ -8,6 +8,7 @@ const path = require('path');
 const { initializeWebSocket } = require('./websocket');
 
 const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
 const notesRoutes = require('./routes/notes');
 const foldersRoutes = require('./routes/folders');
 const tagsRoutes = require('./routes/tags');
@@ -105,7 +106,9 @@ const uploadLimiter = rateLimit({
 
 app.use('/api/', generalLimiter);
 app.use('/api/auth/login', authLimiter);
+app.use('/api/admin', adminRoutes);
 app.use('/api/auth/register', authLimiter);
+app.use('/api/admin', adminRoutes);
 app.use('/api/import', uploadLimiter);
 
 // Body parsing with size limits
@@ -131,6 +134,7 @@ app.use('/uploads', (req, res, next) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 // Apply subscription gate to all protected routes
 app.use('/api/notes', subscriptionGate, notesRoutes);
 app.use('/api/folders', subscriptionGate, foldersRoutes);

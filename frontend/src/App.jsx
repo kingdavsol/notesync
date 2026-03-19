@@ -1,3 +1,4 @@
+import AdminDashboard from './pages/AdminDashboard';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import api from './services/api';
@@ -151,6 +152,7 @@ function App() {
             path="/*"
             element={user ? <Dashboard /> : <Navigate to="/login" />}
           />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </SyncContext.Provider>
     </AuthContext.Provider>
